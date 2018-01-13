@@ -19,8 +19,8 @@ typedef long long i64;
 
 char *load_text_file(const char *filename);
 
-void *mem_alloc(u64 size);
-void mem_free(void *addr);
+void *malloc(u64 size);
+void free(void *addr);
 
 #define k_demo_name "demo01"
 #define k_win_width 1920

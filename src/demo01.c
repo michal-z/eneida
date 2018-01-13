@@ -1,6 +1,6 @@
 #include "demo01.h"
 #include "opengl.h"
-#include "vectormath.h"
+#include "math.h"
 
 static GLuint s_cppo;
 static GLuint s_f3_vao;
@@ -50,13 +50,16 @@ void demo_init(void)
     const char *fsglsl[] = { "#version 450 core\n", "#define FS_DESERT\n", (const char *)glsl };
     s_fs = glCreateShaderProgramv(GL_FRAGMENT_SHADER, 3, fsglsl);
 
-    mem_free(glsl);
+    free(glsl);
 
 
 
 
     //Mat4 m = mat4_perspective(1.5f, 1.0f, 0.1f, 10.0f);
     //(void)m;
+    //
+    //float x = sinf(20.383f);
+    //assert(x == 0.0f);
 
     assert(glGetError() == GL_NO_ERROR);
 }

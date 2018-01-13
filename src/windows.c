@@ -192,7 +192,7 @@ char *load_text_file(const char *filename)
     void *handle = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
     assert(handle != (void *)-1);
     u32 size = GetFileSize(handle, NULL);
-    char *content = (char *)mem_alloc(size + 1);
+    char *content = (char *)malloc(size + 1);
     u32 bytes_read;
     ReadFile(handle, content, size, &bytes_read, NULL);
     CloseHandle(handle);
@@ -201,7 +201,7 @@ char *load_text_file(const char *filename)
     return content;
 }
 
-void *mem_alloc(u64 size)
+void *malloc(u64 size)
 {
     assert(size > 0);
     assert(s_main_heap);
@@ -214,7 +214,7 @@ void *mem_alloc(u64 size)
     return mem;
 }
 
-void mem_free(void *addr)
+void free(void *addr)
 {
     assert(addr);
     assert(s_main_heap);
