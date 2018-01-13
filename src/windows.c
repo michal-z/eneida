@@ -173,7 +173,7 @@ typedef i32 (__stdcall *wglDeleteContext_fn)(void *);
 typedef void *(__stdcall *wglGetProcAddress_fn)(const char *);
 typedef i32 (__stdcall *wglMakeCurrent_fn)(void *, void *);
 typedef void *(__stdcall *wglCreateContextAttribsARB_fn)(void *, void *, const i32 *);
-typedef i32 (__stdcall *wglSwapIntervalEXT_fn)(int);
+typedef i32 (__stdcall *wglSwapIntervalEXT_fn)(i32);
 
 static wglCreateContext_fn s_wglCreateContext;
 static wglDeleteContext_fn s_wglDeleteContext;
