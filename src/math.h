@@ -1,5 +1,7 @@
 #pragma once
 
+#include "library.h"
+
 #define k_1pi 3.141592654f
 #define k_2pi 6.283185307f
 #define k_1_div_1pi 0.318309886f
@@ -42,7 +44,7 @@ static inline Vec3 *vec3_set(Vec3 *out, float x, float y, float z)
     return out;
 }
 
-static inline Vec3 *v3mul(Vec3 *out, const Vec3 *v0, const Vec3 *v1)
+static inline Vec3 *vec3_mul(Vec3 *out, const Vec3 *v0, const Vec3 *v1)
 {
     out->x = v0->x * v1->x;
     out->y = v0->y * v1->y;
@@ -50,7 +52,7 @@ static inline Vec3 *v3mul(Vec3 *out, const Vec3 *v0, const Vec3 *v1)
     return out;
 }
 
-static inline Mat4 m4_perspective(float fovy, float aspect, float n, float f)
+static inline Mat4 mat4_perspective(float fovy, float aspect, float n, float f)
 {
     assert(0);
     float k = fovy;//tanf(k_pi_div_2 - 0.5f * fovy);
@@ -83,9 +85,130 @@ inline float sinf(float x)
 
     float y = x - k_2pi * quotient;
 
-    if (y > k_1pi_div_2) y = k_1pi - y;
-    else if (y < -k_1pi_div_2) y = -k_1pi - y;
+    if (y > k_1pi_div_2)
+        y = k_1pi - y;
+    else if (y < -k_1pi_div_2)
+        y = -k_1pi - y;
 
     float y2 = y * y;
     return (((((-2.3889859e-08f * y2 + 2.7525562e-06f) * y2 - 0.00019840874f) * y2 + 0.0083333310f) * y2 - 0.16666667f) * y2 + 1.0f) * y;
+}
+
+// Implementation taken from https://github.com/Microsoft/DirectXMath
+inline float sinf_fast(float x)
+{
+    float quotient = k_1_div_2pi * x;
+    quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
+
+    float y = x - k_2pi * quotient;
+
+    if (y > k_1pi_div_2)
+        y = k_1pi - y;
+    else if (y < -k_1pi_div_2)
+        y = -k_1pi - y;
+
+    float y2 = y * y;
+    return (((-0.00018524670f * y2 + 0.0083139502f) * y2 - 0.16665852f) * y2 + 1.0f) * y;
+}
+
+// Implementation taken from https://github.com/Microsoft/DirectXMath
+inline float cosf(float x)
+{
+    float quotient = k_1_div_2pi * x;
+    quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
+
+    float y = x - k_2pi * quotient;
+
+    float sign;
+    if (y > k_1pi_div_2) {
+        y = k_1pi - y;
+        sign = -1.0f;
+    } else if (y < -k_1pi_div_2) {
+        y = -k_1pi - y;
+        sign = -1.0f;
+    } else
+        sign = 1.0f;
+
+    float y2 = y * y;
+    float p = ((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f;
+    return sign * p;
+}
+
+// Implementation taken from https://github.com/Microsoft/DirectXMath
+inline float cosf_fast(float x)
+{
+    float quotient = k_1_div_2pi * x;
+    quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
+
+    float y = x - k_2pi * quotient;
+
+    float sign;
+    if (y > k_1pi_div_2) {
+        y = k_1pi - y;
+        sign = -1.0f;
+    } else if (y < -k_1pi_div_2) {
+        y = -k_1pi - y;
+        sign = -1.0f;
+    } else
+        sign = 1.0f;
+
+    float y2 = y * y;
+    float p = ((-0.0012712436f * y2 + 0.041493919f) * y2 - 0.49992746f) * y2 + 1.0f;
+    return sign * p;
+}
+
+inline void sincosf(float *osin, float *ocos, float x)
+{
+    assert(osin);
+    assert(ocos);
+
+    float quotient = k_1_div_2pi * x;
+    quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
+
+    float y = x - k_2pi * quotient;
+
+    float sign;
+    if (y > k_1pi_div_2) {
+        y = k_1pi - y;
+        sign = -1.0f;
+    } else if (y < -k_1pi_div_2) {
+        y = -k_1pi - y;
+        sign = -1.0f;
+    } else
+        sign = 1.0f;
+
+    float y2 = y * y;
+
+    *osin = (((((-2.3889859e-08f * y2 + 2.7525562e-06f) * y2 - 0.00019840874f) * y2 + 0.0083333310f) * y2 - 0.16666667f) * y2 + 1.0f) * y;
+
+    float p = ((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f;
+    *ocos = sign * p;
+}
+
+inline void sincosf_fast(float *osin, float *ocos, float x)
+{
+    assert(osin);
+    assert(ocos);
+
+    float quotient = k_1_div_2pi * x;
+    quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
+
+    float y = x - k_2pi * quotient;
+
+    float sign;
+    if (y > k_1pi_div_2) {
+        y = k_1pi - y;
+        sign = -1.0f;
+    } else if (y < -k_1pi_div_2) {
+        y = -k_1pi - y;
+        sign = -1.0f;
+    } else
+        sign = 1.0f;
+
+    float y2 = y * y;
+
+    *osin = (((-0.00018524670f * y2 + 0.0083139502f) * y2 - 0.16665852f) * y2 + 1.0f) * y;
+
+    float p = ((-0.0012712436f * y2 + 0.041493919f) * y2 - 0.49992746f) * y2 + 1.0f;
+    *ocos = sign * p;
 }
