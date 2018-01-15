@@ -1,6 +1,5 @@
 ﻿#include "demo01.h"
 #include "library.h"
-#include "opengl.h"
 
 
 #define PM_REMOVE 0x0001
@@ -202,7 +201,7 @@ char *load_text_file(const char *filename)
     return content;
 }
 
-void *malloc(u64 size)
+void *malloc(size_t size)
 {
     assert(size > 0);
     assert(s_main_heap);

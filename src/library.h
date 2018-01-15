@@ -19,5 +19,11 @@ typedef long long i64;
 
 char *load_text_file(const char *filename);
 
-void *malloc(u64 size);
+void *memset(void *dest, int value, size_t count);
+#pragma intrinsic(memset)
+
+void *malloc(size_t size);
 void free(void *addr);
+
+#include "math.h"
+#include "opengl.h"

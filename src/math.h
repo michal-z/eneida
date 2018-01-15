@@ -1,7 +1,5 @@
 #pragma once
 
-#include "library.h"
-
 #define k_1pi 3.141592654f
 #define k_2pi 6.283185307f
 #define k_1_div_1pi 0.318309886f
@@ -78,7 +76,7 @@ static mat4 LookAt(const vec3 &eye, const vec3 &at, const vec3 &up) {
 */
 
 // Implementation taken from https://github.com/Microsoft/DirectXMath
-inline float sinf(float x)
+inline float sin1f(float x)
 {
     float quotient = k_1_div_2pi * x;
     quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
@@ -95,7 +93,7 @@ inline float sinf(float x)
 }
 
 // Implementation taken from https://github.com/Microsoft/DirectXMath
-inline float sinf_fast(float x)
+inline float sin1f_fast(float x)
 {
     float quotient = k_1_div_2pi * x;
     quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
@@ -112,7 +110,7 @@ inline float sinf_fast(float x)
 }
 
 // Implementation taken from https://github.com/Microsoft/DirectXMath
-inline float cosf(float x)
+inline float cos1f(float x)
 {
     float quotient = k_1_div_2pi * x;
     quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
@@ -135,7 +133,7 @@ inline float cosf(float x)
 }
 
 // Implementation taken from https://github.com/Microsoft/DirectXMath
-inline float cosf_fast(float x)
+inline float cos1f_fast(float x)
 {
     float quotient = k_1_div_2pi * x;
     quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
@@ -157,7 +155,8 @@ inline float cosf_fast(float x)
     return sign * p;
 }
 
-inline void sincosf(float *osin, float *ocos, float x)
+// Implementation taken from https://github.com/Microsoft/DirectXMath
+inline void sincos1f(float *osin, float *ocos, float x)
 {
     assert(osin);
     assert(ocos);
@@ -185,7 +184,8 @@ inline void sincosf(float *osin, float *ocos, float x)
     *ocos = sign * p;
 }
 
-inline void sincosf_fast(float *osin, float *ocos, float x)
+// Implementation taken from https://github.com/Microsoft/DirectXMath
+inline void sincos1f_fast(float *osin, float *ocos, float x)
 {
     assert(osin);
     assert(ocos);

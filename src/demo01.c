@@ -1,6 +1,6 @@
 #include "demo01.h"
-#include "opengl.h"
-#include "math.h"
+#include "library.h"
+
 
 static GLuint s_cppo;
 static GLuint s_f3_vao;
