@@ -1,7 +1,7 @@
 @echo off
 
 set CFLAGS=/Od /D_DEBUG
-::set CFLAGS=/Ox /DNDEBUG /GL
+::set CFLAGS=/Ox /GL
 ::set LFLAGS=/LTCG
 
 set CC=..\compiler\cl.exe

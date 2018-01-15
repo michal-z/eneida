@@ -23,7 +23,10 @@ void *memset(void *dest, int value, size_t count);
 #pragma intrinsic(memset)
 
 void *malloc(size_t size);
+void *realloc(void *addr, size_t size);
 void free(void *addr);
 
 #include "math.h"
 #include "opengl.h"
+#include "stretchy_buffer.h"
+#include "stb_perlin.h"

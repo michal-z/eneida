@@ -53,6 +53,7 @@ void demo_init(void)
     free(glsl);
 
 
+    stb_perlin_noise3(1.0f, 1.0f, 1.0f, 0, 0, 0);
 
 
     //Mat4 m = mat4_perspective(1.5f, 1.0f, 0.1f, 10.0f);

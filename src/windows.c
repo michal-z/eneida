@@ -214,6 +214,23 @@ void *malloc(size_t size)
     return mem;
 }
 
+void *realloc(void *addr, size_t size)
+{
+    assert(size > 0);
+    assert(s_main_heap);
+    if (addr == NULL)
+        return malloc(size);
+    else {
+        void *mem = HeapReAlloc(s_main_heap, 0, addr, size);
+        if (!mem) {
+            OutputDebugString("Failed to reallocate memory!");
+            assert(0);
+            ExitProcess(1);
+        }
+        return mem;
+    }
+}
+
 void free(void *addr)
 {
     assert(addr);
