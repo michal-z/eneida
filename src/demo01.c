@@ -1,68 +1,178 @@
 #include "demo01.h"
 #include "library.h"
+#include "d3d12.h"
 
 
-static GLuint s_cppo;
-static GLuint s_f3_vao;
-static GLuint s_vs;
-static GLuint s_fs;
-static GLuint s_vbo;
+#if 0
+static struct
+{
+    u32 BackBufferResolution[2];
+    u32 BackBufferIndex;
+    u32 FrameIndex;
+    u32 DescriptorSize;
+    u32 RTVDescriptorSize;
+    D3D12_CPU_DESCRIPTOR_HANDLE RTVHeapStart;
+    D3D12_CPU_DESCRIPTOR_HANDLE DSVHeapStart;
+    ID3D12Device *Device;
+    ID3D12CommandQueue *CmdQueue;
+    ID3D12CommandAllocator *CmdAlloc[2];
+    ID3D12GraphicsCommandList *CmdList;
+    ID3D12Resource *SwapBuffers[4];
+    ID3D12Resource *DepthStencilImage;
+    IDXGIFactory4 *GiFactory;
+    IDXGISwapChain3 *SwapChain;
+    ID3D12DescriptorHeap *RTVHeap;
+    ID3D12DescriptorHeap *DSVHeap;
+    u64 CPUCompletedFrames;
+    ID3D12Fence *FrameFence;
+    void *FrameFenceEvent;
+    D3D12_VIEWPORT Viewport;
+    D3D12_RECT Scissor;
+    i64 Frequency;
+    i64 StartCounter;
+    void *Window;
+    double FrameTime;
+    float FrameDeltaTime;
+} G;
+
+static i32 InitializeD3D12(void)
+{
+    // RTV descriptor heap
+    {
+        D3D12_DESCRIPTOR_HEAP_DESC HeapDesc =
+        {
+            .NumDescriptors = 4,.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV,.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE
+        };
+        VHR(ID3D12Device_CreateDescriptorHeap(G.Device, &HeapDesc, &IID_ID3D12DescriptorHeap, &G.RTVHeap));
+        ID3D12DescriptorHeap_GetCPUDescriptorHandleForHeapStart(G.RTVHeap, &G.RTVHeapStart);
+
+        D3D12_CPU_DESCRIPTOR_HANDLE Handle = G.RTVHeapStart;
+
+        for (u32 Idx = 0; Idx < 4; ++Idx)
+        {
+            VHR(IDXGISwapChain3_GetBuffer(G.SwapChain, Idx, &IID_ID3D12Resource, &G.SwapBuffers[Idx]));
+
+            ID3D12Device_CreateRenderTargetView(G.Device, G.SwapBuffers[Idx], NULL, Handle);
+            Handle.ptr += G.RTVDescriptorSize;
+        }
+    }
+    // depth-stencil image, view and heap
+    {
+        D3D12_DESCRIPTOR_HEAP_DESC HeapDesc =
+        {
+            .NumDescriptors = 1,.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV,.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE
+        };
+        VHR(ID3D12Device_CreateDescriptorHeap(G.Device, &HeapDesc, &IID_ID3D12DescriptorHeap, &G.DSVHeap));
+        ID3D12DescriptorHeap_GetCPUDescriptorHandleForHeapStart(G.DSVHeap, &G.DSVHeapStart);
+
+        D3D12_CLEAR_VALUE ClearValue =
+        {
+            .Format = DXGI_FORMAT_D32_FLOAT,.DepthStencil.Depth = 1.0f,.DepthStencil.Stencil = 0
+        };
+        D3D12_HEAP_PROPERTIES HeapProps =
+        {
+            .Type = D3D12_HEAP_TYPE_DEFAULT
+        };
+        D3D12_RESOURCE_DESC ImageDesc =
+        {
+            .Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D,.Width = G.BackBufferResolution[0],.Height = G.BackBufferResolution[1],
+            .DepthOrArraySize = 1,.MipLevels = 1,.Format = DXGI_FORMAT_D32_FLOAT,.SampleDesc.Count = 1,
+            .Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN,.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL
+        };
+        VHR(ID3D12Device_CreateCommittedResource(G.Device, &HeapProps, D3D12_HEAP_FLAG_NONE, &ImageDesc,
+            D3D12_RESOURCE_STATE_DEPTH_WRITE, &ClearValue, &IID_ID3D12Resource, &G.DepthStencilImage));
+
+        D3D12_DEPTH_STENCIL_VIEW_DESC ViewDesc =
+        {
+            .Format = DXGI_FORMAT_D32_FLOAT,.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D,.Flags = D3D12_DSV_FLAG_NONE
+        };
+        ID3D12Device_CreateDepthStencilView(G.Device, G.DepthStencilImage, &ViewDesc, G.DSVHeapStart);
+    }
+    VHR(ID3D12Device_CreateCommandList(G.Device, 1, D3D12_COMMAND_LIST_TYPE_DIRECT, G.CmdAlloc[0], NULL,
+        &IID_ID3D12GraphicsCommandList, &G.CmdList));
+
+    G.Viewport.TopLeftX = 0.0f;
+    G.Viewport.TopLeftY = 0.0f;
+    G.Viewport.Width = (float)G.BackBufferResolution[0];
+    G.Viewport.Height = (float)G.BackBufferResolution[1];
+    G.Viewport.MinDepth = 0.0f;
+    G.Viewport.MaxDepth = 1.0f;
+
+    G.Scissor.left = 0;
+    G.Scissor.top = 0;
+    G.Scissor.right = G.BackBufferResolution[0];
+    G.Scissor.bottom = G.BackBufferResolution[1];
+
+    ID3D12GraphicsCommandList_Close(G.CmdList);
+    return 1;
+}
+
+static void Update(void)
+{
+    ID3D12CommandAllocator *CmdAlloc = G.CmdAlloc[G.FrameIndex];
+    ID3D12CommandAllocator_Reset(CmdAlloc);
+
+    ID3D12GraphicsCommandList *CmdList = G.CmdList;
+
+    ID3D12GraphicsCommandList_Reset(CmdList, CmdAlloc, NULL);
+    ID3D12GraphicsCommandList_RSSetViewports(CmdList, 1, &G.Viewport);
+    ID3D12GraphicsCommandList_RSSetScissorRects(CmdList, 1, &G.Scissor);
+
+    D3D12_RESOURCE_BARRIER Barrier =
+    {
+        .Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION,.Transition.pResource = G.SwapBuffers[G.BackBufferIndex],
+        .Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT,.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET
+    };
+    ID3D12GraphicsCommandList_ResourceBarrier(CmdList, 1, &Barrier);
+
+    D3D12_CPU_DESCRIPTOR_HANDLE RTVHandle = G.RTVHeapStart;
+    RTVHandle.ptr += G.BackBufferIndex *G.RTVDescriptorSize;
+
+    ID3D12GraphicsCommandList_OMSetRenderTargets(CmdList, 1, &RTVHandle, 0, &G.DSVHeapStart);
+
+    const float ClearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+    ID3D12GraphicsCommandList_ClearRenderTargetView(CmdList, RTVHandle, ClearColor, 0, NULL);
+    ID3D12GraphicsCommandList_ClearDepthStencilView(CmdList, G.DSVHeapStart, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, NULL);
+
+    Barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    Barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+    ID3D12GraphicsCommandList_ResourceBarrier(CmdList, 1, &Barrier);
+
+    ID3D12GraphicsCommandList_Close(CmdList);
+
+    ID3D12CommandQueue_ExecuteCommandLists(G.CmdQueue, 1, (ID3D12CommandList **)&CmdList);
+}
+#endif
+
+static u32 s_descriptor_size;
+static u32 s_descriptor_size_rtv;
+static ID3D12Device *s_d3d;
+static ID3D12GraphicsCommandList *s_cmdlist;
+static ID3D12CommandQueue *s_cmdqueue;
+static ID3D12CommandAllocator *s_cmdalloc[2];
 
 void demo_update(double frame_time, float frame_delta_time)
 {
     (void)frame_time; (void)frame_delta_time;
 }
 
-void demo_draw(void)
+void demo_draw(u32 frame_index)
 {
-    glUseProgramStages(s_cppo, GL_VERTEX_SHADER_BIT, s_vs);
-    glUseProgramStages(s_cppo, GL_FRAGMENT_SHADER_BIT, s_fs);
-
-    glBindVertexArray(s_f3_vao);
-
-    glVertexArrayVertexBuffer(s_f3_vao, 0, s_vbo, 0, 8);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    (void)frame_index;
 }
 
-void demo_init(void)
+void demo_init(IDXGISwapChain3 *swapchain, ID3D12Device *d3d, ID3D12CommandQueue *cmdqueue)
 {
-    /* vbo */ {
-        float data[] = { -1.0f, -1.0f, 1.0f, -1.0f, 0.0f, 1.0f };
-        glCreateBuffers(1, &s_vbo);
-        glNamedBufferStorage(s_vbo, sizeof(data), data, 0);
-    }
+    (void)swapchain;
+    s_d3d = d3d;
+    s_cmdqueue = cmdqueue;
 
-    // vao
-    glCreateVertexArrays(1, &s_f3_vao);
-    glVertexArrayAttribBinding(s_f3_vao, 0, 0);
-    glVertexArrayAttribFormat(s_f3_vao, 0, 2, GL_FLOAT, GL_FALSE, 0);
-    glEnableVertexArrayAttrib(s_f3_vao, 0);
+    for (u32 i = 0; i < 2; ++i)
+        VHR(ID3D12Device_CreateCommandAllocator(s_d3d, D3D12_COMMAND_LIST_TYPE_DIRECT, &IID_ID3D12CommandAllocator,
+                                                &s_cmdalloc[i]));
 
-    // shaders
-    glCreateProgramPipelines(1, &s_cppo);
-    glBindProgramPipeline(s_cppo);
-
-    char *glsl = load_text_file("demo01.glsl");
-
-    const char *vsglsl[] = { "#version 450 core\n", "#define VS_FULL_TRIANGLE\n", (const char *)glsl };
-    s_vs = glCreateShaderProgramv(GL_VERTEX_SHADER, 3, vsglsl);
-
-    const char *fsglsl[] = { "#version 450 core\n", "#define FS_DESERT\n", (const char *)glsl };
-    s_fs = glCreateShaderProgramv(GL_FRAGMENT_SHADER, 3, fsglsl);
-
-    free(glsl);
-
-
-    stb_perlin_noise3(1.0f, 1.0f, 1.0f, 0, 0, 0);
-
-
-    //Mat4 m = mat4_perspective(1.5f, 1.0f, 0.1f, 10.0f);
-    //(void)m;
-    //
-    //float x = sinf(20.383f);
-    //assert(x == 0.0f);
-
-    assert(glGetError() == GL_NO_ERROR);
+    s_descriptor_size = ID3D12Device_GetDescriptorHandleIncrementSize(s_d3d, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+    s_descriptor_size_rtv = ID3D12Device_GetDescriptorHandleIncrementSize(s_d3d, D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 }
 
 void demo_shutdown(void)

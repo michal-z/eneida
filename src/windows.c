@@ -1,5 +1,6 @@
 ﻿#include "demo01.h"
 #include "library.h"
+#include "d3d12.h"
 
 
 #define PM_REMOVE 0x0001
@@ -22,11 +23,15 @@
 #define PFD_SUPPORT_OPENGL 0x00000020
 #define GENERIC_READ 0x80000000
 #define OPEN_EXISTING 3
+#define INFINITE 0xFFFFFFFF
+#define STANDARD_RIGHTS_REQUIRED 0x000F0000L
+#define SYNCHRONIZE 0x00100000L
+#define EVENT_ALL_ACCESS (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|0x3)
+#define MEM_COMMIT 0x1000
+#define MEM_RESERVE 0x2000
+#define MEM_RELEASE 0x8000
 
-typedef struct POINT {
-    i32 x;
-    i32 y;
-} POINT;
+#define PAGE_READWRITE 0x04
 
 typedef struct MSG {
     void *hwnd;
@@ -50,50 +55,22 @@ typedef struct WNDCLASS {
     const char *lpszClassName;
 } WNDCLASS;
 
-typedef struct RECT {
-    i32 left;
-    i32 top;
-    i32 right;
-    i32 bottom;
-} RECT;
-
-typedef struct SECURITY_ATTRIBUTES {
-    u32 nLength;
-    void *lpSecurityDescriptor;
-    i32 bInheritHandle;
-} SECURITY_ATTRIBUTES;
-
-typedef struct PIXELFORMATDESCRIPTOR {
-    u16 nSize;
-    u16 nVersion;
-    u32 dwFlags;
-    u8 iPixelType;
-    u8 cColorBits;
-    u8 cRedBits;
-    u8 cRedShift;
-    u8 cGreenBits;
-    u8 cGreenShift;
-    u8 cBlueBits;
-    u8 cBlueShift;
-    u8 cAlphaBits;
-    u8 cAlphaShift;
-    u8 cAccumBits;
-    u8 cAccumRedBits;
-    u8 cAccumGreenBits;
-    u8 cAccumBlueBits;
-    u8 cAccumAlphaBits;
-    u8 cDepthBits;
-    u8 cStencilBits;
-    u8 cAuxBuffers;
-    u8 iLayerType;
-    u8 bReserved;
-    u32 dwLayerMask;
-    u32 dwVisibleMask;
-    u32 dwDamageMask;
-} PIXELFORMATDESCRIPTOR;
-
 extern void *__stdcall LoadLibraryA(const char *);
 extern void *__stdcall GetProcAddress(void *, const char *);
+
+const GUID IID_ID3D12Debug = { 0x344488b7,0x6846,0x474b,0xb9,0x89,0xf0,0x27,0x44,0x82,0x45,0xe0 };
+const GUID IID_IDXGISwapChain = { 0x310d36a0,0xd2e7,0x4c0a,0xaa,0x04,0x6a,0x9d,0x23,0xb8,0x88,0x6a };
+const GUID IID_IDXGISwapChain3 = { 0x94d99bdb,0xf1f8,0x4ab0,0xb2,0x36,0x7d,0xa0,0x17,0x0e,0xda,0xb1 };
+const GUID IID_IDXGIFactory4 = { 0x1bc6ea02,0xef36,0x464f,0xbf,0x0c,0x21,0xca,0x39,0xe5,0x16,0x8a };
+const GUID IID_ID3D12GraphicsCommandList = { 0x5b160d0f,0xac1b,0x4185,0x8b,0xa8,0xb3,0xae,0x42,0xa5,0xa4,0x55 };
+const GUID IID_ID3D12CommandQueue = { 0x0ec870a6,0x5d7e,0x4c22,0x8c,0xfc,0x5b,0xaa,0xe0,0x76,0x16,0xed };
+const GUID IID_ID3D12Device = { 0x189819f1,0x1db6,0x4b57,0xbe,0x54,0x18,0x21,0x33,0x9b,0x85,0xf7 };
+const GUID IID_ID3D12DescriptorHeap = { 0x8efb471d,0x616c,0x4f49,0x90,0xf7,0x12,0x7b,0xb7,0x63,0xfa,0x51 };
+const GUID IID_ID3D12Resource = { 0x696442be,0xa72e,0x4059,0xbc,0x79,0x5b,0x5c,0x98,0x04,0x0f,0xad };
+const GUID IID_ID3D12RootSignature = { 0xc54a6b66,0x72df,0x4ee8,0x8b,0xe5,0xa9,0x46,0xa1,0x42,0x92,0x14 };
+const GUID IID_ID3D12CommandAllocator = { 0x6102dee4,0xaf59,0x4b09,0xb9,0x99,0xb4,0x4d,0x73,0xf0,0x9b,0x24 };
+const GUID IID_ID3D12Fence = { 0x0a753dcf,0xc4d8,0x4b91,0xad,0xf6,0xbe,0x5a,0x60,0xd9,0x5a,0x76 };
+const GUID IID_ID3D12PipelineState = { 0x765a30f3,0xf624,0x4c6f,0xa8,0x28,0xac,0xe9,0x48,0x62,0x24,0x45 };
 
 i32 _fltused;
 
@@ -112,7 +89,9 @@ static void (__stdcall *Sleep)(u32);
 static void *(__stdcall *HeapAlloc)(void *, u32, u64);
 static i32 (__stdcall *HeapFree)(void *, u32, void *);
 static void *(__stdcall *HeapReAlloc)(void *, u32, void *, u64);
-static void * (__stdcall *GetProcessHeap)(void);
+static void *(__stdcall *GetProcessHeap)(void);
+static void *(__stdcall *CreateEventEx)(SECURITY_ATTRIBUTES *, const char *, u32, u32);
+static u32 (__stdcall *WaitForSingleObject)(void *, u32);
 
 static i32 (__stdcall *PeekMessage)(MSG *, void *, u32, u32, u32);
 static i64 (__stdcall *DispatchMessage)(const MSG *);
@@ -127,77 +106,31 @@ static i32 (__stdcall *SetWindowText)(void *, const char *);
 static i32 (__stdcall *SetProcessDPIAware)(void);
 static void *(__stdcall *GetDC)(void *);
 
-static i32 (__stdcall *SwapBuffers)(void *);
-static i32 (__stdcall *SetPixelFormat)(void *, i32, const PIXELFORMATDESCRIPTOR *);
-static i32 (__stdcall *ChoosePixelFormat)(void *, const PIXELFORMATDESCRIPTOR *);
+static i32 (__stdcall *CreateDXGIFactory1)(const GUID *, void **);
 
-PFNGLCREATEVERTEXARRAYSPROC glCreateVertexArrays;
-PFNGLCREATEPROGRAMPIPELINESPROC glCreateProgramPipelines;
-PFNGLCREATESHADERPROGRAMVPROC glCreateShaderProgramv;
-PFNGLCREATETEXTURESPROC glCreateTextures;
-PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
-PFNGLDELETEPROGRAMPIPELINESPROC glDeleteProgramPipelines;
-PFNGLDELETEPROGRAMPROC glDeleteProgram;
-PFNGLDELETETEXTURESPROC glDeleteTextures;
-PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages;
-PFNGLBINDPROGRAMPIPELINEPROC glBindProgramPipeline;
-PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
-PFNGLDRAWARRAYSPROC glDrawArrays;
-PFNGLDISPATCHCOMPUTEPROC glDispatchCompute;
-PFNGLTEXTURESTORAGE2DPROC glTextureStorage2D;
-PFNGLTEXTUREPARAMETERIPROC glTextureParameteri;
-PFNGLBINDTEXTUREUNITPROC glBindTextureUnit;
-PFNGLBINDIMAGETEXTUREPROC glBindImageTexture;
-PFNGLCREATEBUFFERSPROC glCreateBuffers;
-PFNGLDELETEBUFFERSPROC glDeleteBuffers;
-PFNGLNAMEDBUFFERSTORAGEPROC glNamedBufferStorage;
-PFNGLVERTEXARRAYATTRIBBINDINGPROC glVertexArrayAttribBinding;
-PFNGLVERTEXARRAYATTRIBFORMATPROC glVertexArrayAttribFormat;
-PFNGLVERTEXARRAYVERTEXBUFFERPROC glVertexArrayVertexBuffer;
-PFNGLENABLEVERTEXARRAYATTRIBPROC glEnableVertexArrayAttrib;
-PFNGLDISABLEVERTEXARRAYATTRIBPROC glDisableVertexArrayAttrib;
-PFNGLGETERRORPROC glGetError;
+static i32 (__stdcall *D3D12CreateDevice)(IUnknown *, D3D_FEATURE_LEVEL, const GUID *, void **);
+static i32 (__stdcall *D3D12GetDebugInterface)(const GUID *, void **);
 
-#define WGL_CONTEXT_MAJOR_VERSION_ARB           0x2091
-#define WGL_CONTEXT_MINOR_VERSION_ARB           0x2092
-#define WGL_CONTEXT_LAYER_PLANE_ARB             0x2093
-#define WGL_CONTEXT_FLAGS_ARB                   0x2094
-#define WGL_CONTEXT_PROFILE_MASK_ARB            0x9126
-#define WGL_CONTEXT_DEBUG_BIT_ARB               0x0001
-#define WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB  0x0002
-#define WGL_CONTEXT_CORE_PROFILE_BIT_ARB        0x00000001
-#define WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB 0x00000002
-
-typedef void *(__stdcall *wglCreateContext_fn)(void *);
-typedef i32 (__stdcall *wglDeleteContext_fn)(void *);
-typedef void *(__stdcall *wglGetProcAddress_fn)(const char *);
-typedef i32 (__stdcall *wglMakeCurrent_fn)(void *, void *);
-typedef void *(__stdcall *wglCreateContextAttribsARB_fn)(void *, void *, const i32 *);
-typedef i32 (__stdcall *wglSwapIntervalEXT_fn)(i32);
-
-static wglCreateContext_fn s_wglCreateContext;
-static wglDeleteContext_fn s_wglDeleteContext;
-static wglGetProcAddress_fn s_wglGetProcAddress;
-static wglMakeCurrent_fn s_wglMakeCurrent;
-static wglCreateContextAttribsARB_fn s_wglCreateContextAttribsARB;
-static wglSwapIntervalEXT_fn s_wglSwapIntervalEXT;
-
-static void *s_device_context;
-static void *s_opengl_dll;
-static void *s_opengl_context;
 static void *s_main_heap;
+static IDXGIFactory4 *s_dxgi_factory;
+static ID3D12Device *s_d3d;
+static ID3D12CommandQueue *s_cmdqueue;
+static IDXGISwapChain3 *s_swapchain;
+static u64 s_frame_count;
+static u32 s_frame_index;
+static ID3D12Fence *s_frame_fence;
+static void *s_frame_fence_event;
 
-char *load_text_file(const char *filename)
+char *load_file(const char *filename)
 {
     void *handle = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
     assert(handle != (void *)-1);
     u32 size = GetFileSize(handle, NULL);
-    char *content = (char *)malloc(size + 1);
+    char *content = (char *)malloc(size);
     u32 bytes_read;
     ReadFile(handle, content, size, &bytes_read, NULL);
     CloseHandle(handle);
     assert(bytes_read == size);
-    content[size] = '\0';
     return content;
 }
 
@@ -240,19 +173,6 @@ void free(void *addr)
         assert(0);
         ExitProcess(1);
     }
-}
-
-static void *get_opengl_func(const char *name)
-{
-    void *ptr = NULL;
-    if (s_wglGetProcAddress) {
-        ptr = s_wglGetProcAddress(name);
-    }
-    if (!ptr) {
-        ptr = GetProcAddress(s_opengl_dll, name);
-    }
-    assert(ptr);
-    return ptr;
 }
 
 static double get_time(void)
@@ -311,7 +231,7 @@ static i64 __stdcall process_window_message(void *window, u32 message, u64 wpara
     return DefWindowProc(window, message, wparam, lparam);
 }
 
-static void *init_opengl(const char *name, u32 width, u32 height)
+static void *init_window(const char *name, u32 width, u32 height)
 {
     WNDCLASS winclass = {
         .lpfnWndProc = process_window_message,
@@ -331,75 +251,25 @@ static void *init_opengl(const char *name, u32 width, u32 height)
         CW_USEDEFAULT, CW_USEDEFAULT,
         rect.right - rect.left, rect.bottom - rect.top,
         NULL, NULL, NULL, 0);
-    s_device_context = GetDC(window);
-
-    PIXELFORMATDESCRIPTOR pfd = {
-        .nSize = sizeof(PIXELFORMATDESCRIPTOR), .nVersion = 1,
-        .dwFlags = PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER | PFD_DRAW_TO_WINDOW,
-        .iPixelType = PFD_TYPE_RGBA, .cColorBits = 24, .cDepthBits = 24, .cStencilBits = 8,
-    };
-    SetPixelFormat(s_device_context, ChoosePixelFormat(s_device_context, &pfd), &pfd);
-
-
-    s_opengl_dll = LoadLibraryA("opengl32.dll");
-    s_wglCreateContext = (wglCreateContext_fn)GetProcAddress(s_opengl_dll, "wglCreateContext");
-    s_wglMakeCurrent = (wglMakeCurrent_fn)GetProcAddress(s_opengl_dll, "wglMakeCurrent");
-    s_wglGetProcAddress = (wglGetProcAddress_fn)GetProcAddress(s_opengl_dll, "wglGetProcAddress");
-    s_wglDeleteContext = (wglDeleteContext_fn)GetProcAddress(s_opengl_dll, "wglDeleteContext");
-
-    s_opengl_context = s_wglCreateContext(s_device_context);
-    s_wglMakeCurrent(s_device_context, s_opengl_context);
-
-    s_wglCreateContextAttribsARB = (wglCreateContextAttribsARB_fn)get_opengl_func("wglCreateContextAttribsARB");
-
-    s_wglMakeCurrent(NULL, NULL);
-    s_wglDeleteContext(s_opengl_context);
-
-    i32 ctxattribs[] = {
-        WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
-        WGL_CONTEXT_MINOR_VERSION_ARB, 5,
-        WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
-        WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-        0
-    };
-    s_opengl_context = s_wglCreateContextAttribsARB(s_device_context, NULL, ctxattribs);
-    assert(s_opengl_context);
-
-    s_wglMakeCurrent(s_device_context, s_opengl_context);
-
-    s_wglSwapIntervalEXT = (wglSwapIntervalEXT_fn)get_opengl_func("wglSwapIntervalEXT");
-    if (s_wglSwapIntervalEXT) {
-        s_wglSwapIntervalEXT(0);
-    }
-
-    glCreateVertexArrays = (PFNGLCREATEVERTEXARRAYSPROC)get_opengl_func("glCreateVertexArrays");
-    glCreateProgramPipelines = (PFNGLCREATEPROGRAMPIPELINESPROC)get_opengl_func("glCreateProgramPipelines");
-    glCreateShaderProgramv = (PFNGLCREATESHADERPROGRAMVPROC)get_opengl_func("glCreateShaderProgramv");
-    glCreateTextures = (PFNGLCREATETEXTURESPROC)get_opengl_func("glCreateTextures");
-    glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)get_opengl_func("glDeleteVertexArrays");
-    glDeleteProgramPipelines = (PFNGLDELETEPROGRAMPIPELINESPROC)get_opengl_func("glDeleteProgramPipelines");
-    glDeleteProgram = (PFNGLDELETEPROGRAMPROC)get_opengl_func("glDeleteProgram");
-    glDeleteTextures = (PFNGLDELETETEXTURESPROC)get_opengl_func("glDeleteTextures");
-    glUseProgramStages = (PFNGLUSEPROGRAMSTAGESPROC)get_opengl_func("glUseProgramStages");
-    glBindProgramPipeline = (PFNGLBINDPROGRAMPIPELINEPROC)get_opengl_func("glBindProgramPipeline");
-    glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)get_opengl_func("glBindVertexArray");
-    glDrawArrays = (PFNGLDRAWARRAYSPROC)get_opengl_func("glDrawArrays");
-    glDispatchCompute = (PFNGLDISPATCHCOMPUTEPROC)get_opengl_func("glDispatchCompute");
-    glTextureStorage2D = (PFNGLTEXTURESTORAGE2DPROC)get_opengl_func("glTextureStorage2D");
-    glTextureParameteri = (PFNGLTEXTUREPARAMETERIPROC)get_opengl_func("glTextureParameteri");
-    glBindTextureUnit = (PFNGLBINDTEXTUREUNITPROC)get_opengl_func("glBindTextureUnit");
-    glBindImageTexture = (PFNGLBINDIMAGETEXTUREPROC)get_opengl_func("glBindImageTexture");
-    glCreateBuffers = (PFNGLCREATEBUFFERSPROC)get_opengl_func("glCreateBuffers");
-    glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)get_opengl_func("glDeleteBuffers");
-    glNamedBufferStorage = (PFNGLNAMEDBUFFERSTORAGEPROC)get_opengl_func("glNamedBufferStorage");
-    glVertexArrayAttribBinding = (PFNGLVERTEXARRAYATTRIBBINDINGPROC)get_opengl_func("glVertexArrayAttribBinding");
-    glVertexArrayAttribFormat = (PFNGLVERTEXARRAYATTRIBFORMATPROC)get_opengl_func("glVertexArrayAttribFormat");
-    glVertexArrayVertexBuffer = (PFNGLVERTEXARRAYVERTEXBUFFERPROC)get_opengl_func("glVertexArrayVertexBuffer");
-    glEnableVertexArrayAttrib = (PFNGLENABLEVERTEXARRAYATTRIBPROC)get_opengl_func("glEnableVertexArrayAttrib");
-    glDisableVertexArrayAttrib = (PFNGLDISABLEVERTEXARRAYATTRIBPROC)get_opengl_func("glDisableVertexArrayAttrib");
-    glGetError = (PFNGLGETERRORPROC)get_opengl_func("glGetError");
 
     return window;
+}
+
+static void present_frame(void)
+{
+    assert(s_cmdqueue);
+
+    IDXGISwapChain3_Present(s_swapchain, 0, 0);
+    ID3D12CommandQueue_Signal(s_cmdqueue, s_frame_fence, ++s_frame_count);
+
+    u64 gpu_frame_count = ID3D12Fence_GetCompletedValue(s_frame_fence);
+
+    if ((s_frame_count - gpu_frame_count) >= 2) {
+        ID3D12Fence_SetEventOnCompletion(s_frame_fence, gpu_frame_count + 1, s_frame_fence_event);
+        WaitForSingleObject(s_frame_fence_event, INFINITE);
+    }
+
+    s_frame_index = !s_frame_index;
 }
 
 void start(void)
@@ -421,6 +291,8 @@ void start(void)
     HeapFree = GetProcAddress(kernel32_dll, "HeapFree");
     HeapReAlloc = GetProcAddress(kernel32_dll, "HeapReAlloc");
     GetProcessHeap = GetProcAddress(kernel32_dll, "GetProcessHeap");
+    CreateEventEx = GetProcAddress(kernel32_dll, "CreateEventExA");
+    WaitForSingleObject = GetProcAddress(kernel32_dll, "WaitForSingleObject");
 
     void *user32_dll = LoadLibraryA("user32.dll");
     PeekMessage = GetProcAddress(user32_dll, "PeekMessageA");
@@ -436,17 +308,60 @@ void start(void)
     SetProcessDPIAware = GetProcAddress(user32_dll, "SetProcessDPIAware");
     GetDC = GetProcAddress(user32_dll, "GetDC");
 
-    void *gdi32_dll = LoadLibraryA("gdi32.dll");
-    SwapBuffers = GetProcAddress(gdi32_dll, "SwapBuffers");
-    SetPixelFormat = GetProcAddress(gdi32_dll, "SetPixelFormat");
-    ChoosePixelFormat = GetProcAddress(gdi32_dll, "ChoosePixelFormat");
+    void *d3d12_dll = LoadLibraryA("d3d12.dll");
+    if (!d3d12_dll) {
+        // TODO: Add MessageBox
+        ExitProcess(1);
+    }
+    D3D12CreateDevice = GetProcAddress(d3d12_dll, "D3D12CreateDevice");
+    D3D12GetDebugInterface = GetProcAddress(d3d12_dll, "D3D12GetDebugInterface");
+
+    void *dxgi_dll = LoadLibraryA("dxgi.dll");
+    CreateDXGIFactory1 = GetProcAddress(dxgi_dll, "CreateDXGIFactory1");
+
 
     SetProcessDPIAware();
     s_main_heap = GetProcessHeap();
 
-    void *window = init_opengl(k_demo_name, k_win_width, k_win_height);
+    // init window
+    void *window = init_window(k_demo_name, k_win_width, k_win_height);
 
-    demo_init();
+    // init d3d12
+    VHR(CreateDXGIFactory1(&IID_IDXGIFactory4, &s_dxgi_factory));
+#ifdef _DEBUG
+    ID3D12Debug *dbg = NULL;
+    D3D12GetDebugInterface(&IID_ID3D12Debug, &dbg);
+    if (dbg) {
+        ID3D12Debug_EnableDebugLayer(dbg);
+        ID3D12Debug_Release(dbg);
+    }
+#endif
+    if (D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_12_0, &IID_ID3D12Device, &s_d3d) != 0) {
+        // TODO: D3D_FEATURE_LEVEL_12_0 not supported, display MessageBox
+        return;
+    }
+
+    D3D12_COMMAND_QUEUE_DESC cmdqueue_desc = {
+        .Flags = D3D12_COMMAND_QUEUE_FLAG_NONE, .Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL,
+        .Type = D3D12_COMMAND_LIST_TYPE_DIRECT
+    };
+    VHR(ID3D12Device_CreateCommandQueue(s_d3d, &cmdqueue_desc, &IID_ID3D12CommandQueue, &s_cmdqueue));
+
+    DXGI_SWAP_CHAIN_DESC swapchain_desc = {
+        .BufferCount = 4, .BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM, .BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
+        .OutputWindow = window, .SampleDesc.Count = 1, .SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL, .Windowed = 1
+    };
+    IDXGISwapChain *swapchain;
+    VHR(IDXGIFactory4_CreateSwapChain(s_dxgi_factory, (IUnknown *)s_cmdqueue, &swapchain_desc, &swapchain));
+    VHR(IDXGISwapChain_QueryInterface(swapchain, &IID_IDXGISwapChain3, &s_swapchain));
+    IDXGISwapChain_Release(swapchain);
+
+    VHR(ID3D12Device_CreateFence(s_d3d, 0, D3D12_FENCE_FLAG_NONE, &IID_ID3D12Fence, &s_frame_fence));
+    s_frame_fence_event = CreateEventEx(NULL, NULL, 0, EVENT_ALL_ACCESS);
+    assert(s_frame_fence_event != NULL);
+
+    // init demo
+    demo_init(s_swapchain, s_d3d, s_cmdqueue);
 
     for (;;) {
         MSG message = { 0 };
@@ -460,16 +375,12 @@ void start(void)
             update_frame_time(window, k_demo_name, &frame_time, &frame_delta_time);
 
             demo_update(frame_time, frame_delta_time);
-            demo_draw();
+            demo_draw(s_frame_index);
 
-            SwapBuffers(s_device_context);
+            present_frame();
         }
     }
 
     demo_shutdown();
-
-    s_wglMakeCurrent(NULL, NULL);
-    s_wglDeleteContext(s_opengl_context);
-
     ExitProcess(0);
 }

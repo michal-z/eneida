@@ -191,6 +191,8 @@
 #define stb__sbmaybegrow(a,n) (stb__sbneedgrow(a,(n)) ? stb__sbgrow(a,n) : 0)
 #define stb__sbgrow(a,n)      ((a) = stb__sbgrowf((a), (n), sizeof(*(a))))
 
+void *realloc(void *addr, size_t size);
+
 static void * stb__sbgrowf(void *arr, int increment, int itemsize)
 {
    int dbl_cur = arr ? 2*stb__sbm(arr) : 0;

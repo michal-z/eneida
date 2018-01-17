@@ -1,5 +1,7 @@
 #pragma once
 
+#include "types.h"
+
 #define k_1pi 3.141592654f
 #define k_2pi 6.283185307f
 #define k_1_div_1pi 0.318309886f
