@@ -1,5 +1,4 @@
 #pragma once
-
 #include "types.h"
 
 #define k_demo_name "demo01"

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "types.h"
 
 char *load_file(const char *filename);

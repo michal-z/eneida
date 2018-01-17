@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "types.h"
 
 #define STDCALL __stdcall

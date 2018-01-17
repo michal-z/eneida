@@ -1,5 +1,4 @@
 #pragma once
-
 #include "types.h"
 
 #define k_1pi 3.141592654f

@@ -26,8 +26,6 @@ static struct
     u64 CPUCompletedFrames;
     ID3D12Fence *FrameFence;
     void *FrameFenceEvent;
-    D3D12_VIEWPORT Viewport;
-    D3D12_RECT Scissor;
     i64 Frequency;
     i64 StartCounter;
     void *Window;
@@ -37,25 +35,6 @@ static struct
 
 static i32 InitializeD3D12(void)
 {
-    // RTV descriptor heap
-    {
-        D3D12_DESCRIPTOR_HEAP_DESC HeapDesc =
-        {
-            .NumDescriptors = 4,.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV,.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE
-        };
-        VHR(ID3D12Device_CreateDescriptorHeap(G.Device, &HeapDesc, &IID_ID3D12DescriptorHeap, &G.RTVHeap));
-        ID3D12DescriptorHeap_GetCPUDescriptorHandleForHeapStart(G.RTVHeap, &G.RTVHeapStart);
-
-        D3D12_CPU_DESCRIPTOR_HANDLE Handle = G.RTVHeapStart;
-
-        for (u32 Idx = 0; Idx < 4; ++Idx)
-        {
-            VHR(IDXGISwapChain3_GetBuffer(G.SwapChain, Idx, &IID_ID3D12Resource, &G.SwapBuffers[Idx]));
-
-            ID3D12Device_CreateRenderTargetView(G.Device, G.SwapBuffers[Idx], NULL, Handle);
-            Handle.ptr += G.RTVDescriptorSize;
-        }
-    }
     // depth-stencil image, view and heap
     {
         D3D12_DESCRIPTOR_HEAP_DESC HeapDesc =
@@ -88,22 +67,8 @@ static i32 InitializeD3D12(void)
         };
         ID3D12Device_CreateDepthStencilView(G.Device, G.DepthStencilImage, &ViewDesc, G.DSVHeapStart);
     }
-    VHR(ID3D12Device_CreateCommandList(G.Device, 1, D3D12_COMMAND_LIST_TYPE_DIRECT, G.CmdAlloc[0], NULL,
-        &IID_ID3D12GraphicsCommandList, &G.CmdList));
 
-    G.Viewport.TopLeftX = 0.0f;
-    G.Viewport.TopLeftY = 0.0f;
-    G.Viewport.Width = (float)G.BackBufferResolution[0];
-    G.Viewport.Height = (float)G.BackBufferResolution[1];
-    G.Viewport.MinDepth = 0.0f;
-    G.Viewport.MaxDepth = 1.0f;
 
-    G.Scissor.left = 0;
-    G.Scissor.top = 0;
-    G.Scissor.right = G.BackBufferResolution[0];
-    G.Scissor.bottom = G.BackBufferResolution[1];
-
-    ID3D12GraphicsCommandList_Close(G.CmdList);
     return 1;
 }
 
@@ -150,6 +115,9 @@ static ID3D12Device *s_d3d;
 static ID3D12GraphicsCommandList *s_cmdlist;
 static ID3D12CommandQueue *s_cmdqueue;
 static ID3D12CommandAllocator *s_cmdalloc[2];
+static D3D12_CPU_DESCRIPTOR_HANDLE s_rtv_heap_start;
+static ID3D12DescriptorHeap *s_rtv_heap;
+static ID3D12Resource *s_swap_buffers[4];
 
 void demo_update(double frame_time, float frame_delta_time)
 {
@@ -159,6 +127,23 @@ void demo_update(double frame_time, float frame_delta_time)
 void demo_draw(u32 frame_index)
 {
     (void)frame_index;
+
+    /*
+    D3D12_VIEWPORT Viewport;
+    D3D12_RECT Scissor;
+
+    G.Viewport.TopLeftX = 0.0f;
+    G.Viewport.TopLeftY = 0.0f;
+    G.Viewport.Width = (float)G.BackBufferResolution[0];
+    G.Viewport.Height = (float)G.BackBufferResolution[1];
+    G.Viewport.MinDepth = 0.0f;
+    G.Viewport.MaxDepth = 1.0f;
+
+    G.Scissor.left = 0;
+    G.Scissor.top = 0;
+    G.Scissor.right = G.BackBufferResolution[0];
+    G.Scissor.bottom = G.BackBufferResolution[1];
+    */
 }
 
 void demo_init(IDXGISwapChain3 *swapchain, ID3D12Device *d3d, ID3D12CommandQueue *cmdqueue)
@@ -173,6 +158,27 @@ void demo_init(IDXGISwapChain3 *swapchain, ID3D12Device *d3d, ID3D12CommandQueue
 
     s_descriptor_size = ID3D12Device_GetDescriptorHandleIncrementSize(s_d3d, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
     s_descriptor_size_rtv = ID3D12Device_GetDescriptorHandleIncrementSize(s_d3d, D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+    /* rtv descriptor heap */ {
+        D3D12_DESCRIPTOR_HEAP_DESC heap_desc = {
+            .NumDescriptors = 4, .Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV
+        };
+        VHR(ID3D12Device_CreateDescriptorHeap(s_d3d, &heap_desc, &IID_ID3D12DescriptorHeap, &s_rtv_heap));
+        ID3D12DescriptorHeap_GetCPUDescriptorHandleForHeapStart(s_rtv_heap, &s_rtv_heap_start);
+
+        D3D12_CPU_DESCRIPTOR_HANDLE handle = s_rtv_heap_start;
+
+        for (u32 i = 0; i < 4; ++i) {
+            VHR(IDXGISwapChain3_GetBuffer(swapchain, i, &IID_ID3D12Resource, &s_swap_buffers[i]));
+
+            ID3D12Device_CreateRenderTargetView(s_d3d, s_swap_buffers[i], NULL, handle);
+            handle.ptr += s_descriptor_size_rtv;
+        }
+    }
+
+    VHR(ID3D12Device_CreateCommandList(s_d3d, 0, D3D12_COMMAND_LIST_TYPE_DIRECT, s_cmdalloc[0], NULL,
+                                       &IID_ID3D12GraphicsCommandList, &s_cmdlist));
+    ID3D12GraphicsCommandList_Close(s_cmdlist);
 }
 
 void demo_shutdown(void)
