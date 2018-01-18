@@ -121,8 +121,9 @@ static u32 s_frame_index;
 static ID3D12Fence *s_frame_fence;
 static void *s_frame_fence_event;
 
-char *load_file(const char *filename)
+void *load_file(const char *filename, u32 *ofilesize)
 {
+    assert(ofilesize);
     void *handle = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
     assert(handle != (void *)-1);
     u32 size = GetFileSize(handle, NULL);
@@ -131,6 +132,7 @@ char *load_file(const char *filename)
     ReadFile(handle, content, size, &bytes_read, NULL);
     CloseHandle(handle);
     assert(bytes_read == size);
+    *ofilesize = size;
     return content;
 }
 

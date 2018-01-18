@@ -1,7 +1,7 @@
 #pragma once
 #include "types.h"
 
-char *load_file(const char *filename);
+void *load_file(const char *filename, u32 *ofilesize);
 
 void *memset(void *dest, i32 value, size_t count);
 #pragma intrinsic(memset)
