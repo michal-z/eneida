@@ -74,14 +74,41 @@ static i32 InitializeD3D12(void)
 
 static void Update(void)
 {
-    ID3D12CommandAllocator *CmdAlloc = G.CmdAlloc[G.FrameIndex];
-    ID3D12CommandAllocator_Reset(CmdAlloc);
 
-    ID3D12GraphicsCommandList *CmdList = G.CmdList;
+}
+#endif
 
-    ID3D12GraphicsCommandList_Reset(CmdList, CmdAlloc, NULL);
-    ID3D12GraphicsCommandList_RSSetViewports(CmdList, 1, &G.Viewport);
-    ID3D12GraphicsCommandList_RSSetScissorRects(CmdList, 1, &G.Scissor);
+static u32 s_descriptor_size;
+static u32 s_descriptor_size_rtv;
+static ID3D12Device *s_d3d;
+static ID3D12GraphicsCommandList *s_cmdlist;
+static ID3D12CommandQueue *s_cmdqueue;
+static ID3D12CommandAllocator *s_cmdalloc[2];
+static D3D12_CPU_DESCRIPTOR_HANDLE s_rtv_heap_start;
+static ID3D12DescriptorHeap *s_rtv_heap;
+static ID3D12Resource *s_swap_buffers[4];
+
+void demo_update(double frame_time, float frame_delta_time)
+{
+    (void)frame_time; (void)frame_delta_time;
+}
+
+void demo_draw(u32 frame_index)
+{
+    (void)frame_index;
+    /*
+    D3D12_VIEWPORT viewport = {
+        .TopLeftX = 0.0f, .TopLeftY = 0.0f, .Width = (float)k_win_width, .Height = (float)k_win_height,
+        .MinDepth = 0.0f, .MaxDepth = 1.0f
+    };
+    D3D12_RECT scissor = { .left = 0, .top = 0, .right = k_win_width, .bottom = k_win_height };
+
+    ID3D12CommandAllocator *cmdalloc = s_cmdalloc[frame_index];
+    ID3D12CommandAllocator_Reset(cmdalloc);
+
+    ID3D12GraphicsCommandList_Reset(s_cmdlist, cmdalloc, NULL);
+    ID3D12GraphicsCommandList_RSSetViewports(s_cmdlist, 1, &viewport);
+    ID3D12GraphicsCommandList_RSSetScissorRects(s_cmdlist, 1, &scissor);
 
     D3D12_RESOURCE_BARRIER Barrier =
     {
@@ -106,43 +133,6 @@ static void Update(void)
     ID3D12GraphicsCommandList_Close(CmdList);
 
     ID3D12CommandQueue_ExecuteCommandLists(G.CmdQueue, 1, (ID3D12CommandList **)&CmdList);
-}
-#endif
-
-static u32 s_descriptor_size;
-static u32 s_descriptor_size_rtv;
-static ID3D12Device *s_d3d;
-static ID3D12GraphicsCommandList *s_cmdlist;
-static ID3D12CommandQueue *s_cmdqueue;
-static ID3D12CommandAllocator *s_cmdalloc[2];
-static D3D12_CPU_DESCRIPTOR_HANDLE s_rtv_heap_start;
-static ID3D12DescriptorHeap *s_rtv_heap;
-static ID3D12Resource *s_swap_buffers[4];
-
-void demo_update(double frame_time, float frame_delta_time)
-{
-    (void)frame_time; (void)frame_delta_time;
-}
-
-void demo_draw(u32 frame_index)
-{
-    (void)frame_index;
-
-    /*
-    D3D12_VIEWPORT Viewport;
-    D3D12_RECT Scissor;
-
-    G.Viewport.TopLeftX = 0.0f;
-    G.Viewport.TopLeftY = 0.0f;
-    G.Viewport.Width = (float)G.BackBufferResolution[0];
-    G.Viewport.Height = (float)G.BackBufferResolution[1];
-    G.Viewport.MinDepth = 0.0f;
-    G.Viewport.MaxDepth = 1.0f;
-
-    G.Scissor.left = 0;
-    G.Scissor.top = 0;
-    G.Scissor.right = G.BackBufferResolution[0];
-    G.Scissor.bottom = G.BackBufferResolution[1];
     */
 }
 
