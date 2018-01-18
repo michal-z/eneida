@@ -84,7 +84,7 @@ void demo_init(IDXGISwapChain3 *swapchain, ID3D12Device *d3d, ID3D12CommandQueue
     s_descriptor_size = ID3D12Device_GetDescriptorHandleIncrementSize(d3d, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
     s_descriptor_size_rtv = ID3D12Device_GetDescriptorHandleIncrementSize(d3d, D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
-    /* rtv descriptor heap */ {
+    /* swap buffers */ {
         D3D12_DESCRIPTOR_HEAP_DESC heap_desc = {
             .NumDescriptors = 4, .Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV
         };
@@ -100,7 +100,7 @@ void demo_init(IDXGISwapChain3 *swapchain, ID3D12Device *d3d, ID3D12CommandQueue
             handle.ptr += s_descriptor_size_rtv;
         }
     }
-    /* depth-stencil image, view and heap */ {
+    /* depth buffer */ {
         D3D12_DESCRIPTOR_HEAP_DESC heap_desc = {
             .NumDescriptors = 1, .Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV
         };

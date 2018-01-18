@@ -1897,7 +1897,7 @@ typedef struct ID3D12GraphicsCommandListDispatchTable {
     i32 (STDCALLP SetPrivateDataInterface)(ID3D12GraphicsCommandList *, const GUID *, const IUnknown *);
     i32 (STDCALLP SetName)(ID3D12GraphicsCommandList *, const u16 *);
     i32 (STDCALLP GetDevice)(ID3D12GraphicsCommandList *, const GUID *, void **);
-    D3D12_COMMAND_LIST_TYPE(STDCALLP GetType)(ID3D12GraphicsCommandList *);
+    D3D12_COMMAND_LIST_TYPE (STDCALLP GetType)(ID3D12GraphicsCommandList *);
     i32 (STDCALLP Close)(ID3D12GraphicsCommandList *);
     i32 (STDCALLP Reset)(ID3D12GraphicsCommandList *, ID3D12CommandAllocator *, ID3D12PipelineState *);
     void (STDCALLP ClearState)(ID3D12GraphicsCommandList *, ID3D12PipelineState *);
