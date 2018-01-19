@@ -105,6 +105,7 @@ static i32 (__cdecl *wsprintf)(char *, const char *, ...);
 static i32 (__stdcall *SetWindowText)(void *, const char *);
 static i32 (__stdcall *SetProcessDPIAware)(void);
 static void *(__stdcall *GetDC)(void *);
+static i32 (__stdcall *MessageBox)(void *, const char *, const char *, u32);
 
 static i32 (__stdcall *CreateDXGIFactory1)(const GUID *, void **);
 
@@ -309,10 +310,11 @@ void start(void)
     SetWindowText = GetProcAddress(user32_dll, "SetWindowTextA");
     SetProcessDPIAware = GetProcAddress(user32_dll, "SetProcessDPIAware");
     GetDC = GetProcAddress(user32_dll, "GetDC");
+    MessageBox = GetProcAddress(user32_dll, "MessageBoxA");
 
     void *d3d12_dll = LoadLibraryA("d3d12.dll");
     if (!d3d12_dll) {
-        // TODO: Add MessageBox
+        MessageBox(NULL, "Program requires Windows 10 machine with DirectX 12 support (D3D_FEATURE_LEVEL_11_1 or better).", "Error", 0);
         ExitProcess(1);
     }
     D3D12CreateDevice = GetProcAddress(d3d12_dll, "D3D12CreateDevice");
@@ -339,7 +341,7 @@ void start(void)
     }
 #endif
     if (D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_11_1, &IID_ID3D12Device, &s_d3d) != 0) {
-        // TODO: D3D_FEATURE_LEVEL_12_0 not supported, display MessageBox
+        MessageBox(NULL, "Program requires Windows 10 machine with DirectX 12 support (D3D_FEATURE_LEVEL_11_1 or better).", "Error", 0);
         return;
     }
 
