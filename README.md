@@ -6,7 +6,7 @@ Project goals:<br />
 * Eventually create a demoscene production which can be submitted to demo party.
 <br />
 
-Projects rules:<br />
+Project rules:<br />
 * Code is fully standalone, it compiles by running <b>make.bat</b> from <b>src</b> folder on any Windows machine (no Visual Studio or any other software is needed).
 * No external headers or libs are required (not even system or libc headers).
 * All needed compilers are present in <b>compiler</b> folder.
