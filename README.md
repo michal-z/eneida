@@ -12,3 +12,4 @@ Project rules:<br />
 * All needed compilers are present in <b>compiler</b> folder.
 * Only <b>C99</b> and <b>HLSL</b> languages are used.
 * Header files cannot include other header files (except very simple types.h).
+* Code is written using Vim editor and debugged with WinDbg Preview.
