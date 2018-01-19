@@ -338,7 +338,7 @@ void start(void)
         ID3D12Debug_Release(dbg);
     }
 #endif
-    if (D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_12_0, &IID_ID3D12Device, &s_d3d) != 0) {
+    if (D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_11_1, &IID_ID3D12Device, &s_d3d) != 0) {
         // TODO: D3D_FEATURE_LEVEL_12_0 not supported, display MessageBox
         return;
     }
