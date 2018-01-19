@@ -3,7 +3,7 @@
 Project goals:<br />
 * Create beautiful, real-time animations by writing simple, low-level code.
 * Explore math, procedural generation techniques, CPUs, GPUs and audio programming.
-* Eventually create a demoscene production which can be submitted to demo party.
+* Eventually create a demoscene production which could be submitted to demo party.
 <br />
 
 Project rules:<br />
