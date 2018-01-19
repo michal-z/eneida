@@ -10,71 +10,26 @@
 
 typedef struct Vec3 {
     union {
-        struct {
-            float x, y, z;
-        };
+        struct { float x, y, z; };
         float m[3];
     };
 } Vec3;
 
 typedef struct Vec4 {
     union {
-        struct {
-            float x, y, z, w;
-        };
+        struct { float x, y, z, w; };
         float m[4];
     };
 } Vec4;
 
 typedef struct Mat4 {
     union {
-        struct {
-            Vec4 c0, c1, c2, c3;
-        };
+        struct { Vec4 r0, r1, r2, r3; };
         float m[4][4];
     };
 } Mat4;
 
-static inline Vec3 *vec3_set(Vec3 *out, float x, float y, float z)
-{
-    out->x = x;
-    out->y = y;
-    out->z = z;
-    return out;
-}
-
-static inline Vec3 *vec3_mul(Vec3 *out, const Vec3 *v0, const Vec3 *v1)
-{
-    out->x = v0->x * v1->x;
-    out->y = v0->y * v1->y;
-    out->z = v0->z * v1->z;
-    return out;
-}
-
-static inline Mat4 mat4_perspective(float fovy, float aspect, float n, float f)
-{
-    assert(0);
-    float k = fovy;//tanf(k_pi_div_2 - 0.5f * fovy);
-    float ri = 1.0f / (n - f);
-    Mat4 m = {
-        k / aspect, 0.0f, 0.0f, 0.0f,
-        0.0f, k, 0.0f, 0.0f,
-        0.0f, 0.0f, (n + f) * ri, -1.0f,
-        0.0f, 0.0f, n * f * ri * 2.0f, 0.0f
-    };
-    return m;
-}
-/*
-static mat4 LookAt(const vec3 &eye, const vec3 &at, const vec3 &up) {
-    const vec3 az = normalize(eye - at);
-    const vec3 ax = normalize(cross(up, az));
-    const vec3 ay = cross(az, ax);
-    return mat4(ax[0], ay[0], az[0], 0.0f,
-        ax[1], ay[1], az[1], 0.0f,
-        ax[2], ay[2], az[2], 0.0f,
-        -dot(ax, eye), -dot(ay, eye), -dot(az, eye), 1.0f);
-}
-*/
+float sqrtf(float x);
 
 // Implementation taken from https://github.com/Microsoft/DirectXMath
 inline float sin1f(float x)
@@ -157,7 +112,7 @@ inline float cos1f_fast(float x)
 }
 
 // Implementation taken from https://github.com/Microsoft/DirectXMath
-inline void sincos1f(float *osin, float *ocos, float x)
+inline void sincos1f(float x, float *osin, float *ocos)
 {
     assert(osin);
     assert(ocos);
@@ -186,7 +141,7 @@ inline void sincos1f(float *osin, float *ocos, float x)
 }
 
 // Implementation taken from https://github.com/Microsoft/DirectXMath
-inline void sincos1f_fast(float *osin, float *ocos, float x)
+inline void sincos1f_fast(float x, float *osin, float *ocos)
 {
     assert(osin);
     assert(ocos);
@@ -213,3 +168,66 @@ inline void sincos1f_fast(float *osin, float *ocos, float x)
     float p = ((-0.0012712436f * y2 + 0.041493919f) * y2 - 0.49992746f) * y2 + 1.0f;
     *ocos = sign * p;
 }
+
+inline float tan1f(float x)
+{
+    // TODO: Optimize if needed.
+    float s, c;
+    sincos1f(x, &s, &c);
+    assert(c != 0.0f);
+    return s / c;
+}
+
+inline Vec3 *vec3_set(float x, float y, float z, Vec3 *out)
+{
+    out->x = x;
+    out->y = y;
+    out->z = z;
+    return out;
+}
+
+inline Vec3 *vec3_mul(const Vec3 *v0, const Vec3 *v1, Vec3 *out)
+{
+    out->x = v0->x * v1->x;
+    out->y = v0->y * v1->y;
+    out->z = v0->z * v1->z;
+    return out;
+}
+
+inline float vec3_length(const Vec3 *v)
+{
+    return sqrtf(v->x * v->x + v->y * v->y + v->z * v->z);
+}
+
+inline Vec3 *vec3_normalize(const Vec3 *v, Vec3 *out)
+{
+    float length = vec3_length(v);
+    assert(length != 0.0f);
+    float rlength = 1.0f / length;
+    return vec3_set(rlength * v->x, rlength * v->y, rlength * v->z, v);
+}
+
+inline Mat4 *mat4_fovperspective(float fovy, float aspect, float n, float f, Mat4 *out)
+{
+    assert(0);
+    float k = fovy = tan1f(k_1pi_div_2 - 0.5f * fovy);
+    float ri = 1.0f / (n - f);
+    Mat4 m = {
+        k / aspect, 0.0f, 0.0f, 0.0f,
+        0.0f, k, 0.0f, 0.0f,
+        0.0f, 0.0f, (n + f) * ri, -1.0f,
+        0.0f, 0.0f, n * f * ri * 2.0f, 0.0f
+    };
+    return m;
+}
+/*
+static mat4 LookAt(const vec3 &eye, const vec3 &at, const vec3 &up) {
+    const vec3 az = normalize(eye - at);
+    const vec3 ax = normalize(cross(up, az));
+    const vec3 ay = cross(az, ax);
+    return mat4(ax[0], ay[0], az[0], 0.0f,
+        ax[1], ay[1], az[1], 0.0f,
+        ax[2], ay[2], az[2], 0.0f,
+        -dot(ax, eye), -dot(ay, eye), -dot(az, eye), 1.0f);
+}
+*/

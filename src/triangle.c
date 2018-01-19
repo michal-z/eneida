@@ -52,7 +52,7 @@ void demo_draw(u32 frame_index)
 
     ID3D12GraphicsCommandList_OMSetRenderTargets(s_cmdlist, 1, &rtv_handle, 0, &s_dsv_heap_start);
 
-    float clear_color[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+    float clear_color[] = { 0.0f, sqrtf((float)frame_index), 0.4f, 1.0f };
     ID3D12GraphicsCommandList_ClearRenderTargetView(s_cmdlist, rtv_handle, clear_color, 0, NULL);
     ID3D12GraphicsCommandList_ClearDepthStencilView(s_cmdlist, s_dsv_heap_start, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, NULL);
 
@@ -147,7 +147,6 @@ void demo_init(IDXGISwapChain3 *swapchain, ID3D12Device *d3d, ID3D12CommandQueue
         VHR(ID3D12Device_CreateRootSignature(s_d3d, 0, vscode, vscode_size, &IID_ID3D12RootSignature, &s_rsig));
     }
 
-
     VHR(ID3D12Device_CreateCommandList(d3d, 0, D3D12_COMMAND_LIST_TYPE_DIRECT, s_cmdalloc[0], NULL,
                                        &IID_ID3D12GraphicsCommandList, &s_cmdlist));
     ID3D12GraphicsCommandList_Close(s_cmdlist);
@@ -155,4 +154,5 @@ void demo_init(IDXGISwapChain3 *swapchain, ID3D12Device *d3d, ID3D12CommandQueue
 
 void demo_shutdown(void)
 {
+    COMRELEASE(s_cmdlist);
 }

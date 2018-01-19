@@ -3,8 +3,9 @@
 
 void *load_file(const char *filename, u32 *ofilesize);
 
-void *memset(void *dest, i32 value, size_t count);
-#pragma intrinsic(memset)
+// In debug mode compiler generates 'call sqrtf' (implementation is in asmlib.asm).
+// In release mode compiler generates 'sqrtss xmmA, xmmB' instruction.
+float sqrtf(float x);
 
 void *malloc(size_t size);
 void *realloc(void *addr, size_t size);

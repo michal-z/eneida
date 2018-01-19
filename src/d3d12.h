@@ -1568,6 +1568,8 @@ struct IUnknown { const IUnknownDispatchTable *dtbl; };
 #define IUnknown_AddRef(self, ...) ((self)->dtbl->AddRef(self, __VA_ARGS__))
 #define IUnknown_Release(self, ...) ((self)->dtbl->Release(self, __VA_ARGS__))
 
+#define COMRELEASE(o) if ((o)) { IUnknown_Release((o)); (o) = NULL; }
+
 typedef struct ID3DBlobDispatchTable {
     i32 (STDCALLP QueryInterface)(ID3DBlob *, const GUID *, void **);
     u32 (STDCALLP AddRef)(ID3DBlob *);
