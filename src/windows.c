@@ -341,8 +341,8 @@ void start(void)
     }
 #endif
     if (D3D12CreateDevice(NULL, D3D_FEATURE_LEVEL_11_1, &IID_ID3D12Device, &s_d3d) != 0) {
-        MessageBox(NULL, "Program requires Windows 10 machine with DirectX 12 support (D3D_FEATURE_LEVEL_11_1 or better).", "Error", 0);
-        return;
+        MessageBox(window, "Program requires Windows 10 machine with DirectX 12 support (D3D_FEATURE_LEVEL_11_1 or better).", "Error", 0);
+        ExitProcess(1);
     }
 
     D3D12_COMMAND_QUEUE_DESC cmdqueue_desc = {
