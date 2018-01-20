@@ -12,4 +12,4 @@ Project rules:<br />
 * All needed compilers are present in <b>compiler</b> folder.
 * <b>C99</b>, <b>ASM</b> and <b>HLSL</b> languages are used.
 * Header files cannot include other header files (except very simple types.h).
-* <b>Vim</b> is used to write code and <b>WinDbg Preview</b> to debug it.
+* <b>Vim</b> is used to write code, <b>WinDbg Preview</b> and <b>Windows PIX</b> to debug it.
