@@ -4,7 +4,6 @@
 * Create abstract, real-time animations by writing simple, low-level code.
 * Explore math, procedural generation techniques and audio programming.
 * Eventually, create a demoscene production which could be submitted to demo party.
-<br />
 
 ### Project rules:<br />
 * Code is fully standalone, it compiles by running <b>make.bat</b> from <b>src</b> folder on any Windows machine (no Visual Studio or any other software is needed).
