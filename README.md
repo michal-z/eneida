@@ -6,7 +6,7 @@
 * Eventually, create a demoscene production which could be submitted to demo party.
 
 ### Project rules:<br />
-* Make everything as simple as possible. This is the most important rule.
+* The most important rule is: "Make everything as simple as possible".
 * Code is fully standalone, it compiles by running <b>make.bat</b> from <b>src</b> folder on any Windows machine (no Visual Studio or any other software is needed).
 * No external headers or libs are required (not even system or libc headers).
 * Only external functions used are <b>LoadLibrary</b> and <b>GetProcAddress</b>. Every other syscall is loaded at runtime.
