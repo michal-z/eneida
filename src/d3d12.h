@@ -1699,10 +1699,10 @@ typedef struct ID3D12ResourceDispatchTable {
     i32 (STDCALLP SetPrivateDataInterface)(ID3D12Resource *, const GUID *, const IUnknown *);
     i32 (STDCALLP SetName)(ID3D12Resource *, const u16 *);
     i32 (STDCALLP GetDevice)(ID3D12Resource *, const GUID *, void **);
-    i32 (STDCALLP Map)(ID3D12Resource *, u32, const D3D12_RANGE *, void **);
-    void (STDCALLP Unmap)(ID3D12Resource *, u32, const D3D12_RANGE *);
+    i32 (STDCALLP Map)(ID3D12Resource *resource, u32 subresource, const D3D12_RANGE *range, void **optr);
+    void (STDCALLP Unmap)(ID3D12Resource *resource, u32 subresource, const D3D12_RANGE *range);
     D3D12_RESOURCE_DESC *(STDCALLP GetDesc)(ID3D12Resource *, D3D12_RESOURCE_DESC *);
-    D3D12_GPU_VIRTUAL_ADDRESS(STDCALLP GetGPUVirtualAddress)(ID3D12Resource *);
+    D3D12_GPU_VIRTUAL_ADDRESS (STDCALLP GetGPUVirtualAddress)(ID3D12Resource *);
     i32 (STDCALLP WriteToSubresource)(ID3D12Resource *, u32, const D3D12_BOX *, const void *, u32, u32);
     i32 (STDCALLP ReadFromSubresource)(ID3D12Resource *, void *, u32, u32, u32, const D3D12_BOX *);
     i32 (STDCALLP GetHeapProperties)(ID3D12Resource *, D3D12_HEAP_PROPERTIES *, D3D12_HEAP_FLAGS *);
@@ -1935,7 +1935,8 @@ typedef struct ID3D12GraphicsCommandListDispatchTable {
     void (STDCALLP SetComputeRootUnorderedAccessView)(ID3D12GraphicsCommandList *, u32, D3D12_GPU_VIRTUAL_ADDRESS);
     void (STDCALLP SetGraphicsRootUnorderedAccessView)(ID3D12GraphicsCommandList *, u32, D3D12_GPU_VIRTUAL_ADDRESS);
     void (STDCALLP IASetIndexBuffer)(ID3D12GraphicsCommandList *, const D3D12_INDEX_BUFFER_VIEW *);
-    void (STDCALLP IASetVertexBuffers)(ID3D12GraphicsCommandList *, u32, u32, const D3D12_VERTEX_BUFFER_VIEW *);
+    void (STDCALLP IASetVertexBuffers)(ID3D12GraphicsCommandList *cmdlist, u32 start_slot, u32 num_views,
+                                       const D3D12_VERTEX_BUFFER_VIEW *views);
     void (STDCALLP SOSetTargets)(ID3D12GraphicsCommandList *, u32, u32, const D3D12_STREAM_OUTPUT_BUFFER_VIEW *);
     void (STDCALLP OMSetRenderTargets)(ID3D12GraphicsCommandList *, u32, const D3D12_CPU_DESCRIPTOR_HANDLE *, i32, const D3D12_CPU_DESCRIPTOR_HANDLE *);
     void (STDCALLP ClearDepthStencilView)(ID3D12GraphicsCommandList *, D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_CLEAR_FLAGS, float, u8, u32, const D3D12_RECT *);

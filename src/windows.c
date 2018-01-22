@@ -385,6 +385,13 @@ void start(void)
         }
     }
 
+    Sleep(10);
     demo_shutdown();
+
+    COMRELEASE(s_frame_fence);
+    COMRELEASE(s_swapchain);
+    COMRELEASE(s_cmdqueue);
+    COMRELEASE(s_d3d);
+    COMRELEASE(s_dxgi_factory);
     ExitProcess(0);
 }

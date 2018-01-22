@@ -186,12 +186,17 @@ inline Vec3 *vec3_set(float x, float y, float z, Vec3 *out)
     return out;
 }
 
-inline Vec3 *vec3_mul(const Vec3 *v0, const Vec3 *v1, Vec3 *out)
+inline float vec3_dot(const Vec3 *v0, const Vec3 *v1)
 {
-    out->x = v0->x * v1->x;
-    out->y = v0->y * v1->y;
-    out->z = v0->z * v1->z;
-    return out;
+    return v0->x * v1->x + v0->y * v1->y + v0->z * v1->z;
+}
+
+inline Vec3 *vec3_cross(const Vec3 *v0, const Vec3 *v1, Vec3 *out)
+{
+    float x = v0->y * v1->z - v0->z * v1->y;
+    float y = v0->z * v1->x - v0->x * v1->z;
+    float z = v0->x * v1->y - v0->y * v1->x;
+    return vec3_set(x, y, z, out);
 }
 
 inline float vec3_length(const Vec3 *v)
