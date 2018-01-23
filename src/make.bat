@@ -13,8 +13,11 @@ if exist ..\bin\*.pdb del ..\bin\*.pdb
 if exist *.obj del *.obj
 if exist ..\bin\data\*.cso del ..\bin\data\*.cso
 
-%HLSL% /D_VS /E vs_main /Fo ..\bin\data\test_triangle.vso /T vs_5_1 test_triangle.hlsl & if errorlevel 1 goto :end
-%HLSL% /D_PS /E ps_main /Fo ..\bin\data\test_triangle.pso /T ps_5_1 test_triangle.hlsl & if errorlevel 1 goto :end
+%HLSL% /D_VS /E main /Fo ..\bin\data\test_triangle.vso /T vs_5_1 test_triangle.hlsl & if errorlevel 1 goto :end
+%HLSL% /D_PS /E main /Fo ..\bin\data\test_triangle.pso /T ps_5_1 test_triangle.hlsl & if errorlevel 1 goto :end
+%HLSL% /D_VS /E main /Fo ..\bin\data\test_compute.vso /T vs_5_1 test_compute.hlsl & if errorlevel 1 goto :end
+%HLSL% /D_PS /E main /Fo ..\bin\data\test_compute.pso /T ps_5_1 test_compute.hlsl & if errorlevel 1 goto :end
+%HLSL% /D_CS /E main /Fo ..\bin\data\test_compute.cso /T cs_5_1 test_compute.hlsl & if errorlevel 1 goto :end
 
 %ASM% /c /nologo /Fo asmlib.obj asmlib.asm
 

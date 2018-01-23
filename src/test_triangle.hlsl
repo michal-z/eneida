@@ -12,23 +12,23 @@ struct PsIn {
 
 #if defined _VS
 
-struct VsConst {
+struct Const {
     float4x4 world2proj;
 };
-ConstantBuffer<VsConst> cbv_const : register(b0);
+ConstantBuffer<Const> s_const : register(b0);
 
 [RootSignature(root_sig)]
-PsIn vs_main(VsIn vin)
+PsIn main(VsIn vin)
 {
     PsIn pin;
-    pin.position = mul(float4(vin.position, 1.0f), cbv_const.world2proj);
+    pin.position = mul(float4(vin.position, 1.0f), s_const.world2proj);
     return pin;
 }
 
 #elif defined _PS
 
 [RootSignature(root_sig)]
-float4 ps_main(PsIn pin) : SV_Target0
+float4 main(PsIn pin) : SV_Target0
 {
     return float4(0.0f, 0.5f, 0.0f, 1.0f);
 }
