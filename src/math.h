@@ -31,6 +31,13 @@ typedef struct Mat4 {
 
 float sqrtf(float x);
 
+inline i32 scalar_near_equal(float s0, float s1, float epsilon)
+{
+    float d = s0 - s1;
+    d = d < 0.0f ? -d : d; // fabsf
+    return d <= epsilon;
+}
+
 // Implementation taken from https://github.com/Microsoft/DirectXMath
 inline float sin1f(float x)
 {
@@ -169,20 +176,36 @@ inline void sincos1f_fast(float x, float *osin, float *ocos)
     *ocos = sign * p;
 }
 
-inline float tan1f(float x)
-{
-    // TODO: Optimize if needed.
-    float s, c;
-    sincos1f(x, &s, &c);
-    assert(c != 0.0f);
-    return s / c;
-}
-
 inline Vec3 *vec3_set(float x, float y, float z, Vec3 *out)
 {
     out->x = x;
     out->y = y;
     out->z = z;
+    return out;
+}
+
+inline Vec3 *vec3_sub(const Vec3 *v0, const Vec3 *v1, Vec3 *out)
+{
+    out->x = v0->x - v1->x;
+    out->y = v0->y - v1->y;
+    out->z = v0->z - v1->z;
+    return out;
+}
+
+inline Vec3 *vec3_neg(const Vec3 *v, Vec3 *out)
+{
+    out->x = -v->x;
+    out->y = -v->y;
+    out->z = -v->z;
+    return out;
+}
+
+inline Vec4 *vec4_set(float x, float y, float z, float w, Vec4 *out)
+{
+    out->x = x;
+    out->y = y;
+    out->z = z;
+    out->w = w;
     return out;
 }
 
@@ -201,38 +224,129 @@ inline Vec3 *vec3_cross(const Vec3 *v0, const Vec3 *v1, Vec3 *out)
 
 inline float vec3_length(const Vec3 *v)
 {
-    return sqrtf(v->x * v->x + v->y * v->y + v->z * v->z);
+    return sqrtf(vec3_dot(v, v));
 }
 
 inline Vec3 *vec3_normalize(const Vec3 *v, Vec3 *out)
 {
     float length = vec3_length(v);
-    assert(length != 0.0f);
+    assert(!scalar_near_equal(length, 0.0f, 0.00001f));
     float rlength = 1.0f / length;
-    return vec3_set(rlength * v->x, rlength * v->y, rlength * v->z, v);
+    return vec3_set(rlength * v->x, rlength * v->y, rlength * v->z, out);
 }
 
 inline Mat4 *mat4_fovperspective(float fovy, float aspect, float n, float f, Mat4 *out)
 {
-    assert(0);
-    float k = fovy = tan1f(k_1pi_div_2 - 0.5f * fovy);
-    float ri = 1.0f / (n - f);
-    Mat4 m = {
-        k / aspect, 0.0f, 0.0f, 0.0f,
-        0.0f, k, 0.0f, 0.0f,
-        0.0f, 0.0f, (n + f) * ri, -1.0f,
-        0.0f, 0.0f, n * f * ri * 2.0f, 0.0f
-    };
-    return m;
+    assert(n > 0.0f && f > 0.0f);
+    assert(!scalar_near_equal(fovy, 0.0f, 0.00001f * 2.0f));
+    assert(!scalar_near_equal(aspect, 0.0f, 0.00001f));
+    assert(!scalar_near_equal(f, n, 0.00001f));
+
+    float sin_fov;
+    float cos_fov;
+    sincos1f(0.5f * fovy, &sin_fov, &cos_fov);
+
+    float h = cos_fov / sin_fov;
+    float w = h / aspect;
+    float r = f / (f - n);
+
+    vec4_set(w, 0.0f, 0.0f, 0.0f, &out->r0);
+    vec4_set(0.0f, h, 0.0f, 0.0f, &out->r1);
+    vec4_set(0.0f, 0.0f, r, 1.0f, &out->r2);
+    vec4_set(0.0f, 0.0f, -r * n, 0.0f, &out->r3);
+
+    return out;
 }
-/*
-static mat4 LookAt(const vec3 &eye, const vec3 &at, const vec3 &up) {
-    const vec3 az = normalize(eye - at);
-    const vec3 ax = normalize(cross(up, az));
-    const vec3 ay = cross(az, ax);
-    return mat4(ax[0], ay[0], az[0], 0.0f,
-        ax[1], ay[1], az[1], 0.0f,
-        ax[2], ay[2], az[2], 0.0f,
-        -dot(ax, eye), -dot(ay, eye), -dot(az, eye), 1.0f);
+
+inline Mat4 *mat4_transpose(const Mat4 *m, Mat4 *out)
+{
+    Mat4 r;
+    r.m[0][0] = m->m[0][0];
+    r.m[1][0] = m->m[0][1];
+    r.m[2][0] = m->m[0][2];
+    r.m[3][0] = m->m[0][3];
+    r.m[0][1] = m->m[1][0];
+    r.m[1][1] = m->m[1][1];
+    r.m[2][1] = m->m[1][2];
+    r.m[3][1] = m->m[1][3];
+    r.m[0][2] = m->m[2][0];
+    r.m[1][2] = m->m[2][1];
+    r.m[2][2] = m->m[2][2];
+    r.m[3][2] = m->m[2][3];
+    r.m[0][3] = m->m[3][0];
+    r.m[1][3] = m->m[3][1];
+    r.m[2][3] = m->m[3][2];
+    r.m[3][3] = m->m[3][3];
+    *out = r;
+    return out;
 }
-*/
+
+inline Mat4 *mat4_mul(const Mat4 *m0, const Mat4 *m1, Mat4 *out)
+{
+    Mat4 r;
+    r.m[0][0] = m0->m[0][0] * m1->m[0][0] + m0->m[0][1] * m1->m[1][0] + m0->m[0][2] * m1->m[2][0] + m0->m[0][3] * m1->m[3][0];
+    r.m[0][1] = m0->m[0][0] * m1->m[0][1] + m0->m[0][1] * m1->m[1][1] + m0->m[0][2] * m1->m[2][1] + m0->m[0][3] * m1->m[3][1];
+    r.m[0][2] = m0->m[0][0] * m1->m[0][2] + m0->m[0][1] * m1->m[1][2] + m0->m[0][2] * m1->m[2][2] + m0->m[0][3] * m1->m[3][2];
+    r.m[0][3] = m0->m[0][0] * m1->m[0][3] + m0->m[0][1] * m1->m[1][3] + m0->m[0][2] * m1->m[2][3] + m0->m[0][3] * m1->m[3][3];
+    r.m[1][0] = m0->m[1][0] * m1->m[0][0] + m0->m[1][1] * m1->m[1][0] + m0->m[1][2] * m1->m[2][0] + m0->m[1][3] * m1->m[3][0];
+    r.m[1][1] = m0->m[1][0] * m1->m[0][1] + m0->m[1][1] * m1->m[1][1] + m0->m[1][2] * m1->m[2][1] + m0->m[1][3] * m1->m[3][1];
+    r.m[1][2] = m0->m[1][0] * m1->m[0][2] + m0->m[1][1] * m1->m[1][2] + m0->m[1][2] * m1->m[2][2] + m0->m[1][3] * m1->m[3][2];
+    r.m[1][3] = m0->m[1][0] * m1->m[0][3] + m0->m[1][1] * m1->m[1][3] + m0->m[1][2] * m1->m[2][3] + m0->m[1][3] * m1->m[3][3];
+    r.m[2][0] = m0->m[2][0] * m1->m[0][0] + m0->m[2][1] * m1->m[1][0] + m0->m[2][2] * m1->m[2][0] + m0->m[2][3] * m1->m[3][0];
+    r.m[2][1] = m0->m[2][0] * m1->m[0][1] + m0->m[2][1] * m1->m[1][1] + m0->m[2][2] * m1->m[2][1] + m0->m[2][3] * m1->m[3][1];
+    r.m[2][2] = m0->m[2][0] * m1->m[0][2] + m0->m[2][1] * m1->m[1][2] + m0->m[2][2] * m1->m[2][2] + m0->m[2][3] * m1->m[3][2];
+    r.m[2][3] = m0->m[2][0] * m1->m[0][3] + m0->m[2][1] * m1->m[1][3] + m0->m[2][2] * m1->m[2][3] + m0->m[2][3] * m1->m[3][3];
+    r.m[3][0] = m0->m[3][0] * m1->m[0][0] + m0->m[3][1] * m1->m[1][0] + m0->m[3][2] * m1->m[2][0] + m0->m[3][3] * m1->m[3][0];
+    r.m[3][1] = m0->m[3][0] * m1->m[0][1] + m0->m[3][1] * m1->m[1][1] + m0->m[3][2] * m1->m[2][1] + m0->m[3][3] * m1->m[3][1];
+    r.m[3][2] = m0->m[3][0] * m1->m[0][2] + m0->m[3][1] * m1->m[1][2] + m0->m[3][2] * m1->m[2][2] + m0->m[3][3] * m1->m[3][2];
+    r.m[3][3] = m0->m[3][0] * m1->m[0][3] + m0->m[3][1] * m1->m[1][3] + m0->m[3][2] * m1->m[2][3] + m0->m[3][3] * m1->m[3][3];
+    *out = r;
+    return out;
+}
+
+inline Mat4 *mat4_identity(Mat4 *out)
+{
+    vec4_set(1.0f, 0.0f, 0.0f, 0.0f, &out->r0);
+    vec4_set(0.0f, 1.0f, 0.0f, 0.0f, &out->r1);
+    vec4_set(0.0f, 0.0f, 1.0f, 0.0f, &out->r2);
+    vec4_set(0.0f, 0.0f, 0.0f, 1.0f, &out->r3);
+    return out;
+}
+
+inline Mat4 *mat4_translation(float x, float y, float z, Mat4 *out)
+{
+    vec4_set(1.0f, 0.0f, 0.0f, 0.0f, &out->r0);
+    vec4_set(0.0f, 1.0f, 0.0f, 0.0f, &out->r1);
+    vec4_set(0.0f, 0.0f, 1.0f, 0.0f, &out->r2);
+    vec4_set(x, y, z, 1.0f, &out->r3);
+    return out;
+}
+
+inline Mat4 *mat4_rotation_ay(float arad, Mat4 *out)
+{
+    float sinv, cosv;
+    sincos1f(arad, &sinv, &cosv);
+    vec4_set(cosv, 0.0f, -sinv, 0.0f, &out->r0);
+    vec4_set(0.0f, 1.0f, 0.0f, 0.0f, &out->r1);
+    vec4_set(sinv, 0.0f, cosv, 0.0f, &out->r2);
+    vec4_set(0.0f, 0.0f, 0.0f, 1.0f, &out->r3);
+    return out;
+}
+
+inline Mat4 *mat4_look_at(const Vec3 *eye, const Vec3 *at, const Vec3 *up, Mat4 *out)
+{
+    Vec3 ax, ay, az;
+    vec3_normalize(vec3_sub(at, eye, &az), &az);
+    vec3_normalize(vec3_cross(up, &az, &ax), &ax);
+    vec3_cross(&az, &ax, &ay);
+
+    Vec3 neye;
+    vec3_neg(eye, &neye);
+
+    vec4_set(ax.x, ay.x, az.x, 0.0f, &out->r0);
+    vec4_set(ax.y, ay.y, az.y, 0.0f, &out->r1);
+    vec4_set(ax.z, ay.z, az.z, 0.0f, &out->r2);
+    vec4_set(vec3_dot(&ax, &neye), vec3_dot(&ay, &neye), vec3_dot(&az, &neye), 1.0f, &out->r3);
+
+    return out;
+}

@@ -1,6 +1,7 @@
 #include "demo01.h"
 #include "library.h"
 #include "d3d12.h"
+#include "math.h"
 
 
 static u32 s_descriptor_size;
@@ -18,12 +19,31 @@ static ID3D12Resource *s_swap_buffers[4];
 static ID3D12Resource *s_depth_buffer;
 
 static ID3D12PipelineState *s_pso;
-static ID3D12RootSignature *s_rsig;
+static ID3D12RootSignature *s_root_sig;
 static ID3D12Resource *s_vertex_buffer;
+static ID3D12Resource *s_constant_buffer;
+static void *s_constant_buffer_cpu_addr;
 
 void demo_update(double frame_time, float frame_delta_time)
 {
     (void)frame_time; (void)frame_delta_time;
+
+    Mat4 m0, m1;//, m2;
+    //mat4_rotation_ay((float)frame_time, &m0);
+
+    Vec3 eye, at, up;
+    vec3_set(0.0f, 0.0f, -10.0f, &eye);
+    vec3_set(0.0f, 0.0f, 0.0f, &at);
+    vec3_set(0.0f, 1.0f, 0.0f, &up);
+    mat4_look_at(&eye, &at, &up, &m0);
+
+    mat4_fovperspective(k_1pi_div_4, 1.777f, 0.1f, 20.0f, &m1);
+
+    mat4_mul(&m0, &m1, &m0);
+    mat4_transpose(&m0, &m0);
+
+    Mat4 *ptr = (Mat4 *)s_constant_buffer_cpu_addr;
+    *ptr = m0;
 }
 
 void demo_draw(u32 frame_index)
@@ -58,7 +78,9 @@ void demo_draw(u32 frame_index)
     ID3D12GraphicsCommandList_ClearDepthStencilView(s_cmdlist, s_dsv_heap_start, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, NULL);
 
     ID3D12GraphicsCommandList_SetPipelineState(s_cmdlist, s_pso);
-    ID3D12GraphicsCommandList_SetGraphicsRootSignature(s_cmdlist, s_rsig);
+    ID3D12GraphicsCommandList_SetGraphicsRootSignature(s_cmdlist, s_root_sig);
+
+    ID3D12GraphicsCommandList_SetGraphicsRootConstantBufferView(s_cmdlist, 0, ID3D12Resource_GetGPUVirtualAddress(s_constant_buffer));
     ID3D12GraphicsCommandList_IASetPrimitiveTopology(s_cmdlist, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     D3D12_VERTEX_BUFFER_VIEW vb_view = {
@@ -155,7 +177,7 @@ void demo_init(IDXGISwapChain3 *swapchain, ID3D12Device *d3d, ID3D12CommandQueue
             .SampleDesc.Count = 1,
         };
         VHR(ID3D12Device_CreateGraphicsPipelineState(s_d3d, &pso_desc, &IID_ID3D12PipelineState, &s_pso));
-        VHR(ID3D12Device_CreateRootSignature(s_d3d, 0, vscode, vscode_size, &IID_ID3D12RootSignature, &s_rsig));
+        VHR(ID3D12Device_CreateRootSignature(s_d3d, 0, vscode, vscode_size, &IID_ID3D12RootSignature, &s_root_sig));
     }
     /* vertex buffer */ {
         D3D12_HEAP_PROPERTIES heap_props = { .Type = D3D12_HEAP_TYPE_UPLOAD };
@@ -174,6 +196,18 @@ void demo_init(IDXGISwapChain3 *swapchain, ID3D12Device *d3d, ID3D12CommandQueue
         *ptr++ = 0.0f; *ptr++ = 0.7f; *ptr++ = 0.0f;
         ID3D12Resource_Unmap(s_vertex_buffer, 0, NULL);
     }
+    /* constant buffer */ {
+        D3D12_HEAP_PROPERTIES heap_props = { .Type = D3D12_HEAP_TYPE_UPLOAD };
+        D3D12_RESOURCE_DESC buffer_desc = {
+            .Dimension = D3D12_RESOURCE_DIMENSION_BUFFER, .Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR,
+            .Width = 1000, .Height = 1, .DepthOrArraySize = 1, .MipLevels = 1, .SampleDesc.Count = 1
+        };
+        VHR(ID3D12Device_CreateCommittedResource(s_d3d, &heap_props, D3D12_HEAP_FLAG_NONE, &buffer_desc,
+                                                 D3D12_RESOURCE_STATE_GENERIC_READ, NULL,
+                                                 &IID_ID3D12Resource, &s_constant_buffer));
+        D3D12_RANGE range = { 0 };
+        VHR(ID3D12Resource_Map(s_constant_buffer, 0, &range, &s_constant_buffer_cpu_addr));
+    }
 
     VHR(ID3D12Device_CreateCommandList(d3d, 0, D3D12_COMMAND_LIST_TYPE_DIRECT, s_cmdalloc[0], NULL,
                                        &IID_ID3D12GraphicsCommandList, &s_cmdlist));
@@ -183,8 +217,9 @@ void demo_init(IDXGISwapChain3 *swapchain, ID3D12Device *d3d, ID3D12CommandQueue
 void demo_shutdown(void)
 {
     COMRELEASE(s_pso);
-    COMRELEASE(s_rsig);
+    COMRELEASE(s_root_sig);
     COMRELEASE(s_vertex_buffer);
+    COMRELEASE(s_constant_buffer);
     COMRELEASE(s_cmdlist);
     COMRELEASE(s_cmdalloc[0]);
     COMRELEASE(s_cmdalloc[1]);

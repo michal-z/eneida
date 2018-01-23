@@ -1929,7 +1929,8 @@ typedef struct ID3D12GraphicsCommandListDispatchTable {
     void (STDCALLP SetComputeRoot32BitConstants)(ID3D12GraphicsCommandList *, u32, u32, const void *, u32);
     void (STDCALLP SetGraphicsRoot32BitConstants)(ID3D12GraphicsCommandList *, u32, u32, const void *, u32);
     void (STDCALLP SetComputeRootConstantBufferView)(ID3D12GraphicsCommandList *, u32, D3D12_GPU_VIRTUAL_ADDRESS);
-    void (STDCALLP SetGraphicsRootConstantBufferView)(ID3D12GraphicsCommandList *, u32, D3D12_GPU_VIRTUAL_ADDRESS);
+    void (STDCALLP SetGraphicsRootConstantBufferView)(ID3D12GraphicsCommandList *cmdlist, u32 root_index,
+                                                      D3D12_GPU_VIRTUAL_ADDRESS buffer_location);
     void (STDCALLP SetComputeRootShaderResourceView)(ID3D12GraphicsCommandList *, u32, D3D12_GPU_VIRTUAL_ADDRESS);
     void (STDCALLP SetGraphicsRootShaderResourceView)(ID3D12GraphicsCommandList *, u32, D3D12_GPU_VIRTUAL_ADDRESS);
     void (STDCALLP SetComputeRootUnorderedAccessView)(ID3D12GraphicsCommandList *, u32, D3D12_GPU_VIRTUAL_ADDRESS);

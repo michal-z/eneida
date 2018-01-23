@@ -178,6 +178,14 @@ void free(void *addr)
     }
 }
 
+static void d3d12_flush(void)
+{
+	assert(s_frame_fence && s_cmdqueue);
+	ID3D12CommandQueue_Signal(s_cmdqueue, s_frame_fence, ++s_frame_count);
+	ID3D12Fence_SetEventOnCompletion(s_frame_fence, s_frame_count, s_frame_fence_event);
+	WaitForSingleObject(s_frame_fence_event, INFINITE);
+}
+
 static double get_time(void)
 {
     static i64 frequency, start_counter;
@@ -385,7 +393,7 @@ void start(void)
         }
     }
 
-    Sleep(10);
+    d3d12_flush();
     demo_shutdown();
 
     COMRELEASE(s_frame_fence);
