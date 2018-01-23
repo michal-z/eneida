@@ -28,18 +28,18 @@ void demo_update(double frame_time, float frame_delta_time)
 {
     (void)frame_time; (void)frame_delta_time;
 
-    Mat4 m0, m1;//, m2;
-    //mat4_rotation_ay((float)frame_time, &m0);
+    Mat4 m0, m1, m2;
+    mat4_rotation_ay((float)frame_time, &m0);
 
     Vec3 eye, at, up;
-    vec3_set(0.0f, 0.0f, -10.0f, &eye);
+    vec3_set(2.0f, 2.0f, -2.0f, &eye);
     vec3_set(0.0f, 0.0f, 0.0f, &at);
     vec3_set(0.0f, 1.0f, 0.0f, &up);
-    mat4_look_at(&eye, &at, &up, &m0);
+    mat4_look_at(&eye, &at, &up, &m1);
 
-    mat4_fovperspective(k_1pi_div_4, 1.777f, 0.1f, 20.0f, &m1);
+    mat4_fovperspective(k_1pi_div_4, 1.777f, 0.1f, 20.0f, &m2);
 
-    mat4_mul(&m0, &m1, &m0);
+    mat4_mul(mat4_mul(&m0, &m1, &m0), &m2, &m0);
     mat4_transpose(&m0, &m0);
 
     Mat4 *ptr = (Mat4 *)s_constant_buffer_cpu_addr;

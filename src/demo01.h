@@ -2,8 +2,8 @@
 #include "types.h"
 
 #define k_demo_name "demo01"
-#define k_win_width 1920
-#define k_win_height 1080
+#define k_win_width 1280
+#define k_win_height 720
 
 void demo_update(double frame_time, float frame_delta_time);
 void demo_draw(u32 frame_index);
