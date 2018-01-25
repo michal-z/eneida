@@ -10,3 +10,5 @@ float sqrtf(float x);
 void *malloc(size_t size);
 void *realloc(void *addr, size_t size);
 void free(void *addr);
+
+void d3d_flush(void);

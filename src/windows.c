@@ -178,12 +178,12 @@ void free(void *addr)
     }
 }
 
-static void d3d12_flush(void)
+void d3d_flush(void)
 {
-	assert(s_frame_fence && s_cmdqueue);
-	ID3D12CommandQueue_Signal(s_cmdqueue, s_frame_fence, ++s_frame_count);
-	ID3D12Fence_SetEventOnCompletion(s_frame_fence, s_frame_count, s_frame_fence_event);
-	WaitForSingleObject(s_frame_fence_event, INFINITE);
+    assert(s_frame_fence && s_cmdqueue);
+    ID3D12CommandQueue_Signal(s_cmdqueue, s_frame_fence, ++s_frame_count);
+    ID3D12Fence_SetEventOnCompletion(s_frame_fence, s_frame_count, s_frame_fence_event);
+    WaitForSingleObject(s_frame_fence_event, INFINITE);
 }
 
 static double get_time(void)
@@ -354,14 +354,18 @@ void start(void)
     }
 
     D3D12_COMMAND_QUEUE_DESC cmdqueue_desc = {
-        .Flags = D3D12_COMMAND_QUEUE_FLAG_NONE, .Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL,
-        .Type = D3D12_COMMAND_LIST_TYPE_DIRECT
+        .Flags = D3D12_COMMAND_QUEUE_FLAG_NONE, .Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL, .Type = D3D12_COMMAND_LIST_TYPE_DIRECT
     };
     VHR(ID3D12Device_CreateCommandQueue(s_d3d, &cmdqueue_desc, &IID_ID3D12CommandQueue, &s_cmdqueue));
 
     DXGI_SWAP_CHAIN_DESC swapchain_desc = {
-        .BufferCount = 4, .BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM, .BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
-        .OutputWindow = window, .SampleDesc.Count = 1, .SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL, .Windowed = 1
+        .BufferCount = 4,
+        .BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM,
+        .BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
+        .OutputWindow = window,
+        .SampleDesc.Count = 1,
+        .SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL,
+        .Windowed = 1
     };
     IDXGISwapChain *swapchain;
     VHR(IDXGIFactory4_CreateSwapChain(s_dxgi_factory, (IUnknown *)s_cmdqueue, &swapchain_desc, &swapchain));
@@ -393,7 +397,7 @@ void start(void)
         }
     }
 
-    d3d12_flush();
+    d3d_flush();
     demo_shutdown();
 
     COMRELEASE(s_frame_fence);

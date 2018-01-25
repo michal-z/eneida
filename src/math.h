@@ -340,13 +340,10 @@ inline Mat4 *mat4_look_at(const Vec3 *eye, const Vec3 *at, const Vec3 *up, Mat4 
     vec3_normalize(vec3_cross(up, &az, &ax), &ax);
     vec3_cross(&az, &ax, &ay);
 
-    Vec3 neye;
-    vec3_neg(eye, &neye);
-
     vec4_set(ax.x, ay.x, az.x, 0.0f, &out->r0);
     vec4_set(ax.y, ay.y, az.y, 0.0f, &out->r1);
     vec4_set(ax.z, ay.z, az.z, 0.0f, &out->r2);
-    vec4_set(vec3_dot(&ax, &neye), vec3_dot(&ay, &neye), vec3_dot(&az, &neye), 1.0f, &out->r3);
+    vec4_set(-vec3_dot(&ax, eye), -vec3_dot(&ay, eye), -vec3_dot(&az, eye), 1.0f, &out->r3);
 
     return out;
 }
