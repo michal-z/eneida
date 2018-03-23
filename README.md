@@ -9,5 +9,5 @@
 * No external headers or libs are required (not even system or libc headers).
 * Only external functions used are <b>LoadLibrary</b> and <b>GetProcAddress</b>. Every other syscall is loaded at runtime.
 * All needed compilers are present in <b>compiler</b> folder.
-* <b>Vim</b> is used to write code, <b>WinDbg Preview</b> and <b>Windows PIX</b> to debug it.
+* <b>Vim</b> is used to write code, <b>WinDbg Preview</b> to debug it.
 * <b>Intel VTune</b> and <b>Intel Architecture Code Analyzer</b> programs are used to profile and optimize the code.
