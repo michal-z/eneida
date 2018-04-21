@@ -5,7 +5,7 @@ void *load_file(const char *filename, u32 *ofilesize);
 
 // In debug mode compiler generates 'call sqrtf' (implementation is in asmlib.asm).
 // In release mode compiler generates 'sqrtss xmmA, xmmB' instruction.
-float sqrtf(float x);
+f32 sqrtf(f32 x);
 
 void *malloc(size_t size);
 void *realloc(void *addr, size_t size);

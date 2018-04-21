@@ -16,6 +16,14 @@ typedef char i8;
 typedef short i16;
 typedef int i32;
 typedef long long i64;
+typedef float f32;
+typedef double f64;
+#define float __INVALID__
+#define double __INVALID__
+#define unsigned __INVALID__
+#define int __INVALID__
+#define short __INVALID__
+#define long __INVALID__
 
 typedef struct ID3D12Device ID3D12Device;
 typedef struct ID3D12Resource ID3D12Resource;

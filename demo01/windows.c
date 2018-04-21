@@ -186,7 +186,7 @@ void d3d_flush(void)
     WaitForSingleObject(s_frame_fence_event, INFINITE);
 }
 
-static double get_time(void)
+static f64 get_time(void)
 {
     static i64 frequency, start_counter;
     if (frequency == 0) {
@@ -196,14 +196,14 @@ static double get_time(void)
 
     i64 counter;
     QueryPerformanceCounter(&counter);
-    return (counter - start_counter) / (double)frequency;
+    return (counter - start_counter) / (f64)frequency;
 }
 
-static void update_frame_time(void *window, const char *name, double *time, float *delta_time)
+static void update_frame_time(void *window, const char *name, f64 *time, f32 *delta_time)
 {
-    static double last_time;
-    static double last_fps_time;
-    static unsigned frame_count;
+    static f64 last_time;
+    static f64 last_fps_time;
+    static u32 frame_count;
 
     if (last_time == 0.0) {
         last_time = get_time();
@@ -211,14 +211,14 @@ static void update_frame_time(void *window, const char *name, double *time, floa
     }
 
     *time = get_time();
-    *delta_time = (float)(*time - last_time);
+    *delta_time = (f32)(*time - last_time);
     last_time = *time;
 
     if ((*time - last_fps_time) >= 1.0) {
-        double fps = frame_count / (*time - last_fps_time);
-        double us = (1.0 / fps) * 1000000.0;
+        f64 fps = frame_count / (*time - last_fps_time);
+        f64 us = (1.0 / fps) * 1000000.0;
         char text[256];
-        wsprintf(text, "[%d fps  %d us] %s", (int)fps, (int)us, name);
+        wsprintf(text, "[%d fps  %d us] %s", (i32)fps, (i32)us, name);
         SetWindowText(window, text);
         last_fps_time = *time;
         frame_count = 0;
@@ -386,8 +386,8 @@ void start(void)
             if (message.message == WM_QUIT)
                 break;
         } else {
-            double frame_time;
-            float frame_delta_time;
+            f64 frame_time;
+            f32 frame_delta_time;
             update_frame_time(window, k_demo_name, &frame_time, &frame_delta_time);
 
             demo_update(frame_time, frame_delta_time);

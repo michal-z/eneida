@@ -26,30 +26,31 @@ static ID3D12Resource *s_vertex_buffer;
 static ID3D12Resource *s_constant_buffer;
 static void *s_constant_buffer_cpu_addr;
 
-void demo_update(double frame_time, float frame_delta_time)
+void demo_update(f64 frame_time, f32 frame_delta_time)
 {
     (void)frame_delta_time;
 
-    Mat4 m0;
-    mat4_rotation_ay((float)frame_time, &m0);
+    f32m4 m0;
+    f32m4_rotation_ay(&m0, (f32)frame_time);
 
-    Mat4 m1;
+    f32m4 m1;
     /* look at matrix */ {
-        Vec3 eye, at, up;
-        mat4_look_at(vec3_set(2.0f, 2.0f, -2.0f, &eye), vec3_set(0.0f, 0.0f, 0.0f, &at), vec3_set(0.0f, 1.0f, 0.0f, &up), &m1);
+        f32v3 eye, at, up;
+        f32m4_look_at(&m1, f32v3_set(&eye, 2.0f, 2.0f, -2.0f), f32v3_set(&at, 0.0f, 0.0f, 0.0f), f32v3_set(&up, 0.0f, 1.0f, 0.0f));
     }
 
-    Mat4 m2;
-    mat4_fovperspective(k_1pi_div_4, 1.777f, 0.1f, 20.0f, &m2);
+    f32m4 m2;
+    f32m4_fovperspective(&m2, k_1pi_div_4, 1.777f, 0.1f, 20.0f);
 
-    mat4_mul(mat4_mul(&m0, &m1, &m0), &m2, &m0);
+    f32m4_mul(&m0, &m0, &m1);
+    f32m4_mul(&m0, &m0, &m2);
 
-    *(Mat4 *)s_constant_buffer_cpu_addr = *mat4_transpose(&m0, &m0);
+    *(f32m4 *)s_constant_buffer_cpu_addr = *f32m4_transpose(&m0, &m0);
 }
 
 void demo_draw(u32 frame_index)
 {
-    D3D12_VIEWPORT viewport = { 0.0f, 0.0f, (float)k_win_width, (float)k_win_height, 0.0f, 1.0f };
+    D3D12_VIEWPORT viewport = { 0.0f, 0.0f, (f32)k_win_width, (f32)k_win_height, 0.0f, 1.0f };
     D3D12_RECT scissor = { 0, 0, k_win_width, k_win_height };
 
     ID3D12CommandAllocator *cmdalloc = s_cmdalloc[frame_index];
@@ -73,7 +74,7 @@ void demo_draw(u32 frame_index)
 
     ID3D12GraphicsCommandList_OMSetRenderTargets(s_cmdlist, 1, &rtv_handle, 0, &s_dsv_heap_start);
 
-    float clear_color[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+    f32 clear_color[] = { 0.0f, 0.2f, 0.4f, 1.0f };
     ID3D12GraphicsCommandList_ClearRenderTargetView(s_cmdlist, rtv_handle, clear_color, 0, NULL);
     ID3D12GraphicsCommandList_ClearDepthStencilView(s_cmdlist, s_dsv_heap_start, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, NULL);
 
@@ -85,11 +86,11 @@ void demo_draw(u32 frame_index)
 
     D3D12_VERTEX_BUFFER_VIEW vb_view = {
         .BufferLocation = ID3D12Resource_GetGPUVirtualAddress(s_vertex_buffer),
-        .SizeInBytes = k_triangle_count * 4 * sizeof(Vec3),
-        .StrideInBytes = sizeof(Vec3)
+        .SizeInBytes = k_triangle_count * 4 * sizeof(f32v3),
+        .StrideInBytes = sizeof(f32v3)
     };
     ID3D12GraphicsCommandList_IASetVertexBuffers(s_cmdlist, 0, 1, &vb_view);
-    for (int i = 0; i < k_triangle_count; ++i)
+    for (i32 i = 0; i < k_triangle_count; ++i)
         ID3D12GraphicsCommandList_DrawInstanced(s_cmdlist, 4, 1, i * 4, 0);
 
     barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -181,13 +182,13 @@ void demo_init(IDXGISwapChain3 *swapchain, ID3D12Device *d3d, ID3D12CommandQueue
         VHR(ID3D12Device_CreateRootSignature(s_d3d, 0, vscode, vscode_size, &IID_ID3D12RootSignature, &s_root_sig));
     }
     /* vertex buffer */ {
-        s_vertex_buffer = d3d_create_buffer(s_d3d, D3D12_HEAP_TYPE_UPLOAD, k_triangle_count * 4 * sizeof(Vec3));
+        s_vertex_buffer = d3d_create_buffer(s_d3d, D3D12_HEAP_TYPE_UPLOAD, k_triangle_count * 4 * sizeof(f32v3));
 
         D3D12_RANGE range = { 0 };
-        float *ptr;
-        float size = 0.7f;
+        f32 *ptr;
+        f32 size = 0.7f;
         VHR(ID3D12Resource_Map(s_vertex_buffer, 0, &range, &ptr));
-        for (int i = 0; i < k_triangle_count; ++i) {
+        for (u32 i = 0; i < k_triangle_count; ++i) {
             *ptr++ = -size; *ptr++ = -size; *ptr++ = 0.0f;
             *ptr++ = size; *ptr++ = -size; *ptr++ = 0.0f;
             *ptr++ = 0.0f; *ptr++ = size; *ptr++ = 0.0f;
@@ -197,7 +198,7 @@ void demo_init(IDXGISwapChain3 *swapchain, ID3D12Device *d3d, ID3D12CommandQueue
         ID3D12Resource_Unmap(s_vertex_buffer, 0, NULL);
     }
     /* constant buffer */ {
-        s_constant_buffer = d3d_create_buffer(s_d3d, D3D12_HEAP_TYPE_UPLOAD, sizeof(Mat4));
+        s_constant_buffer = d3d_create_buffer(s_d3d, D3D12_HEAP_TYPE_UPLOAD, sizeof(f32m4));
 
         D3D12_RANGE range = { 0 };
         VHR(ID3D12Resource_Map(s_constant_buffer, 0, &range, &s_constant_buffer_cpu_addr));
@@ -220,6 +221,6 @@ void demo_shutdown(void)
     COMRELEASE(s_rtv_heap);
     COMRELEASE(s_dsv_heap);
     COMRELEASE(s_depth_buffer);
-    for (int i = 0; i < 4; ++i)
+    for (i32 i = 0; i < 4; ++i)
         COMRELEASE(s_swap_buffers[i]);
 }

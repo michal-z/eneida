@@ -5,7 +5,7 @@
 #define k_win_width 1280
 #define k_win_height 720
 
-void demo_update(double frame_time, float frame_delta_time);
+void demo_update(f64 frame_time, f32 frame_delta_time);
 void demo_draw(u32 frame_index);
 void demo_init(IDXGISwapChain3 *swapchain, ID3D12Device *d3d, ID3D12CommandQueue *cmdqueue);
 void demo_shutdown(void);

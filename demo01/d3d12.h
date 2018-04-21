@@ -558,12 +558,12 @@ typedef enum D3D12_CULL_MODE {
 } D3D12_CULL_MODE;
 
 typedef struct D3D12_VIEWPORT {
-    float TopLeftX;
-    float TopLeftY;
-    float Width;
-    float Height;
-    float MinDepth;
-    float MaxDepth;
+    f32 TopLeftX;
+    f32 TopLeftY;
+    f32 Width;
+    f32 Height;
+    f32 MinDepth;
+    f32 MaxDepth;
 } D3D12_VIEWPORT;
 
 typedef enum D3D12_COMPARISON_FUNC {
@@ -695,8 +695,8 @@ typedef struct D3D12_RASTERIZER_DESC {
     D3D12_CULL_MODE CullMode;
     i32 FrontCounterClockwise;
     i32 DepthBias;
-    float DepthBiasClamp;
-    float SlopeScaledDepthBias;
+    f32 DepthBiasClamp;
+    f32 SlopeScaledDepthBias;
     i32 DepthClipEnable;
     i32 MultisampleEnable;
     i32 AntialiasedLineEnable;
@@ -1152,7 +1152,7 @@ typedef struct D3D12_BUFFER_SRV {
 typedef struct D3D12_TEX1D_SRV {
     u32 MostDetailedMip;
     u32 MipLevels;
-    float ResourceMinLODClamp;
+    f32 ResourceMinLODClamp;
 } D3D12_TEX1D_SRV;
 
 typedef struct D3D12_TEX1D_ARRAY_SRV {
@@ -1160,14 +1160,14 @@ typedef struct D3D12_TEX1D_ARRAY_SRV {
     u32 MipLevels;
     u32 FirstArraySlice;
     u32 ArraySize;
-    float ResourceMinLODClamp;
+    f32 ResourceMinLODClamp;
 } D3D12_TEX1D_ARRAY_SRV;
 
 typedef struct D3D12_TEX2D_SRV {
     u32 MostDetailedMip;
     u32 MipLevels;
     u32 PlaneSlice;
-    float ResourceMinLODClamp;
+    f32 ResourceMinLODClamp;
 } D3D12_TEX2D_SRV;
 
 typedef struct D3D12_TEX2D_ARRAY_SRV {
@@ -1176,19 +1176,19 @@ typedef struct D3D12_TEX2D_ARRAY_SRV {
     u32 FirstArraySlice;
     u32 ArraySize;
     u32 PlaneSlice;
-    float ResourceMinLODClamp;
+    f32 ResourceMinLODClamp;
 } D3D12_TEX2D_ARRAY_SRV;
 
 typedef struct D3D12_TEX3D_SRV {
     u32 MostDetailedMip;
     u32 MipLevels;
-    float ResourceMinLODClamp;
+    f32 ResourceMinLODClamp;
 } D3D12_TEX3D_SRV;
 
 typedef struct D3D12_TEXCUBE_SRV {
     u32 MostDetailedMip;
     u32 MipLevels;
-    float ResourceMinLODClamp;
+    f32 ResourceMinLODClamp;
 } D3D12_TEXCUBE_SRV;
 
 typedef struct D3D12_TEXCUBE_ARRAY_SRV {
@@ -1196,7 +1196,7 @@ typedef struct D3D12_TEXCUBE_ARRAY_SRV {
     u32 MipLevels;
     u32 First2DArrayFace;
     u32 NumCubes;
-    float ResourceMinLODClamp;
+    f32 ResourceMinLODClamp;
 } D3D12_TEXCUBE_ARRAY_SRV;
 
 typedef struct D3D12_TEX2DMS_SRV {
@@ -1313,12 +1313,12 @@ typedef struct D3D12_SAMPLER_DESC {
     D3D12_TEXTURE_ADDRESS_MODE AddressU;
     D3D12_TEXTURE_ADDRESS_MODE AddressV;
     D3D12_TEXTURE_ADDRESS_MODE AddressW;
-    float MipLODBias;
+    f32 MipLODBias;
     u32 MaxAnisotropy;
     D3D12_COMPARISON_FUNC ComparisonFunc;
-    float BorderColor[4];
-    float MinLOD;
-    float MaxLOD;
+    f32 BorderColor[4];
+    f32 MinLOD;
+    f32 MaxLOD;
 } D3D12_SAMPLER_DESC;
 
 typedef struct D3D12_CONSTANT_BUFFER_VIEW_DESC {
@@ -1519,14 +1519,14 @@ typedef struct D3D12_DEPTH_STENCIL_VIEW_DESC {
 } D3D12_DEPTH_STENCIL_VIEW_DESC;
 
 typedef struct D3D12_DEPTH_STENCIL_VALUE {
-    float Depth;
+    f32 Depth;
     u8 Stencil;
 } D3D12_DEPTH_STENCIL_VALUE;
 
 typedef struct D3D12_CLEAR_VALUE {
     DXGI_FORMAT Format;
     union {
-        float Color[4];
+        f32 Color[4];
         D3D12_DEPTH_STENCIL_VALUE DepthStencil;
     };
 } D3D12_CLEAR_VALUE;
@@ -1914,7 +1914,7 @@ typedef struct ID3D12GraphicsCommandListDispatchTable {
     void (STDCALLP IASetPrimitiveTopology)(ID3D12GraphicsCommandList *, D3D12_PRIMITIVE_TOPOLOGY);
     void (STDCALLP RSSetViewports)(ID3D12GraphicsCommandList *, u32, const D3D12_VIEWPORT *);
     void (STDCALLP RSSetScissorRects)(ID3D12GraphicsCommandList *, u32, const D3D12_RECT *);
-    void (STDCALLP OMSetBlendFactor)(ID3D12GraphicsCommandList *, const float[4]);
+    void (STDCALLP OMSetBlendFactor)(ID3D12GraphicsCommandList *, const f32[4]);
     void (STDCALLP OMSetStencilRef)(ID3D12GraphicsCommandList *, u32);
     void (STDCALLP SetPipelineState)(ID3D12GraphicsCommandList *, ID3D12PipelineState *);
     void (STDCALLP ResourceBarrier)(ID3D12GraphicsCommandList *, u32, const D3D12_RESOURCE_BARRIER *);
@@ -1940,10 +1940,10 @@ typedef struct ID3D12GraphicsCommandListDispatchTable {
                                        const D3D12_VERTEX_BUFFER_VIEW *views);
     void (STDCALLP SOSetTargets)(ID3D12GraphicsCommandList *, u32, u32, const D3D12_STREAM_OUTPUT_BUFFER_VIEW *);
     void (STDCALLP OMSetRenderTargets)(ID3D12GraphicsCommandList *, u32, const D3D12_CPU_DESCRIPTOR_HANDLE *, i32, const D3D12_CPU_DESCRIPTOR_HANDLE *);
-    void (STDCALLP ClearDepthStencilView)(ID3D12GraphicsCommandList *, D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_CLEAR_FLAGS, float, u8, u32, const D3D12_RECT *);
-    void (STDCALLP ClearRenderTargetView)(ID3D12GraphicsCommandList *, D3D12_CPU_DESCRIPTOR_HANDLE, const float[4], u32, const D3D12_RECT *);
+    void (STDCALLP ClearDepthStencilView)(ID3D12GraphicsCommandList *, D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_CLEAR_FLAGS, f32, u8, u32, const D3D12_RECT *);
+    void (STDCALLP ClearRenderTargetView)(ID3D12GraphicsCommandList *, D3D12_CPU_DESCRIPTOR_HANDLE, const f32[4], u32, const D3D12_RECT *);
     void (STDCALLP ClearUnorderedAccessViewUint)(ID3D12GraphicsCommandList *, D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_CPU_DESCRIPTOR_HANDLE, ID3D12Resource *, const u32[4], u32, const D3D12_RECT *);
-    void (STDCALLP ClearUnorderedAccessViewFloat)(ID3D12GraphicsCommandList *, D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_CPU_DESCRIPTOR_HANDLE, ID3D12Resource *, const float[4], u32, const D3D12_RECT *);
+    void (STDCALLP ClearUnorderedAccessViewFloat)(ID3D12GraphicsCommandList *, D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_CPU_DESCRIPTOR_HANDLE, ID3D12Resource *, const f32[4], u32, const D3D12_RECT *);
     void (STDCALLP DiscardResource)(ID3D12GraphicsCommandList *, ID3D12Resource *, const D3D12_DISCARD_REGION *);
     void (STDCALLP BeginQuery)(ID3D12GraphicsCommandList *, ID3D12QueryHeap *, D3D12_QUERY_TYPE, u32);
     void (STDCALLP EndQuery)(ID3D12GraphicsCommandList *, ID3D12QueryHeap *, D3D12_QUERY_TYPE, u32);
@@ -2168,16 +2168,16 @@ struct ID3D12Debug { const ID3D12DebugDispatchTable *dtbl; };
 
 
 typedef struct DXGI_RGB {
-    float Red;
-    float Green;
-    float Blue;
+    f32 Red;
+    f32 Green;
+    f32 Blue;
 } DXGI_RGB;
 
 typedef struct DXGI_RGBA {
-    float Red;
-    float Green;
-    float Blue;
-    float Alpha;
+    f32 Red;
+    f32 Green;
+    f32 Blue;
+    f32 Alpha;
 } DXGI_RGBA;
 
 typedef struct DXGI_GAMMA_CONTROL {
@@ -2188,10 +2188,10 @@ typedef struct DXGI_GAMMA_CONTROL {
 
 typedef struct DXGI_GAMMA_CONTROL_CAPABILITIES {
     i32 ScaleAndOffsetSupported;
-    float MaxConvertedValue;
-    float MinConvertedValue;
+    f32 MaxConvertedValue;
+    f32 MinConvertedValue;
     u32 NumGammaControlPoints;
-    float ControlPointPositions[1025];
+    f32 ControlPointPositions[1025];
 } DXGI_GAMMA_CONTROL_CAPABILITIES;
 
 typedef struct DXGI_RATIONAL {
@@ -2253,8 +2253,8 @@ typedef struct DXGI_FRAME_STATISTICS {
     u32 PresentCount;
     u32 PresentRefreshCount;
     u32 SyncRefreshCount;
-    long long SyncQPCTime;
-    long long SyncGPUTime;
+    i64 SyncQPCTime;
+    i64 SyncGPUTime;
 } DXGI_FRAME_STATISTICS;
 
 typedef struct DXGI_ADAPTER_DESC {
@@ -2266,7 +2266,7 @@ typedef struct DXGI_ADAPTER_DESC {
     u64 DedicatedVideoMemory;
     u64 DedicatedSystemMemory;
     u64 SharedSystemMemory;
-    long long AdapterLuid;
+    i64 AdapterLuid;
 } DXGI_ADAPTER_DESC;
 
 typedef struct DXGI_ADAPTER_DESC1 {
@@ -2278,7 +2278,7 @@ typedef struct DXGI_ADAPTER_DESC1 {
     u64 DedicatedVideoMemory;
     u64 DedicatedSystemMemory;
     u64 SharedSystemMemory;
-    long long AdapterLuid;
+    i64 AdapterLuid;
     u32 Flags;
 } DXGI_ADAPTER_DESC1;
 
@@ -2352,12 +2352,12 @@ typedef struct DXGI_PRESENT_PARAMETERS {
 } DXGI_PRESENT_PARAMETERS;
 
 typedef struct DXGI_MATRIX_3X2_F {
-    float _11;
-    float _12;
-    float _21;
-    float _22;
-    float _31;
-    float _32;
+    f32 _11;
+    f32 _12;
+    f32 _21;
+    f32 _22;
+    f32 _31;
+    f32 _32;
 } DXGI_MATRIX_3X2_F;
 
 typedef enum DXGI_COLOR_SPACE_TYPE {
@@ -2526,7 +2526,7 @@ typedef struct IDXGIFactory4DispatchTable {
     i32 (STDCALLP IsWindowedStereoEnabled)(IDXGIFactory4 *);
     i32 (STDCALLP CreateSwapChainForHwnd)(IDXGIFactory4 *, IUnknown *, void *, const DXGI_SWAP_CHAIN_DESC1 *, const DXGI_SWAP_CHAIN_FULLSCREEN_DESC *, IDXGIOutput *, IDXGISwapChain1 **);
     i32 (STDCALLP CreateSwapChainForCoreWindow)(IDXGIFactory4 *, IUnknown *, IUnknown *, const DXGI_SWAP_CHAIN_DESC1 *, IDXGIOutput *, IDXGISwapChain1 **);
-    i32 (STDCALLP GetSharedResourceAdapterLuid)(IDXGIFactory4 *, void *, long long *);
+    i32 (STDCALLP GetSharedResourceAdapterLuid)(IDXGIFactory4 *, void *, i64 *);
     i32 (STDCALLP RegisterStereoStatusWindow)(IDXGIFactory4 *, void *, u32, u32 *);
     i32 (STDCALLP RegisterStereoStatusEvent)(IDXGIFactory4 *, void *, u32 *);
     void (STDCALLP UnregisterStereoStatus)(IDXGIFactory4 *, u32);
@@ -2535,7 +2535,7 @@ typedef struct IDXGIFactory4DispatchTable {
     void (STDCALLP UnregisterOcclusionStatus)(IDXGIFactory4 *, u32);
     i32 (STDCALLP CreateSwapChainForComposition)(IDXGIFactory4 *, IUnknown *, const DXGI_SWAP_CHAIN_DESC1 *, IDXGIOutput *, IDXGISwapChain1 **);
     u32 (STDCALLP GetCreationFlags)(IDXGIFactory4 *);
-    i32 (STDCALLP EnumAdapterByLuid)(IDXGIFactory4 *, long long, const GUID *, void **);
+    i32 (STDCALLP EnumAdapterByLuid)(IDXGIFactory4 *, i64, const GUID *, void **);
     i32 (STDCALLP EnumWarpAdapter)(IDXGIFactory4 *, const GUID *, void **);
 } IDXGIFactory4DispatchTable;
 struct IDXGIFactory4 { const IDXGIFactory4DispatchTable *dtbl; };

@@ -8,79 +8,93 @@
 #define k_1pi_div_2 1.570796327f
 #define k_1pi_div_4 0.785398163f
 
-typedef struct Vec3 {
+typedef struct f32v3 {
     union {
-        struct { float x, y, z; };
-        float m[3];
+        struct { f32 x, y, z; };
+        f32 v[3];
     };
-} Vec3;
+} f32v3;
 
-typedef struct Vec4 {
+typedef struct f32v4 {
     union {
-        struct { float x, y, z, w; };
-        float m[4];
+        struct { f32 x, y, z, w; };
+        f32 v[4];
     };
-} Vec4;
+} f32v4;
 
-typedef struct Mat4 {
+typedef struct f32m4 {
     union {
-        struct { Vec4 r0, r1, r2, r3; };
-        float m[4][4];
+        struct { f32v4 r0, r1, r2, r3; };
+        f32v4 r[4];
+        f32 m[4][4];
+        f32 v[16];
     };
-} Mat4;
+} f32m4;
 
-float sqrtf(float x);
-
-inline i32 scalar_near_equal(float s0, float s1, float epsilon)
+__forceinline f32 f32_sqrt(f32 x)
 {
-    float d = s0 - s1;
-    d = d < 0.0f ? -d : d; // fabsf
-    return d <= epsilon;
+    return sqrtf(x);
+}
+
+__forceinline f32 f32_abs(f32 x)
+{
+    union {
+        f32 f;
+        u32 u;
+    } fu;
+    fu.f = x;
+    fu.u &= 0x7fffffff;
+    return fu.f;
+}
+
+__forceinline i32 f32_equal(f32 x, f32 y, f32 epsilon)
+{
+    return f32_abs(x - y) <= epsilon;
 }
 
 // Implementation taken from https://github.com/Microsoft/DirectXMath
-inline float sin1f(float x)
+inline f32 f32_sin(f32 x)
 {
-    float quotient = k_1_div_2pi * x;
-    quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
+    f32 quotient = k_1_div_2pi * x;
+    quotient = x >= 0.0f ? (f32)((i32)(quotient + 0.5f)) : (f32)((i32)(quotient - 0.5f));
 
-    float y = x - k_2pi * quotient;
+    f32 y = x - k_2pi * quotient;
 
     if (y > k_1pi_div_2)
         y = k_1pi - y;
     else if (y < -k_1pi_div_2)
         y = -k_1pi - y;
 
-    float y2 = y * y;
+    f32 y2 = y * y;
     return (((((-2.3889859e-08f * y2 + 2.7525562e-06f) * y2 - 0.00019840874f) * y2 + 0.0083333310f) * y2 - 0.16666667f) * y2 + 1.0f) * y;
 }
 
 // Implementation taken from https://github.com/Microsoft/DirectXMath
-inline float sin1f_fast(float x)
+inline f32 f32_sin_fast(f32 x)
 {
-    float quotient = k_1_div_2pi * x;
-    quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
+    f32 quotient = k_1_div_2pi * x;
+    quotient = x >= 0.0f ? (f32)((i32)(quotient + 0.5f)) : (f32)((i32)(quotient - 0.5f));
 
-    float y = x - k_2pi * quotient;
+    f32 y = x - k_2pi * quotient;
 
     if (y > k_1pi_div_2)
         y = k_1pi - y;
     else if (y < -k_1pi_div_2)
         y = -k_1pi - y;
 
-    float y2 = y * y;
+    f32 y2 = y * y;
     return (((-0.00018524670f * y2 + 0.0083139502f) * y2 - 0.16665852f) * y2 + 1.0f) * y;
 }
 
 // Implementation taken from https://github.com/Microsoft/DirectXMath
-inline float cos1f(float x)
+inline f32 f32_cos(f32 x)
 {
-    float quotient = k_1_div_2pi * x;
-    quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
+    f32 quotient = k_1_div_2pi * x;
+    quotient = x >= 0.0f ? (f32)((i32)(quotient + 0.5f)) : (f32)((i32)(quotient - 0.5f));
 
-    float y = x - k_2pi * quotient;
+    f32 y = x - k_2pi * quotient;
 
-    float sign;
+    f32 sign;
     if (y > k_1pi_div_2) {
         y = k_1pi - y;
         sign = -1.0f;
@@ -90,20 +104,20 @@ inline float cos1f(float x)
     } else
         sign = 1.0f;
 
-    float y2 = y * y;
-    float p = ((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f;
+    f32 y2 = y * y;
+    f32 p = ((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f;
     return sign * p;
 }
 
 // Implementation taken from https://github.com/Microsoft/DirectXMath
-inline float cos1f_fast(float x)
+inline f32 f32_cos_fast(f32 x)
 {
-    float quotient = k_1_div_2pi * x;
-    quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
+    f32 quotient = k_1_div_2pi * x;
+    quotient = x >= 0.0f ? (f32)((i32)(quotient + 0.5f)) : (f32)((i32)(quotient - 0.5f));
 
-    float y = x - k_2pi * quotient;
+    f32 y = x - k_2pi * quotient;
 
-    float sign;
+    f32 sign;
     if (y > k_1pi_div_2) {
         y = k_1pi - y;
         sign = -1.0f;
@@ -113,23 +127,23 @@ inline float cos1f_fast(float x)
     } else
         sign = 1.0f;
 
-    float y2 = y * y;
-    float p = ((-0.0012712436f * y2 + 0.041493919f) * y2 - 0.49992746f) * y2 + 1.0f;
+    f32 y2 = y * y;
+    f32 p = ((-0.0012712436f * y2 + 0.041493919f) * y2 - 0.49992746f) * y2 + 1.0f;
     return sign * p;
 }
 
 // Implementation taken from https://github.com/Microsoft/DirectXMath
-inline void sincos1f(float x, float *osin, float *ocos)
+inline void f32_sincos(f32 *osin, f32 *ocos, f32 x)
 {
     assert(osin);
     assert(ocos);
 
-    float quotient = k_1_div_2pi * x;
-    quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
+    f32 quotient = k_1_div_2pi * x;
+    quotient = x >= 0.0f ? (f32)((i32)(quotient + 0.5f)) : (f32)((i32)(quotient - 0.5f));
 
-    float y = x - k_2pi * quotient;
+    f32 y = x - k_2pi * quotient;
 
-    float sign;
+    f32 sign;
     if (y > k_1pi_div_2) {
         y = k_1pi - y;
         sign = -1.0f;
@@ -139,26 +153,26 @@ inline void sincos1f(float x, float *osin, float *ocos)
     } else
         sign = 1.0f;
 
-    float y2 = y * y;
+    f32 y2 = y * y;
 
     *osin = (((((-2.3889859e-08f * y2 + 2.7525562e-06f) * y2 - 0.00019840874f) * y2 + 0.0083333310f) * y2 - 0.16666667f) * y2 + 1.0f) * y;
 
-    float p = ((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f;
+    f32 p = ((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f;
     *ocos = sign * p;
 }
 
 // Implementation taken from https://github.com/Microsoft/DirectXMath
-inline void sincos1f_fast(float x, float *osin, float *ocos)
+inline void f32_sincos_fast(f32 *osin, f32 *ocos, f32 x)
 {
     assert(osin);
     assert(ocos);
 
-    float quotient = k_1_div_2pi * x;
-    quotient = x >= 0.0f ? (float)((i32)(quotient + 0.5f)) : (float)((i32)(quotient - 0.5f));
+    f32 quotient = k_1_div_2pi * x;
+    quotient = x >= 0.0f ? (f32)((i32)(quotient + 0.5f)) : (f32)((i32)(quotient - 0.5f));
 
-    float y = x - k_2pi * quotient;
+    f32 y = x - k_2pi * quotient;
 
-    float sign;
+    f32 sign;
     if (y > k_1pi_div_2) {
         y = k_1pi - y;
         sign = -1.0f;
@@ -168,15 +182,15 @@ inline void sincos1f_fast(float x, float *osin, float *ocos)
     } else
         sign = 1.0f;
 
-    float y2 = y * y;
+    f32 y2 = y * y;
 
     *osin = (((-0.00018524670f * y2 + 0.0083139502f) * y2 - 0.16665852f) * y2 + 1.0f) * y;
 
-    float p = ((-0.0012712436f * y2 + 0.041493919f) * y2 - 0.49992746f) * y2 + 1.0f;
+    f32 p = ((-0.0012712436f * y2 + 0.041493919f) * y2 - 0.49992746f) * y2 + 1.0f;
     *ocos = sign * p;
 }
 
-inline Vec3 *vec3_set(float x, float y, float z, Vec3 *out)
+inline f32v3 *f32v3_set(f32v3 *out, f32 x, f32 y, f32 z)
 {
     out->x = x;
     out->y = y;
@@ -184,23 +198,31 @@ inline Vec3 *vec3_set(float x, float y, float z, Vec3 *out)
     return out;
 }
 
-inline Vec3 *vec3_sub(const Vec3 *v0, const Vec3 *v1, Vec3 *out)
+inline f32v3 *f32v3_add(f32v3 *out, const f32v3 *a, const f32v3 *b)
 {
-    out->x = v0->x - v1->x;
-    out->y = v0->y - v1->y;
-    out->z = v0->z - v1->z;
+    out->x = a->x + b->x;
+    out->y = a->y + b->y;
+    out->z = a->z + b->z;
     return out;
 }
 
-inline Vec3 *vec3_neg(const Vec3 *v, Vec3 *out)
+inline f32v3 *f32v3_sub(f32v3 *out, const f32v3 *a, const f32v3 *b)
 {
-    out->x = -v->x;
-    out->y = -v->y;
-    out->z = -v->z;
+    out->x = a->x - b->x;
+    out->y = a->y - b->y;
+    out->z = a->z - b->z;
     return out;
 }
 
-inline Vec4 *vec4_set(float x, float y, float z, float w, Vec4 *out)
+inline f32v3 *f32v3_neg(f32v3 *out, const f32v3 *a)
+{
+    out->x = -a->x;
+    out->y = -a->y;
+    out->z = -a->z;
+    return out;
+}
+
+inline f32v4 *f32v4_set(f32v4 *out, f32 x, f32 y, f32 z, f32 w)
 {
     out->x = x;
     out->y = y;
@@ -209,58 +231,57 @@ inline Vec4 *vec4_set(float x, float y, float z, float w, Vec4 *out)
     return out;
 }
 
-inline float vec3_dot(const Vec3 *v0, const Vec3 *v1)
+inline f32 f32v3_dot(const f32v3 *a, const f32v3 *b)
 {
-    return v0->x * v1->x + v0->y * v1->y + v0->z * v1->z;
+    return a->x * b->x + a->y * b->y + a->z * b->z;
 }
 
-inline Vec3 *vec3_cross(const Vec3 *v0, const Vec3 *v1, Vec3 *out)
+inline f32v3 *f32v3_cross(f32v3 *out, const f32v3 *a, const f32v3 *b)
 {
-    float x = v0->y * v1->z - v0->z * v1->y;
-    float y = v0->z * v1->x - v0->x * v1->z;
-    float z = v0->x * v1->y - v0->y * v1->x;
-    return vec3_set(x, y, z, out);
+    f32 x = a->y * b->z - a->z * b->y;
+    f32 y = a->z * b->x - a->x * b->z;
+    f32 z = a->x * b->y - a->y * b->x;
+    return f32v3_set(out, x, y, z);
 }
 
-inline float vec3_length(const Vec3 *v)
+inline f32 f32v3_length(const f32v3 *a)
 {
-    return sqrtf(vec3_dot(v, v));
+    return f32_sqrt(f32v3_dot(a, a));
 }
 
-inline Vec3 *vec3_normalize(const Vec3 *v, Vec3 *out)
+inline f32v3 *f32v3_normalize(f32v3 *out, const f32v3 *a)
 {
-    float length = vec3_length(v);
-    assert(!scalar_near_equal(length, 0.0f, 0.00001f));
-    float rlength = 1.0f / length;
-    return vec3_set(rlength * v->x, rlength * v->y, rlength * v->z, out);
+    f32 length = f32v3_length(a);
+    assert(!f32_equal(length, 0.0f, 0.0001f));
+    f32 rcplen = 1.0f / length;
+    return f32v3_set(out, rcplen * a->x, rcplen * a->y, rcplen * a->z);
 }
 
-inline Mat4 *mat4_fovperspective(float fovy, float aspect, float n, float f, Mat4 *out)
+inline f32m4 *f32m4_fovperspective(f32m4 *out, f32 fovy, f32 aspect, f32 n, f32 f)
 {
     assert(n > 0.0f && f > 0.0f);
-    assert(!scalar_near_equal(fovy, 0.0f, 0.00001f * 2.0f));
-    assert(!scalar_near_equal(aspect, 0.0f, 0.00001f));
-    assert(!scalar_near_equal(f, n, 0.00001f));
+    assert(!f32_equal(fovy, 0.0f, 0.00001f * 2.0f));
+    assert(!f32_equal(aspect, 0.0f, 0.00001f));
+    assert(!f32_equal(f, n, 0.00001f));
 
-    float sin_fov;
-    float cos_fov;
-    sincos1f(0.5f * fovy, &sin_fov, &cos_fov);
+    f32 sinfov, cosfov;
+    f32_sincos(&sinfov, &cosfov, 0.5f * fovy);
 
-    float h = cos_fov / sin_fov;
-    float w = h / aspect;
-    float r = f / (f - n);
+    f32 h = cosfov / sinfov;
+    f32 w = h / aspect;
+    f32 r = f / (f - n);
 
-    vec4_set(w, 0.0f, 0.0f, 0.0f, &out->r0);
-    vec4_set(0.0f, h, 0.0f, 0.0f, &out->r1);
-    vec4_set(0.0f, 0.0f, r, 1.0f, &out->r2);
-    vec4_set(0.0f, 0.0f, -r * n, 0.0f, &out->r3);
+    f32v4_set(&out->r0, w, 0.0f, 0.0f, 0.0f);
+    f32v4_set(&out->r1, 0.0f, h, 0.0f, 0.0f);
+    f32v4_set(&out->r2, 0.0f, 0.0f, r, 1.0f);
+    f32v4_set(&out->r3, 0.0f, 0.0f, -r * n, 0.0f);
 
     return out;
 }
 
-inline Mat4 *mat4_transpose(const Mat4 *m, Mat4 *out)
+inline f32m4 *f32m4_transpose(f32m4 *out, const f32m4 *m)
 {
-    Mat4 r;
+    f32m4 r;
     r.m[0][0] = m->m[0][0];
     r.m[1][0] = m->m[0][1];
     r.m[2][0] = m->m[0][2];
@@ -281,9 +302,9 @@ inline Mat4 *mat4_transpose(const Mat4 *m, Mat4 *out)
     return out;
 }
 
-inline Mat4 *mat4_mul(const Mat4 *m0, const Mat4 *m1, Mat4 *out)
+inline f32m4 *f32m4_mul(f32m4 *out, const f32m4 *m0, const f32m4 *m1)
 {
-    Mat4 r;
+    f32m4 r;
     r.m[0][0] = m0->m[0][0] * m1->m[0][0] + m0->m[0][1] * m1->m[1][0] + m0->m[0][2] * m1->m[2][0] + m0->m[0][3] * m1->m[3][0];
     r.m[0][1] = m0->m[0][0] * m1->m[0][1] + m0->m[0][1] * m1->m[1][1] + m0->m[0][2] * m1->m[2][1] + m0->m[0][3] * m1->m[3][1];
     r.m[0][2] = m0->m[0][0] * m1->m[0][2] + m0->m[0][1] * m1->m[1][2] + m0->m[0][2] * m1->m[2][2] + m0->m[0][3] * m1->m[3][2];
@@ -304,46 +325,44 @@ inline Mat4 *mat4_mul(const Mat4 *m0, const Mat4 *m1, Mat4 *out)
     return out;
 }
 
-inline Mat4 *mat4_identity(Mat4 *out)
+inline f32m4 *f32m4_identity(f32m4 *out)
 {
-    vec4_set(1.0f, 0.0f, 0.0f, 0.0f, &out->r0);
-    vec4_set(0.0f, 1.0f, 0.0f, 0.0f, &out->r1);
-    vec4_set(0.0f, 0.0f, 1.0f, 0.0f, &out->r2);
-    vec4_set(0.0f, 0.0f, 0.0f, 1.0f, &out->r3);
+    f32v4_set(&out->r0, 1.0f, 0.0f, 0.0f, 0.0f);
+    f32v4_set(&out->r1, 0.0f, 1.0f, 0.0f, 0.0f);
+    f32v4_set(&out->r2, 0.0f, 0.0f, 1.0f, 0.0f);
+    f32v4_set(&out->r3, 0.0f, 0.0f, 0.0f, 1.0f);
     return out;
 }
 
-inline Mat4 *mat4_translation(float x, float y, float z, Mat4 *out)
+inline f32m4 *f32m4_translation(f32m4 *out, f32 x, f32 y, f32 z)
 {
-    vec4_set(1.0f, 0.0f, 0.0f, 0.0f, &out->r0);
-    vec4_set(0.0f, 1.0f, 0.0f, 0.0f, &out->r1);
-    vec4_set(0.0f, 0.0f, 1.0f, 0.0f, &out->r2);
-    vec4_set(x, y, z, 1.0f, &out->r3);
+    f32v4_set(&out->r0, 1.0f, 0.0f, 0.0f, 0.0f);
+    f32v4_set(&out->r1, 0.0f, 1.0f, 0.0f, 0.0f);
+    f32v4_set(&out->r2, 0.0f, 0.0f, 1.0f, 0.0f);
+    f32v4_set(&out->r3, x, y, z, 1.0f);
     return out;
 }
 
-inline Mat4 *mat4_rotation_ay(float arad, Mat4 *out)
+inline f32m4 *f32m4_rotation_ay(f32m4 *out, f32 radians)
 {
-    float sinv, cosv;
-    sincos1f(arad, &sinv, &cosv);
-    vec4_set(cosv, 0.0f, -sinv, 0.0f, &out->r0);
-    vec4_set(0.0f, 1.0f, 0.0f, 0.0f, &out->r1);
-    vec4_set(sinv, 0.0f, cosv, 0.0f, &out->r2);
-    vec4_set(0.0f, 0.0f, 0.0f, 1.0f, &out->r3);
+    f32 sinv, cosv;
+    f32_sincos(&sinv, &cosv, radians);
+    f32v4_set(&out->r0, cosv, 0.0f, -sinv, 0.0f);
+    f32v4_set(&out->r1, 0.0f, 1.0f, 0.0f, 0.0f);
+    f32v4_set(&out->r2, sinv, 0.0f, cosv, 0.0f);
+    f32v4_set(&out->r3, 0.0f, 0.0f, 0.0f, 1.0f);
     return out;
 }
 
-inline Mat4 *mat4_look_at(const Vec3 *eye, const Vec3 *at, const Vec3 *up, Mat4 *out)
+inline f32m4 *f32m4_look_at(f32m4 *out, const f32v3 *eye, const f32v3 *at, const f32v3 *up)
 {
-    Vec3 ax, ay, az;
-    vec3_normalize(vec3_sub(at, eye, &az), &az);
-    vec3_normalize(vec3_cross(up, &az, &ax), &ax);
-    vec3_cross(&az, &ax, &ay);
-
-    vec4_set(ax.x, ay.x, az.x, 0.0f, &out->r0);
-    vec4_set(ax.y, ay.y, az.y, 0.0f, &out->r1);
-    vec4_set(ax.z, ay.z, az.z, 0.0f, &out->r2);
-    vec4_set(-vec3_dot(&ax, eye), -vec3_dot(&ay, eye), -vec3_dot(&az, eye), 1.0f, &out->r3);
-
+    f32v3 ax, ay, az;
+    f32v3_normalize(&az, f32v3_sub(&az, at, eye));
+    f32v3_normalize(&ax, f32v3_cross(&ax, up, &az));
+    f32v3_cross(&ay, &az, &ax);
+    f32v4_set(&out->r0, ax.x, ay.x, az.x, 0.0f);
+    f32v4_set(&out->r1, ax.y, ay.y, az.y, 0.0f);
+    f32v4_set(&out->r2, ax.z, ay.z, az.z, 0.0f);
+    f32v4_set(&out->r3, -f32v3_dot(&ax, eye), -f32v3_dot(&ay, eye), -f32v3_dot(&az, eye), 1.0f);
     return out;
 }
