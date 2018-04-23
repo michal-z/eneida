@@ -61,72 +61,6 @@ i32 (__stdcall *CreateDXGIFactory1)(const GUID *, void **);
 i32 (__stdcall *D3D12CreateDevice)(IUnknown *, D3D_FEATURE_LEVEL, const GUID *, void **);
 i32 (__stdcall *D3D12GetDebugInterface)(const GUID *, void **);
 
-void *lib_load_file(const char *filename, u32 *ofilesize)
-{
-    assert(ofilesize);
-    void *handle = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
-    assert(handle != (void *)-1);
-    u32 size = GetFileSize(handle, NULL);
-    char *content = (char *)mem_alloc(size);
-    u32 bytes_read;
-    ReadFile(handle, content, size, &bytes_read, NULL);
-    CloseHandle(handle);
-    assert(bytes_read == size);
-    *ofilesize = size;
-    return content;
-}
-
-void *mem_alloc(size_t size)
-{
-    assert(size > 0);
-    void *mem = HeapAlloc(GetProcessHeap(), 0, size);
-    if (!mem) {
-        OutputDebugString("Failed to allocate memory!");
-        assert(0);
-        ExitProcess(1);
-    }
-    return mem;
-}
-
-void *mem_realloc(void *addr, size_t size)
-{
-    assert(size > 0);
-    if (addr == NULL)
-        return mem_alloc(size);
-    else {
-        void *mem = HeapReAlloc(GetProcessHeap(), 0, addr, size);
-        if (!mem) {
-            OutputDebugString("Failed to reallocate memory!");
-            assert(0);
-            ExitProcess(1);
-        }
-        return mem;
-    }
-}
-
-void mem_free(void *addr)
-{
-    assert(addr);
-    if (!HeapFree(GetProcessHeap(), 0, addr)) {
-        OutputDebugString("Failed to free memory!");
-        assert(0);
-        ExitProcess(1);
-    }
-}
-
-static f64 get_time(void)
-{
-    static i64 frequency, start_counter;
-    if (frequency == 0) {
-        QueryPerformanceCounter(&start_counter);
-        QueryPerformanceFrequency(&frequency);
-    }
-
-    i64 counter;
-    QueryPerformanceCounter(&counter);
-    return (counter - start_counter) / (f64)frequency;
-}
-
 static void update_frame_time(void *window, const char *name, f64 *time, f32 *delta_time)
 {
     static f64 last_time;
@@ -134,11 +68,11 @@ static void update_frame_time(void *window, const char *name, f64 *time, f32 *de
     static u32 frame_count;
 
     if (last_time == 0.0) {
-        last_time = get_time();
+        last_time = lib_get_time();
         last_fps_time = last_time;
     }
 
-    *time = get_time();
+    *time = lib_get_time();
     *delta_time = (f32)(*time - last_time);
     last_time = *time;
 

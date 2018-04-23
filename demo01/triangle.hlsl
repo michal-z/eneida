@@ -12,10 +12,10 @@ struct vs_data {
     float3 position : POSITION;
 };
 
-struct cs_data {
+struct cb_data {
     float4x4 world2proj;
 };
-ConstantBuffer<cs_data> s_cb : register(b0);
+ConstantBuffer<cb_data> s_cb : register(b0);
 
 [RootSignature(root_sig)]
 ps_data vs_triangle(vs_data input)
