@@ -2,33 +2,33 @@
     "RootFlags(ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT), " \
     "CBV(b0, visibility = SHADER_VISIBILITY_VERTEX)"
 
-struct PixelData {
+struct ps_data {
     float4 position : SV_Position;
 };
 
-#if defined TRIANGLE_VS
+#if defined VS_TRIANGLE
 
-struct VertexData {
+struct vs_data {
     float3 position : POSITION;
 };
 
-struct ConstData {
+struct cs_data {
     float4x4 world2proj;
 };
-ConstantBuffer<ConstData> s_cb : register(b0);
+ConstantBuffer<cs_data> s_cb : register(b0);
 
 [RootSignature(root_sig)]
-PixelData TriangleVs(VertexData input)
+ps_data vs_triangle(vs_data input)
 {
-    PixelData output;
+    ps_data output;
     output.position = mul(float4(input.position, 1.0f), s_cb.world2proj);
     return output;
 }
 
-#elif defined TRIANGLE_PS
+#elif defined PS_TRIANGLE
 
 [RootSignature(root_sig)]
-float4 TrianglePs(PixelData input) : SV_Target0
+float4 ps_triangle(ps_data input) : SV_Target0
 {
     return float4(0.0f, 0.5f, 0.0f, 1.0f);
 }

@@ -8,29 +8,32 @@
 #define k_1pi_div_2 1.570796327f
 #define k_1pi_div_4 0.785398163f
 
-typedef struct f32v3 {
+typedef struct f32vec3 {
     union {
         struct { f32 x, y, z; };
         f32 v[3];
     };
-} f32v3;
+} f32vec3;
 
-typedef struct f32v4 {
+typedef struct f32vec4 {
     union {
         struct { f32 x, y, z, w; };
         f32 v[4];
     };
-} f32v4;
+} f32vec4;
 
-typedef struct f32m4 {
+typedef struct f32mat4 {
     union {
-        struct { f32v4 r0, r1, r2, r3; };
-        f32v4 r[4];
+        struct { f32vec4 r0, r1, r2, r3; };
+        f32vec4 r[4];
         f32 m[4][4];
         f32 v[16];
     };
-} f32m4;
+} f32mat4;
 
+// In debug mode compiler generates 'call sqrtf' (implementation is in asmlib.asm).
+// In release mode compiler generates 'sqrtss xmmA, xmmB' instruction.
+f32 sqrtf(f32 x);
 __forceinline f32 f32_sqrt(f32 x)
 {
     return sqrtf(x);
@@ -190,7 +193,7 @@ inline void f32_sincos_fast(f32 *osin, f32 *ocos, f32 x)
     *ocos = sign * p;
 }
 
-inline f32v3 *f32v3_set(f32v3 *out, f32 x, f32 y, f32 z)
+inline f32vec3 *f32vec3_set(f32vec3 *out, f32 x, f32 y, f32 z)
 {
     out->x = x;
     out->y = y;
@@ -198,7 +201,7 @@ inline f32v3 *f32v3_set(f32v3 *out, f32 x, f32 y, f32 z)
     return out;
 }
 
-inline f32v3 *f32v3_add(f32v3 *out, const f32v3 *a, const f32v3 *b)
+inline f32vec3 *f32vec3_add(f32vec3 *out, const f32vec3 *a, const f32vec3 *b)
 {
     out->x = a->x + b->x;
     out->y = a->y + b->y;
@@ -206,7 +209,7 @@ inline f32v3 *f32v3_add(f32v3 *out, const f32v3 *a, const f32v3 *b)
     return out;
 }
 
-inline f32v3 *f32v3_sub(f32v3 *out, const f32v3 *a, const f32v3 *b)
+inline f32vec3 *f32vec3_sub(f32vec3 *out, const f32vec3 *a, const f32vec3 *b)
 {
     out->x = a->x - b->x;
     out->y = a->y - b->y;
@@ -214,7 +217,7 @@ inline f32v3 *f32v3_sub(f32v3 *out, const f32v3 *a, const f32v3 *b)
     return out;
 }
 
-inline f32v3 *f32v3_neg(f32v3 *out, const f32v3 *a)
+inline f32vec3 *f32vec3_neg(f32vec3 *out, const f32vec3 *a)
 {
     out->x = -a->x;
     out->y = -a->y;
@@ -222,7 +225,7 @@ inline f32v3 *f32v3_neg(f32v3 *out, const f32v3 *a)
     return out;
 }
 
-inline f32v4 *f32v4_set(f32v4 *out, f32 x, f32 y, f32 z, f32 w)
+inline f32vec4 *f32vec4_set(f32vec4 *out, f32 x, f32 y, f32 z, f32 w)
 {
     out->x = x;
     out->y = y;
@@ -231,33 +234,33 @@ inline f32v4 *f32v4_set(f32v4 *out, f32 x, f32 y, f32 z, f32 w)
     return out;
 }
 
-inline f32 f32v3_dot(const f32v3 *a, const f32v3 *b)
+inline f32 f32vec3_dot(const f32vec3 *a, const f32vec3 *b)
 {
     return a->x * b->x + a->y * b->y + a->z * b->z;
 }
 
-inline f32v3 *f32v3_cross(f32v3 *out, const f32v3 *a, const f32v3 *b)
+inline f32vec3 *f32vec3_cross(f32vec3 *out, const f32vec3 *a, const f32vec3 *b)
 {
     f32 x = a->y * b->z - a->z * b->y;
     f32 y = a->z * b->x - a->x * b->z;
     f32 z = a->x * b->y - a->y * b->x;
-    return f32v3_set(out, x, y, z);
+    return f32vec3_set(out, x, y, z);
 }
 
-inline f32 f32v3_length(const f32v3 *a)
+inline f32 f32vec3_length(const f32vec3 *a)
 {
-    return f32_sqrt(f32v3_dot(a, a));
+    return f32_sqrt(f32vec3_dot(a, a));
 }
 
-inline f32v3 *f32v3_normalize(f32v3 *out, const f32v3 *a)
+inline f32vec3 *f32vec3_normalize(f32vec3 *out, const f32vec3 *a)
 {
-    f32 length = f32v3_length(a);
+    f32 length = f32vec3_length(a);
     assert(!f32_equal(length, 0.0f, 0.0001f));
     f32 rcplen = 1.0f / length;
-    return f32v3_set(out, rcplen * a->x, rcplen * a->y, rcplen * a->z);
+    return f32vec3_set(out, rcplen * a->x, rcplen * a->y, rcplen * a->z);
 }
 
-inline f32m4 *f32m4_fovperspective(f32m4 *out, f32 fovy, f32 aspect, f32 n, f32 f)
+inline f32mat4 *f32mat4_fovperspective(f32mat4 *out, f32 fovy, f32 aspect, f32 n, f32 f)
 {
     assert(n > 0.0f && f > 0.0f);
     assert(!f32_equal(fovy, 0.0f, 0.00001f * 2.0f));
@@ -271,17 +274,17 @@ inline f32m4 *f32m4_fovperspective(f32m4 *out, f32 fovy, f32 aspect, f32 n, f32 
     f32 w = h / aspect;
     f32 r = f / (f - n);
 
-    f32v4_set(&out->r0, w, 0.0f, 0.0f, 0.0f);
-    f32v4_set(&out->r1, 0.0f, h, 0.0f, 0.0f);
-    f32v4_set(&out->r2, 0.0f, 0.0f, r, 1.0f);
-    f32v4_set(&out->r3, 0.0f, 0.0f, -r * n, 0.0f);
+    f32vec4_set(&out->r0, w, 0.0f, 0.0f, 0.0f);
+    f32vec4_set(&out->r1, 0.0f, h, 0.0f, 0.0f);
+    f32vec4_set(&out->r2, 0.0f, 0.0f, r, 1.0f);
+    f32vec4_set(&out->r3, 0.0f, 0.0f, -r * n, 0.0f);
 
     return out;
 }
 
-inline f32m4 *f32m4_transpose(f32m4 *out, const f32m4 *m)
+inline f32mat4 *f32mat4_transpose(f32mat4 *out, const f32mat4 *m)
 {
-    f32m4 r;
+    f32mat4 r;
     r.m[0][0] = m->m[0][0];
     r.m[1][0] = m->m[0][1];
     r.m[2][0] = m->m[0][2];
@@ -302,9 +305,9 @@ inline f32m4 *f32m4_transpose(f32m4 *out, const f32m4 *m)
     return out;
 }
 
-inline f32m4 *f32m4_mul(f32m4 *out, const f32m4 *m0, const f32m4 *m1)
+inline f32mat4 *f32mat4_mul(f32mat4 *out, const f32mat4 *m0, const f32mat4 *m1)
 {
-    f32m4 r;
+    f32mat4 r;
     r.m[0][0] = m0->m[0][0] * m1->m[0][0] + m0->m[0][1] * m1->m[1][0] + m0->m[0][2] * m1->m[2][0] + m0->m[0][3] * m1->m[3][0];
     r.m[0][1] = m0->m[0][0] * m1->m[0][1] + m0->m[0][1] * m1->m[1][1] + m0->m[0][2] * m1->m[2][1] + m0->m[0][3] * m1->m[3][1];
     r.m[0][2] = m0->m[0][0] * m1->m[0][2] + m0->m[0][1] * m1->m[1][2] + m0->m[0][2] * m1->m[2][2] + m0->m[0][3] * m1->m[3][2];
@@ -325,44 +328,44 @@ inline f32m4 *f32m4_mul(f32m4 *out, const f32m4 *m0, const f32m4 *m1)
     return out;
 }
 
-inline f32m4 *f32m4_identity(f32m4 *out)
+inline f32mat4 *f32mat4_identity(f32mat4 *out)
 {
-    f32v4_set(&out->r0, 1.0f, 0.0f, 0.0f, 0.0f);
-    f32v4_set(&out->r1, 0.0f, 1.0f, 0.0f, 0.0f);
-    f32v4_set(&out->r2, 0.0f, 0.0f, 1.0f, 0.0f);
-    f32v4_set(&out->r3, 0.0f, 0.0f, 0.0f, 1.0f);
+    f32vec4_set(&out->r0, 1.0f, 0.0f, 0.0f, 0.0f);
+    f32vec4_set(&out->r1, 0.0f, 1.0f, 0.0f, 0.0f);
+    f32vec4_set(&out->r2, 0.0f, 0.0f, 1.0f, 0.0f);
+    f32vec4_set(&out->r3, 0.0f, 0.0f, 0.0f, 1.0f);
     return out;
 }
 
-inline f32m4 *f32m4_translation(f32m4 *out, f32 x, f32 y, f32 z)
+inline f32mat4 *f32mat4_translation(f32mat4 *out, f32 x, f32 y, f32 z)
 {
-    f32v4_set(&out->r0, 1.0f, 0.0f, 0.0f, 0.0f);
-    f32v4_set(&out->r1, 0.0f, 1.0f, 0.0f, 0.0f);
-    f32v4_set(&out->r2, 0.0f, 0.0f, 1.0f, 0.0f);
-    f32v4_set(&out->r3, x, y, z, 1.0f);
+    f32vec4_set(&out->r0, 1.0f, 0.0f, 0.0f, 0.0f);
+    f32vec4_set(&out->r1, 0.0f, 1.0f, 0.0f, 0.0f);
+    f32vec4_set(&out->r2, 0.0f, 0.0f, 1.0f, 0.0f);
+    f32vec4_set(&out->r3, x, y, z, 1.0f);
     return out;
 }
 
-inline f32m4 *f32m4_rotation_ay(f32m4 *out, f32 radians)
+inline f32mat4 *f32mat4_rotation_ay(f32mat4 *out, f32 radians)
 {
     f32 sinv, cosv;
     f32_sincos(&sinv, &cosv, radians);
-    f32v4_set(&out->r0, cosv, 0.0f, -sinv, 0.0f);
-    f32v4_set(&out->r1, 0.0f, 1.0f, 0.0f, 0.0f);
-    f32v4_set(&out->r2, sinv, 0.0f, cosv, 0.0f);
-    f32v4_set(&out->r3, 0.0f, 0.0f, 0.0f, 1.0f);
+    f32vec4_set(&out->r0, cosv, 0.0f, -sinv, 0.0f);
+    f32vec4_set(&out->r1, 0.0f, 1.0f, 0.0f, 0.0f);
+    f32vec4_set(&out->r2, sinv, 0.0f, cosv, 0.0f);
+    f32vec4_set(&out->r3, 0.0f, 0.0f, 0.0f, 1.0f);
     return out;
 }
 
-inline f32m4 *f32m4_look_at(f32m4 *out, const f32v3 *eye, const f32v3 *at, const f32v3 *up)
+inline f32mat4 *f32mat4_look_at(f32mat4 *out, const f32vec3 *eye, const f32vec3 *at, const f32vec3 *up)
 {
-    f32v3 ax, ay, az;
-    f32v3_normalize(&az, f32v3_sub(&az, at, eye));
-    f32v3_normalize(&ax, f32v3_cross(&ax, up, &az));
-    f32v3_cross(&ay, &az, &ax);
-    f32v4_set(&out->r0, ax.x, ay.x, az.x, 0.0f);
-    f32v4_set(&out->r1, ax.y, ay.y, az.y, 0.0f);
-    f32v4_set(&out->r2, ax.z, ay.z, az.z, 0.0f);
-    f32v4_set(&out->r3, -f32v3_dot(&ax, eye), -f32v3_dot(&ay, eye), -f32v3_dot(&az, eye), 1.0f);
+    f32vec3 ax, ay, az;
+    f32vec3_normalize(&az, f32vec3_sub(&az, at, eye));
+    f32vec3_normalize(&ax, f32vec3_cross(&ax, up, &az));
+    f32vec3_cross(&ay, &az, &ax);
+    f32vec4_set(&out->r0, ax.x, ay.x, az.x, 0.0f);
+    f32vec4_set(&out->r1, ax.y, ay.y, az.y, 0.0f);
+    f32vec4_set(&out->r2, ax.z, ay.z, az.z, 0.0f);
+    f32vec4_set(&out->r3, -f32vec3_dot(&ax, eye), -f32vec3_dot(&ay, eye), -f32vec3_dot(&az, eye), 1.0f);
     return out;
 }
