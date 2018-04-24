@@ -107,17 +107,16 @@ demo_t *demo_init(void *window)
     ID3D12Device *d3d = demo->renderer->d3d;
 
     /* pso */ {
-        u32 vscode_size, pscode_size;
-        void *vscode = lib_load_file("data/triangle.vso", &vscode_size);
-        void *pscode = lib_load_file("data/triangle.pso", &pscode_size);
+        extern u8 vs_triangle[], ps_triangle[];
+        extern u32 vs_triangle_size, ps_triangle_size;
 
         D3D12_INPUT_ELEMENT_DESC input_layout_desc[] = {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         };
         D3D12_GRAPHICS_PIPELINE_STATE_DESC pso_desc = {
             .InputLayout = { input_layout_desc, 1 },
-            .VS = { vscode, vscode_size },
-            .PS = { pscode, pscode_size },
+            .VS = { vs_triangle, vs_triangle_size },
+            .PS = { ps_triangle, ps_triangle_size },
             .RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME,
             .RasterizerState.CullMode = D3D12_CULL_MODE_NONE,
             .RasterizerState.AntialiasedLineEnable = 1,
@@ -129,7 +128,7 @@ demo_t *demo_init(void *window)
             .SampleDesc.Count = 1,
         };
         VHR(ID3D12Device_CreateGraphicsPipelineState(d3d, &pso_desc, &IID_ID3D12PipelineState, &demo->pso));
-        VHR(ID3D12Device_CreateRootSignature(d3d, 0, vscode, vscode_size, &IID_ID3D12RootSignature, &demo->root_sig));
+        VHR(ID3D12Device_CreateRootSignature(d3d, 0, vs_triangle, vs_triangle_size, &IID_ID3D12RootSignature, &demo->root_sig));
     }
     /* vertex buffer */ {
         demo->vertex_buffer = d3d_create_buffer(d3d, D3D12_HEAP_TYPE_UPLOAD, k_triangle_count * 4 * sizeof(f32vec3));

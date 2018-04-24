@@ -1,21 +1,32 @@
-PUBLIC memset
-PUBLIC sqrtf
+format MS64 COFF
 
-.CODE
+public memset
+public sqrtf
+
+macro defshader sh {
+  sh: file `sh#'.cso'
+  sh#_size dd $-sh
+  public sh
+  public sh#_size
+}
+
+section '.text' code readable executable
 
 ; Very simple and slow implementation of memset.
-; This is needed by the CL compiler if libc is not used (/NODEFAULTLIB).
-; We do it in ASM because C solutions don't work with whole-program optimizations (/GL, /LTCG).
 ; TODO: Optimize if speed becomes a problem.
-memset: xor     eax, eax
-L0:     mov     [rcx+rax], dl
-        inc     rax
-        dec     r8
-        jnz     L0
-        mov     rax, rcx
-        ret
+memset: XOR eax, eax
+.0:     MOV [rcx+rax], dl
+        INC rax
+        DEC r8
+        JNZ .0
+        MOV rax, rcx
+        RET
 
 ; TODO: Add some debug stuff if needed.
-sqrtf:  sqrtss  xmm0, xmm0
+sqrtf:  SQRTSS xmm0, xmm0
         ret
-END
+
+section '.data' data readable writeable
+
+defshader vs_triangle
+defshader ps_triangle

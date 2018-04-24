@@ -104,7 +104,7 @@ static i64 __stdcall process_window_message(void *window, u32 message, u64 wpara
     return DefWindowProc(window, message, wparam, lparam);
 }
 
-static void *init_window(const char *name, u32 width, u32 height)
+static void *create_window(const char *name, u32 width, u32 height)
 {
     WNDCLASS winclass = {
         .lpfnWndProc = process_window_message,
@@ -180,7 +180,7 @@ void start(void)
     SetProcessDPIAware();
 
     // init window
-    void *window = init_window(k_demo_name, k_win_width, k_win_height);
+    void *window = create_window(k_demo_name, k_win_width, k_win_height);
 
     // init demo
     demo_t *demo = demo_init(window);
