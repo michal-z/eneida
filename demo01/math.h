@@ -31,11 +31,11 @@ typedef struct f32mat4 {
     };
 } f32mat4;
 
+extern f32 sqrtf(f32 x);
 __forceinline f32 f32_sqrt(f32 x)
 {
     // In debug mode compiler generates 'call sqrtf' (implementation is in asmlib.asm).
     // In release mode compiler generates 'sqrtss xmmA, xmmB' instruction.
-    extern f32 sqrtf(f32 x);
     return sqrtf(x);
 }
 

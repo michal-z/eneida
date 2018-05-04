@@ -1983,32 +1983,68 @@ struct ID3D12CommandList { const ID3D12CommandListDispatchTable *dtbl; };
 #define ID3D12CommandList_GetType(self, ...) ((self)->dtbl->GetType(self, __VA_ARGS__))
 
 typedef struct ID3D12GraphicsCommandListDispatchTable {
-    i32 (STDCALLP QueryInterface)(ID3D12GraphicsCommandList *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(ID3D12GraphicsCommandList *);
-    u32 (STDCALLP Release)(ID3D12GraphicsCommandList *);
-    i32 (STDCALLP GetPrivateData)(ID3D12GraphicsCommandList *, const GUID *, u32 *, void *);
-    i32 (STDCALLP SetPrivateData)(ID3D12GraphicsCommandList *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(ID3D12GraphicsCommandList *, const GUID *, const IUnknown *);
-    i32 (STDCALLP SetName)(ID3D12GraphicsCommandList *, const u16 *);
-    i32 (STDCALLP GetDevice)(ID3D12GraphicsCommandList *, const GUID *, void **);
-    D3D12_COMMAND_LIST_TYPE (STDCALLP GetType)(ID3D12GraphicsCommandList *);
-    i32 (STDCALLP Close)(ID3D12GraphicsCommandList *);
-    i32 (STDCALLP Reset)(ID3D12GraphicsCommandList *, ID3D12CommandAllocator *, ID3D12PipelineState *);
-    void (STDCALLP ClearState)(ID3D12GraphicsCommandList *, ID3D12PipelineState *);
-    void (STDCALLP DrawInstanced)(ID3D12GraphicsCommandList *, u32, u32, u32, u32);
-    void (STDCALLP DrawIndexedInstanced)(ID3D12GraphicsCommandList *, u32, u32, u32, i32, u32);
-    void (STDCALLP Dispatch)(ID3D12GraphicsCommandList *, u32, u32, u32);
-    void (STDCALLP CopyBufferRegion)(ID3D12GraphicsCommandList *, ID3D12Resource *, u64, ID3D12Resource *, u64, u64);
-    void (STDCALLP CopyTextureRegion)(ID3D12GraphicsCommandList *, const D3D12_TEXTURE_COPY_LOCATION *, u32, u32, u32, const D3D12_TEXTURE_COPY_LOCATION *, const D3D12_BOX *);
-    void (STDCALLP CopyResource)(ID3D12GraphicsCommandList *, ID3D12Resource *, ID3D12Resource *);
-    void (STDCALLP CopyTiles)(ID3D12GraphicsCommandList *, ID3D12Resource *, const D3D12_TILED_RESOURCE_COORDINATE *, const D3D12_TILE_REGION_SIZE *, ID3D12Resource *, u64, D3D12_TILE_COPY_FLAGS);
-    void (STDCALLP ResolveSubresource)(ID3D12GraphicsCommandList *, ID3D12Resource *, u32, ID3D12Resource *, u32, DXGI_FORMAT);
-    void (STDCALLP IASetPrimitiveTopology)(ID3D12GraphicsCommandList *, D3D12_PRIMITIVE_TOPOLOGY);
-    void (STDCALLP RSSetViewports)(ID3D12GraphicsCommandList *, u32, const D3D12_VIEWPORT *);
-    void (STDCALLP RSSetScissorRects)(ID3D12GraphicsCommandList *, u32, const D3D12_RECT *);
-    void (STDCALLP OMSetBlendFactor)(ID3D12GraphicsCommandList *, const f32[4]);
-    void (STDCALLP OMSetStencilRef)(ID3D12GraphicsCommandList *, u32);
-    void (STDCALLP SetPipelineState)(ID3D12GraphicsCommandList *, ID3D12PipelineState *);
+    i32 (STDCALLP QueryInterface)(ID3D12GraphicsCommandList *self, const GUID *guid, void **out_object);
+    u32 (STDCALLP AddRef)(ID3D12GraphicsCommandList *self);
+    u32 (STDCALLP Release)(ID3D12GraphicsCommandList *self);
+    i32 (STDCALLP GetPrivateData)(ID3D12GraphicsCommandList *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32 (STDCALLP SetPrivateData)(ID3D12GraphicsCommandList *self, const GUID *guid, u32 data_size, const void *data);
+    i32 (STDCALLP SetPrivateDataInterface)(ID3D12GraphicsCommandList *self, const GUID *guid, const IUnknown *data);
+    i32 (STDCALLP SetName)(ID3D12GraphicsCommandList *self, const u16 *name);
+    i32 (STDCALLP GetDevice)(ID3D12GraphicsCommandList *self, const GUID *guid, void **out_device);
+    D3D12_COMMAND_LIST_TYPE (STDCALLP GetType)(ID3D12GraphicsCommandList *self);
+    i32 (STDCALLP Close)(ID3D12GraphicsCommandList *self);
+    i32 (STDCALLP Reset)(ID3D12GraphicsCommandList *self,
+                         ID3D12CommandAllocator *allocator,
+                         ID3D12PipelineState *initial_state);
+    void (STDCALLP ClearState)(ID3D12GraphicsCommandList *self, ID3D12PipelineState *pipeline_state);
+    void (STDCALLP DrawInstanced)(ID3D12GraphicsCommandList *self,
+                                  u32 vertex_count_per_instance,
+                                  u32 instance_count,
+                                  u32 start_vertex_location,
+                                  u32 start_instance_location);
+    void (STDCALLP DrawIndexedInstanced)(ID3D12GraphicsCommandList *self,
+                                         u32 index_count_per_instance,
+                                         u32 instance_count,
+                                         u32 start_index_location,
+                                         i32 base_vertex_location,
+                                         u32 start_instance_location);
+    void (STDCALLP Dispatch)(ID3D12GraphicsCommandList *self,
+                             u32 thread_group_count_x,
+                             u32 thread_group_count_y,
+                             u32 thread_group_count_z);
+    void (STDCALLP CopyBufferRegion)(ID3D12GraphicsCommandList *self,
+                                     ID3D12Resource *dst_buffer,
+                                     u64 dst_offset,
+                                     ID3D12Resource *src_buffer,
+                                     u64 src_offset,
+                                     u64 num_bytes);
+    void (STDCALLP CopyTextureRegion)(ID3D12GraphicsCommandList *self,
+                                      const D3D12_TEXTURE_COPY_LOCATION *dst,
+                                      u32 dst_x,
+                                      u32 dst_y,
+                                      u32 dst_z,
+                                      const D3D12_TEXTURE_COPY_LOCATION *src,
+                                      const D3D12_BOX *src_box);
+    void (STDCALLP CopyResource)(ID3D12GraphicsCommandList *self, ID3D12Resource *dst, ID3D12Resource *src);
+    void (STDCALLP CopyTiles)(ID3D12GraphicsCommandList *self,
+                              ID3D12Resource *tiled_resource,
+                              const D3D12_TILED_RESOURCE_COORDINATE *tile_region_start_coordinate,
+                              const D3D12_TILE_REGION_SIZE *tile_region_size,
+                              ID3D12Resource *buffer,
+                              u64 buffer_start_offset_in_bytes,
+                              D3D12_TILE_COPY_FLAGS flags);
+    void (STDCALLP ResolveSubresource)(ID3D12GraphicsCommandList *self,
+                                       ID3D12Resource *dst_resource,
+                                       u32 dst_subresource,
+                                       ID3D12Resource *src_resource,
+                                       u32 src_subresource,
+                                       DXGI_FORMAT format);
+    void (STDCALLP IASetPrimitiveTopology)(ID3D12GraphicsCommandList *self, D3D12_PRIMITIVE_TOPOLOGY primitive_topology);
+    void (STDCALLP RSSetViewports)(ID3D12GraphicsCommandList *self, u32 num_viewports, const D3D12_VIEWPORT *viewports);
+    void (STDCALLP RSSetScissorRects)(ID3D12GraphicsCommandList *self, u32 num_rects, const D3D12_RECT *rects);
+    void (STDCALLP OMSetBlendFactor)(ID3D12GraphicsCommandList *self, const f32 blend_factor[4]);
+    void (STDCALLP OMSetStencilRef)(ID3D12GraphicsCommandList *self, u32 stencil_ref);
+    void (STDCALLP SetPipelineState)(ID3D12GraphicsCommandList *self, ID3D12PipelineState *pipeline_state);
     void (STDCALLP ResourceBarrier)(ID3D12GraphicsCommandList *, u32, const D3D12_RESOURCE_BARRIER *);
     void (STDCALLP ExecuteBundle)(ID3D12GraphicsCommandList *, ID3D12GraphicsCommandList *);
     void (STDCALLP SetDescriptorHeaps)(ID3D12GraphicsCommandList *, u32, ID3D12DescriptorHeap *const *);

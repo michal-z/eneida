@@ -1,8 +1,8 @@
 @echo off
 
-::set CFLAGS=/Od /D_DEBUG
-set CFLAGS=/Ox /GL /Oi /fp:fast
-set LFLAGS=/LTCG
+set CFLAGS=/Od
+::set CFLAGS=/O2 /GL /Oi /fp:fast
+::set LFLAGS=/LTCG
 
 set CC=..\compiler\cl.exe
 set HLSL=..\compiler\fxc.exe /Ges /O3 /WX /nologo /Qstrip_reflect /Qstrip_debug /Qstrip_priv

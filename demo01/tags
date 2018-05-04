@@ -1,0 +1,69 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/70a6275b/
+CreateEventEx	main.c	/^void *(__stdcall *CreateEventEx)(SECURITY_ATTRIBUTES *, const char *, u32, u32);$/;"	v	typeref:typename:void * (__stdcall *)(SECURITY_ATTRIBUTES *,const char *,u32,u32)
+CreateFile	main.c	/^void *(__stdcall *CreateFile)(const char *, u32, u32, SECURITY_ATTRIBUTES *, u32, u32, void *);$/;"	v	typeref:typename:void * (__stdcall *)(const char *,u32,u32,SECURITY_ATTRIBUTES *,u32,u32,void *)
+CreateWindowEx	main.c	/^void *(__stdcall *CreateWindowEx)(u32, const char *, const char *, u32, i32, i32, i32, i32, void/;"	v	typeref:typename:void * (__stdcall *)(u32,const char *,const char *,u32,i32,i32,i32,i32,void *,void *,void *,void *)
+ExitProcess	main.c	/^void (__stdcall *ExitProcess)(u32);$/;"	v	typeref:typename:void (__stdcall *)(u32)
+GetDC	main.c	/^void *(__stdcall *GetDC)(void *);$/;"	v	typeref:typename:void * (__stdcall *)(void *)
+GetModuleHandle	main.c	/^void *(__stdcall *GetModuleHandle)(const char *);$/;"	v	typeref:typename:void * (__stdcall *)(const char *)
+GetProcessHeap	main.c	/^void *(__stdcall *GetProcessHeap)(void);$/;"	v	typeref:typename:void * (__stdcall *)(void)
+HeapAlloc	main.c	/^void *(__stdcall *HeapAlloc)(void *, u32, u64);$/;"	v	typeref:typename:void * (__stdcall *)(void *,u32,u64)
+HeapReAlloc	main.c	/^void *(__stdcall *HeapReAlloc)(void *, u32, void *, u64);$/;"	v	typeref:typename:void * (__stdcall *)(void *,u32,void *,u64)
+IID_ID3D12CommandAllocator	main.c	/^const GUID IID_ID3D12CommandAllocator = { 0x6102dee4,0xaf59,0x4b09,0xb9,0x99,0xb4,0x4d,0x73,0xf0/;"	v	typeref:typename:const GUID
+IID_ID3D12CommandQueue	main.c	/^const GUID IID_ID3D12CommandQueue = { 0x0ec870a6,0x5d7e,0x4c22,0x8c,0xfc,0x5b,0xaa,0xe0,0x76,0x1/;"	v	typeref:typename:const GUID
+IID_ID3D12Debug	main.c	/^const GUID IID_ID3D12Debug = { 0x344488b7,0x6846,0x474b,0xb9,0x89,0xf0,0x27,0x44,0x82,0x45,0xe0 /;"	v	typeref:typename:const GUID
+IID_ID3D12DescriptorHeap	main.c	/^const GUID IID_ID3D12DescriptorHeap = { 0x8efb471d,0x616c,0x4f49,0x90,0xf7,0x12,0x7b,0xb7,0x63,0/;"	v	typeref:typename:const GUID
+IID_ID3D12Device	main.c	/^const GUID IID_ID3D12Device = { 0x189819f1,0x1db6,0x4b57,0xbe,0x54,0x18,0x21,0x33,0x9b,0x85,0xf7/;"	v	typeref:typename:const GUID
+IID_ID3D12Fence	main.c	/^const GUID IID_ID3D12Fence = { 0x0a753dcf,0xc4d8,0x4b91,0xad,0xf6,0xbe,0x5a,0x60,0xd9,0x5a,0x76 /;"	v	typeref:typename:const GUID
+IID_ID3D12GraphicsCommandList	main.c	/^const GUID IID_ID3D12GraphicsCommandList = { 0x5b160d0f,0xac1b,0x4185,0x8b,0xa8,0xb3,0xae,0x42,0/;"	v	typeref:typename:const GUID
+IID_ID3D12PipelineState	main.c	/^const GUID IID_ID3D12PipelineState = { 0x765a30f3,0xf624,0x4c6f,0xa8,0x28,0xac,0xe9,0x48,0x62,0x/;"	v	typeref:typename:const GUID
+IID_ID3D12Resource	main.c	/^const GUID IID_ID3D12Resource = { 0x696442be,0xa72e,0x4059,0xbc,0x79,0x5b,0x5c,0x98,0x04,0x0f,0x/;"	v	typeref:typename:const GUID
+IID_ID3D12RootSignature	main.c	/^const GUID IID_ID3D12RootSignature = { 0xc54a6b66,0x72df,0x4ee8,0x8b,0xe5,0xa9,0x46,0xa1,0x42,0x/;"	v	typeref:typename:const GUID
+IID_IDXGIFactory4	main.c	/^const GUID IID_IDXGIFactory4 = { 0x1bc6ea02,0xef36,0x464f,0xbf,0x0c,0x21,0xca,0x39,0xe5,0x16,0x8/;"	v	typeref:typename:const GUID
+IID_IDXGISwapChain	main.c	/^const GUID IID_IDXGISwapChain = { 0x310d36a0,0xd2e7,0x4c0a,0xaa,0x04,0x6a,0x9d,0x23,0xb8,0x88,0x/;"	v	typeref:typename:const GUID
+IID_IDXGISwapChain3	main.c	/^const GUID IID_IDXGISwapChain3 = { 0x94d99bdb,0xf1f8,0x4ab0,0xb2,0x36,0x7d,0xa0,0x17,0x0e,0xda,0/;"	v	typeref:typename:const GUID
+LoadCursor	main.c	/^void *(__stdcall *LoadCursor)(void *, const char *);$/;"	v	typeref:typename:void * (__stdcall *)(void *,const char *)
+OutputDebugString	main.c	/^void (__stdcall *OutputDebugString)(const char *);$/;"	v	typeref:typename:void (__stdcall *)(const char *)
+PostQuitMessage	main.c	/^void (__stdcall *PostQuitMessage)(i32);$/;"	v	typeref:typename:void (__stdcall *)(i32)
+Sleep	main.c	/^void (__stdcall *Sleep)(u32);$/;"	v	typeref:typename:void (__stdcall *)(u32)
+VirtualAlloc	main.c	/^void *(__stdcall *VirtualAlloc)(void *, u64, u32, u32);$/;"	v	typeref:typename:void * (__stdcall *)(void *,u64,u32,u32)
+_fltused	main.c	/^i32 _fltused;$/;"	v	typeref:typename:i32
+constant_buffer	demo01.c	/^    ID3D12Resource *constant_buffer;$/;"	m	struct:demo	typeref:typename:ID3D12Resource *	file:
+constant_buffer_cpu_addr	demo01.c	/^    void *constant_buffer_cpu_addr;$/;"	m	struct:demo	typeref:typename:void *	file:
+create_window	main.c	/^static void *create_window(const char *name, u32 width, u32 height)$/;"	f	typeref:typename:void *	file:
+demo	demo01.c	/^typedef struct demo {$/;"	s	file:
+demo_draw	demo01.c	/^void demo_draw(demo_t *demo)$/;"	f	typeref:typename:void
+demo_init	demo01.c	/^demo_t *demo_init(void *window)$/;"	f	typeref:typename:demo_t *
+demo_shutdown	demo01.c	/^void demo_shutdown(demo_t *demo)$/;"	f	typeref:typename:void
+demo_t	demo01.c	/^} demo_t;$/;"	t	typeref:struct:demo	file:
+demo_update	demo01.c	/^void demo_update(demo_t *demo, f64 frame_time, f32 frame_delta_time)$/;"	f	typeref:typename:void
+dsv_heap	renderer.c	/^    ID3D12DescriptorHeap *dsv_heap;$/;"	m	struct:priv_renderer	typeref:typename:ID3D12DescriptorHeap *	file:
+dxgi_factory	renderer.c	/^    IDXGIFactory4 *dxgi_factory;$/;"	m	struct:priv_renderer	typeref:typename:IDXGIFactory4 *	file:
+frame_count	renderer.c	/^    u64 frame_count;$/;"	m	struct:priv_renderer	typeref:typename:u64	file:
+frame_fence	renderer.c	/^    ID3D12Fence *frame_fence;$/;"	m	struct:priv_renderer	typeref:typename:ID3D12Fence *	file:
+frame_fence_event	renderer.c	/^    void *frame_fence_event;$/;"	m	struct:priv_renderer	typeref:typename:void *	file:
+gr_flush	renderer.c	/^void gr_flush(renderer_t *rend)$/;"	f	typeref:typename:void
+gr_init	renderer.c	/^renderer_t *gr_init(void *window)$/;"	f	typeref:typename:renderer_t *
+gr_present_frame	renderer.c	/^void gr_present_frame(renderer_t *rend)$/;"	f	typeref:typename:void
+gr_shutdown	renderer.c	/^void gr_shutdown(renderer_t *rend)$/;"	f	typeref:typename:void
+lib_get_time	library.c	/^f64 lib_get_time(void)$/;"	f	typeref:typename:f64
+lib_load_file	library.c	/^void *lib_load_file(const char *filename, u32 *ofilesize)$/;"	f	typeref:typename:void *
+mem_alloc	library.c	/^void *mem_alloc(size_t size)$/;"	f	typeref:typename:void *
+mem_free	library.c	/^void mem_free(void *addr)$/;"	f	typeref:typename:void
+mem_realloc	library.c	/^void *mem_realloc(void *addr, size_t size)$/;"	f	typeref:typename:void *
+priv_renderer	renderer.c	/^typedef struct priv_renderer {$/;"	s	file:
+priv_renderer_t	renderer.c	/^} priv_renderer_t;$/;"	t	typeref:struct:priv_renderer	file:
+process_window_message	main.c	/^static i64 __stdcall process_window_message(void *window, u32 message, u64 wparam, i64 lparam)$/;"	f	typeref:typename:i64 __stdcall	file:
+pso	demo01.c	/^    ID3D12PipelineState *pso;$/;"	m	struct:demo	typeref:typename:ID3D12PipelineState *	file:
+renderer	demo01.c	/^    renderer_t *renderer;$/;"	m	struct:demo	typeref:typename:renderer_t *	file:
+root_sig	demo01.c	/^    ID3D12RootSignature *root_sig;$/;"	m	struct:demo	typeref:typename:ID3D12RootSignature *	file:
+rtv_heap	renderer.c	/^    ID3D12DescriptorHeap *rtv_heap;$/;"	m	struct:priv_renderer	typeref:typename:ID3D12DescriptorHeap *	file:
+start	main.c	/^void start(void)$/;"	f	typeref:typename:void
+swapchain	renderer.c	/^    IDXGISwapChain3 *swapchain;$/;"	m	struct:priv_renderer	typeref:typename:IDXGISwapChain3 *	file:
+update_frame_time	main.c	/^static void update_frame_time(void *window, const char *name, f64 *time, f32 *delta_time)$/;"	f	typeref:typename:void	file:
+vertex_buffer	demo01.c	/^    ID3D12Resource *vertex_buffer;$/;"	m	struct:demo	typeref:typename:ID3D12Resource *	file:

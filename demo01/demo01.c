@@ -26,7 +26,8 @@ void demo_update(demo_t *demo, f64 frame_time, f32 frame_delta_time)
     f32mat4 m1;
     /* look at matrix */ {
         f32vec3 eye, at, up;
-        f32mat4_look_at(&m1, f32vec3_set(&eye, 2.0f, 2.0f, -2.0f), f32vec3_set(&at, 0.0f, 0.0f, 0.0f), f32vec3_set(&up, 0.0f, 1.0f, 0.0f));
+        f32mat4_look_at(&m1, f32vec3_set(&eye, 2.0f, 2.0f, -2.0f), f32vec3_set(&at, 0.0f, 0.0f, 0.0f),
+                        f32vec3_set(&up, 0.0f, 1.0f, 0.0f));
     }
 
     f32mat4 m2;
@@ -128,7 +129,8 @@ demo_t *demo_init(void *window)
             .SampleDesc.Count = 1,
         };
         VHR(ID3D12Device_CreateGraphicsPipelineState(d3d, &pso_desc, &IID_ID3D12PipelineState, &demo->pso));
-        VHR(ID3D12Device_CreateRootSignature(d3d, 0, vs_triangle, vs_triangle_size, &IID_ID3D12RootSignature, &demo->root_sig));
+        VHR(ID3D12Device_CreateRootSignature(d3d, 0, vs_triangle, vs_triangle_size,
+                                             &IID_ID3D12RootSignature, &demo->root_sig));
     }
     /* vertex buffer */ {
         demo->vertex_buffer = d3d_create_buffer(d3d, D3D12_HEAP_TYPE_UPLOAD, k_triangle_count * 4 * sizeof(f32vec3));
