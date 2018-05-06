@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿// Hand-crafted header and API reference for all windows stuff I need (including DX12)
+#pragma once
 #include "types.h"
 
 #define STDCALL __stdcall
@@ -1648,11 +1649,12 @@ typedef struct D3D12_MEMCPY_DEST {
     u64 SlicePitch;
 } D3D12_MEMCPY_DEST;
 
-
+// IUnknown
 typedef struct IUnknownDispatchTable {
-    i32 (STDCALLP QueryInterface)(IUnknown *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(IUnknown *);
-    u32 (STDCALLP Release)(IUnknown *);
+    // IUnknown
+    i32 (STDCALLP QueryInterface)(IUnknown *self, const GUID *guid, void **out_object);
+    u32 (STDCALLP AddRef)(IUnknown *self);
+    u32 (STDCALLP Release)(IUnknown *self);
 } IUnknownDispatchTable;
 struct IUnknown { const IUnknownDispatchTable *dtbl; };
 
@@ -1662,12 +1664,15 @@ struct IUnknown { const IUnknownDispatchTable *dtbl; };
 
 #define COMRELEASE(o) if ((o)) { IUnknown_Release((o)); (o) = NULL; }
 
+// ID3DBlob
 typedef struct ID3DBlobDispatchTable {
-    i32 (STDCALLP QueryInterface)(ID3DBlob *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(ID3DBlob *);
-    u32 (STDCALLP Release)(ID3DBlob *);
-    void *(STDCALLP GetBufferPointer)(ID3DBlob *);
-    u64(STDCALLP GetBufferSize)(ID3DBlob *);
+    // IUnknown
+    i32 (STDCALLP QueryInterface)(ID3DBlob *self, const GUID *guid, void **out_object);
+    u32 (STDCALLP AddRef)(ID3DBlob *self);
+    u32 (STDCALLP Release)(ID3DBlob *self);
+    // ID3DBlob
+    void *(STDCALLP GetBufferPointer)(ID3DBlob *self);
+    u64 (STDCALLP GetBufferSize)(ID3DBlob *self);
 } ID3DBlobDispatchTable;
 struct ID3DBlob { const ID3DBlobDispatchTable *dtbl; };
 
@@ -1677,14 +1682,17 @@ struct ID3DBlob { const ID3DBlobDispatchTable *dtbl; };
 #define ID3DBlob_GetBufferPointer(self, ...) ((self)->dtbl->GetBufferPointer(self, __VA_ARGS__))
 #define ID3DBlob_GetBufferSize(self, ...) ((self)->dtbl->GetBufferSize(self, __VA_ARGS__))
 
+// ID3D12Object
 typedef struct ID3D12ObjectDispatchTable {
-    i32 (STDCALLP QueryInterface)(ID3D12Object *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(ID3D12Object *);
-    u32 (STDCALLP Release)(ID3D12Object *);
-    i32 (STDCALLP GetPrivateData)(ID3D12Object *, const GUID *, u32 *, void *);
-    i32 (STDCALLP SetPrivateData)(ID3D12Object *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(ID3D12Object *, const GUID *, const IUnknown *);
-    i32 (STDCALLP SetName)(ID3D12Object *, const u16 *);
+    // IUnknown
+    i32 (STDCALLP QueryInterface)(ID3D12Object *self, const GUID *guid, void **out_object);
+    u32 (STDCALLP AddRef)(ID3D12Object *self);
+    u32 (STDCALLP Release)(ID3D12Object *self);
+    // ID3D12Object
+    i32 (STDCALLP GetPrivateData)(ID3D12Object *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32 (STDCALLP SetPrivateData)(ID3D12Object *self, const GUID *guid, u32 data_size, const void *data);
+    i32 (STDCALLP SetPrivateDataInterface)(ID3D12Object *self, const GUID *guid, const IUnknown *data);
+    i32 (STDCALLP SetName)(ID3D12Object *self, const u16 *name);
 } ID3D12ObjectDispatchTable;
 struct ID3D12Object { const ID3D12ObjectDispatchTable *dtbl; };
 
@@ -1696,15 +1704,19 @@ struct ID3D12Object { const ID3D12ObjectDispatchTable *dtbl; };
 #define ID3D12Object_SetPrivateDataInterface(self, ...) ((self)->dtbl->SetPrivateDataInterface(self, __VA_ARGS__))
 #define ID3D12Object_SetName(self, ...) ((self)->dtbl->SetName(self, __VA_ARGS__))
 
+// ID3D12DeviceChild
 typedef struct ID3D12DeviceChildDispatchTable {
-    i32 (STDCALLP QueryInterface)(ID3D12DeviceChild *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(ID3D12DeviceChild *);
-    u32 (STDCALLP Release)(ID3D12DeviceChild *);
-    i32 (STDCALLP GetPrivateData)(ID3D12DeviceChild *, const GUID *, u32 *, void *);
-    i32 (STDCALLP SetPrivateData)(ID3D12DeviceChild *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(ID3D12DeviceChild *, const GUID *, const IUnknown *);
-    i32 (STDCALLP SetName)(ID3D12DeviceChild *, const u16 *);
-    i32 (STDCALLP GetDevice)(ID3D12DeviceChild *, const GUID *, void **);
+    // IUnknown
+    i32 (STDCALLP QueryInterface)(ID3D12DeviceChild *self, const GUID *guid, void **out_object);
+    u32 (STDCALLP AddRef)(ID3D12DeviceChild *self);
+    u32 (STDCALLP Release)(ID3D12DeviceChild *self);
+    // ID3D12Object
+    i32 (STDCALLP GetPrivateData)(ID3D12DeviceChild *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32 (STDCALLP SetPrivateData)(ID3D12DeviceChild *self, const GUID *guid, u32 data_size, const void *data);
+    i32 (STDCALLP SetPrivateDataInterface)(ID3D12DeviceChild *self, const GUID *guid, const IUnknown *data);
+    i32 (STDCALLP SetName)(ID3D12DeviceChild *self, const u16 *name);
+    // ID3D12DeviceChild
+    i32 (STDCALLP GetDevice)(ID3D12DeviceChild *self, const GUID *guid, void **out_device);
 } ID3D12DeviceChildDispatchTable;
 struct ID3D12DeviceChild { const ID3D12DeviceChildDispatchTable *dtbl; };
 
@@ -1717,15 +1729,19 @@ struct ID3D12DeviceChild { const ID3D12DeviceChildDispatchTable *dtbl; };
 #define ID3D12DeviceChild_SetName(self, ...) ((self)->dtbl->SetName(self, __VA_ARGS__))
 #define ID3D12DeviceChild_GetDevice(self, ...) ((self)->dtbl->GetDevice(self, __VA_ARGS__))
 
+// ID3D12RootSignature
 typedef struct ID3D12RootSignatureDispatchTable {
-    i32 (STDCALLP QueryInterface)(ID3D12RootSignature *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(ID3D12RootSignature *);
-    u32 (STDCALLP Release)(ID3D12RootSignature *);
-    i32 (STDCALLP GetPrivateData)(ID3D12RootSignature *, const GUID *, u32 *, void *);
-    i32 (STDCALLP SetPrivateData)(ID3D12RootSignature *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(ID3D12RootSignature *, const GUID *, const IUnknown *);
-    i32 (STDCALLP SetName)(ID3D12RootSignature *, const u16 *);
-    i32 (STDCALLP GetDevice)(ID3D12RootSignature *, const GUID *, void **);
+    // IUnknown
+    i32 (STDCALLP QueryInterface)(ID3D12RootSignature *self, const GUID *guid, void **out_object);
+    u32 (STDCALLP AddRef)(ID3D12RootSignature *self);
+    u32 (STDCALLP Release)(ID3D12RootSignature *self);
+    // ID3D12Object
+    i32 (STDCALLP GetPrivateData)(ID3D12RootSignature *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32 (STDCALLP SetPrivateData)(ID3D12RootSignature *self, const GUID *guid, u32 data_size, const void *data);
+    i32 (STDCALLP SetPrivateDataInterface)(ID3D12RootSignature *self, const GUID *guid, const IUnknown *data);
+    i32 (STDCALLP SetName)(ID3D12RootSignature *self, const u16 *name);
+    // ID3D12DeviceChild
+    i32 (STDCALLP GetDevice)(ID3D12RootSignature *self, const GUID *guid, void **out_device);
 } ID3D12RootSignatureDispatchTable;
 struct ID3D12RootSignature { const ID3D12RootSignatureDispatchTable *dtbl; };
 
@@ -1738,15 +1754,19 @@ struct ID3D12RootSignature { const ID3D12RootSignatureDispatchTable *dtbl; };
 #define ID3D12RootSignature_SetName(self, ...) ((self)->dtbl->SetName(self, __VA_ARGS__))
 #define ID3D12RootSignature_GetDevice(self, ...) ((self)->dtbl->GetDevice(self, __VA_ARGS__))
 
+// ID3D12Pageable
 typedef struct ID3D12PageableDispatchTable {
-    i32 (STDCALLP QueryInterface)(ID3D12Pageable *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(ID3D12Pageable *);
-    u32 (STDCALLP Release)(ID3D12Pageable *);
-    i32 (STDCALLP GetPrivateData)(ID3D12Pageable *, const GUID *, u32 *, void *);
-    i32 (STDCALLP SetPrivateData)(ID3D12Pageable *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(ID3D12Pageable *, const GUID *, const IUnknown *);
-    i32 (STDCALLP SetName)(ID3D12Pageable *, const u16 *);
-    i32 (STDCALLP GetDevice)(ID3D12Pageable *, const GUID *, void **);
+    // IUnknown
+    i32 (STDCALLP QueryInterface)(ID3D12Pageable *self, const GUID *guid, void **out_object);
+    u32 (STDCALLP AddRef)(ID3D12Pageable *self);
+    u32 (STDCALLP Release)(ID3D12Pageable *self);
+    // ID3D12Object
+    i32 (STDCALLP GetPrivateData)(ID3D12Pageable *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32 (STDCALLP SetPrivateData)(ID3D12Pageable *self, const GUID *guid, u32 data_size, const void *data);
+    i32 (STDCALLP SetPrivateDataInterface)(ID3D12Pageable *self, const GUID *guid, const IUnknown *data);
+    i32 (STDCALLP SetName)(ID3D12Pageable *self, const u16 *name);
+    // ID3D12DeviceChild
+    i32 (STDCALLP GetDevice)(ID3D12Pageable *self, const GUID *guid, void **out_device);
 } ID3D12PageableDispatchTable;
 struct ID3D12Pageable { const ID3D12PageableDispatchTable *dtbl; };
 
@@ -1759,16 +1779,22 @@ struct ID3D12Pageable { const ID3D12PageableDispatchTable *dtbl; };
 #define ID3D12Pageable_SetName(self, ...) ((self)->dtbl->SetName(self, __VA_ARGS__))
 #define ID3D12Pageable_GetDevice(self, ...) ((self)->dtbl->GetDevice(self, __VA_ARGS__))
 
+// ID3D12Heap
 typedef struct ID3D12HeapDispatchTable {
-    i32 (STDCALLP QueryInterface)(ID3D12Heap *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(ID3D12Heap *);
-    u32 (STDCALLP Release)(ID3D12Heap *);
-    i32 (STDCALLP GetPrivateData)(ID3D12Heap *, const GUID *, u32 *, void *);
-    i32 (STDCALLP SetPrivateData)(ID3D12Heap *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(ID3D12Heap *, const GUID *, const IUnknown *);
-    i32 (STDCALLP SetName)(ID3D12Heap *, const u16 *);
-    i32 (STDCALLP GetDevice)(ID3D12Heap *, const GUID  *, void **);
-    D3D12_HEAP_DESC *(STDCALLP GetDesc)(ID3D12Heap *, D3D12_HEAP_DESC *);
+    // IUnknown
+    i32 (STDCALLP QueryInterface)(ID3D12Heap *self, const GUID *guid, void **out_object);
+    u32 (STDCALLP AddRef)(ID3D12Heap *self);
+    u32 (STDCALLP Release)(ID3D12Heap *self);
+    // ID3D12Object
+    i32 (STDCALLP GetPrivateData)(ID3D12Heap *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32 (STDCALLP SetPrivateData)(ID3D12Heap *self, const GUID *guid, u32 data_size, const void *data);
+    i32 (STDCALLP SetPrivateDataInterface)(ID3D12Heap *self, const GUID *guid, const IUnknown *data);
+    i32 (STDCALLP SetName)(ID3D12Heap *self, const u16 *name);
+    // ID3D12DeviceChild
+    i32 (STDCALLP GetDevice)(ID3D12Heap *self, const GUID *guid, void **out_device);
+    // ID3D12Pageable
+    // ID3D12Heap
+    D3D12_HEAP_DESC *(STDCALLP GetDesc)(ID3D12Heap *self, D3D12_HEAP_DESC *out_heap_desc);
 } ID3D12HeapDispatchTable;
 struct ID3D12Heap { const ID3D12HeapDispatchTable *dtbl; };
 
@@ -1782,22 +1808,38 @@ struct ID3D12Heap { const ID3D12HeapDispatchTable *dtbl; };
 #define ID3D12Heap_GetDevice(self, ...) ((self)->dtbl->GetDevice(self, __VA_ARGS__))
 #define ID3D12Heap_GetDesc(self, ...) ((self)->dtbl->GetDesc(self, __VA_ARGS__))
 
+// ID3D12Resource
 typedef struct ID3D12ResourceDispatchTable {
-    i32 (STDCALLP QueryInterface)(ID3D12Resource *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(ID3D12Resource *);
-    u32 (STDCALLP Release)(ID3D12Resource *);
-    i32 (STDCALLP GetPrivateData)(ID3D12Resource *, const GUID *, u32 *, void *);
-    i32 (STDCALLP SetPrivateData)(ID3D12Resource *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(ID3D12Resource *, const GUID *, const IUnknown *);
-    i32 (STDCALLP SetName)(ID3D12Resource *, const u16 *);
-    i32 (STDCALLP GetDevice)(ID3D12Resource *, const GUID *, void **);
-    i32 (STDCALLP Map)(ID3D12Resource *resource, u32 subresource, const D3D12_RANGE *range, void **optr);
-    void (STDCALLP Unmap)(ID3D12Resource *resource, u32 subresource, const D3D12_RANGE *range);
-    D3D12_RESOURCE_DESC *(STDCALLP GetDesc)(ID3D12Resource *, D3D12_RESOURCE_DESC *);
-    D3D12_GPU_VIRTUAL_ADDRESS (STDCALLP GetGPUVirtualAddress)(ID3D12Resource *);
-    i32 (STDCALLP WriteToSubresource)(ID3D12Resource *, u32, const D3D12_BOX *, const void *, u32, u32);
-    i32 (STDCALLP ReadFromSubresource)(ID3D12Resource *, void *, u32, u32, u32, const D3D12_BOX *);
-    i32 (STDCALLP GetHeapProperties)(ID3D12Resource *, D3D12_HEAP_PROPERTIES *, D3D12_HEAP_FLAGS *);
+    // IUnknown
+    i32 (STDCALLP QueryInterface)(ID3D12Resource *self, const GUID *guid, void **out_object);
+    u32 (STDCALLP AddRef)(ID3D12Resource *self);
+    u32 (STDCALLP Release)(ID3D12Resource *self);
+    // ID3D12Object
+    i32 (STDCALLP GetPrivateData)(ID3D12Resource *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32 (STDCALLP SetPrivateData)(ID3D12Resource *self, const GUID *guid, u32 data_size, const void *data);
+    i32 (STDCALLP SetPrivateDataInterface)(ID3D12Resource *self, const GUID *guid, const IUnknown *data);
+    i32 (STDCALLP SetName)(ID3D12Resource *self, const u16 *name);
+    // ID3D12DeviceChild
+    i32 (STDCALLP GetDevice)(ID3D12Resource *self, const GUID *guid, void **out_device);
+    // ID3D12Pageable
+    // ID3D12Resource
+    i32 (STDCALLP Map)(ID3D12Resource *self, u32 subresource, const D3D12_RANGE *read_range, void **out_data);
+    void (STDCALLP Unmap)(ID3D12Resource *self, u32 subresource, const D3D12_RANGE *written_range);
+    D3D12_RESOURCE_DESC *(STDCALLP GetDesc)(ID3D12Resource *self, D3D12_RESOURCE_DESC *out_resource_desc);
+    D3D12_GPU_VIRTUAL_ADDRESS (STDCALLP GetGPUVirtualAddress)(ID3D12Resource *self);
+    i32 (STDCALLP WriteToSubresource)(ID3D12Resource *self,
+                                      u32 dst_subresource,
+                                      const D3D12_BOX *dst_box,
+                                      const void *src_data,
+                                      u32 src_row_pitch,
+                                      u32 src_depth_pitch);
+    i32 (STDCALLP ReadFromSubresource)(ID3D12Resource *self,
+                                       void *dst_data,
+                                       u32 dst_row_pitch,
+                                       u32 dst_depth_pitch,
+                                       u32 src_subresource,
+                                       const D3D12_BOX *src_box);
+    i32 (STDCALLP GetHeapProperties)(ID3D12Resource *self, D3D12_HEAP_PROPERTIES *out_properties, D3D12_HEAP_FLAGS *out_flags);
 } ID3D12ResourceDispatchTable;
 struct ID3D12Resource { const ID3D12ResourceDispatchTable *dtbl; };
 
@@ -1817,16 +1859,22 @@ struct ID3D12Resource { const ID3D12ResourceDispatchTable *dtbl; };
 #define ID3D12Resource_ReadFromSubresource(self, ...) ((self)->dtbl->ReadFromSubresource(self, __VA_ARGS__))
 #define ID3D12Resource_GetHeapProperties(self, ...) ((self)->dtbl->GetHeapProperties(self, __VA_ARGS__))
 
+// ID3D12CommandAllocator
 typedef struct ID3D12CommandAllocatorDispatchTable {
-    i32 (STDCALLP QueryInterface)(ID3D12CommandAllocator *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(ID3D12CommandAllocator *);
-    u32 (STDCALLP Release)(ID3D12CommandAllocator *);
-    i32 (STDCALLP GetPrivateData)(ID3D12CommandAllocator *, const GUID *, u32 *, void *);
-    i32 (STDCALLP SetPrivateData)(ID3D12CommandAllocator *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(ID3D12CommandAllocator *, const GUID *, const IUnknown *);
-    i32 (STDCALLP SetName)(ID3D12CommandAllocator *, const u16 *);
-    i32 (STDCALLP GetDevice)(ID3D12CommandAllocator *, const GUID *, void **);
-    i32 (STDCALLP Reset)(ID3D12CommandAllocator *);
+    // IUnknown
+    i32 (STDCALLP QueryInterface)(ID3D12CommandAllocator *self, const GUID *guid, void **out_object);
+    u32 (STDCALLP AddRef)(ID3D12CommandAllocator *self);
+    u32 (STDCALLP Release)(ID3D12CommandAllocator *self);
+    // ID3D12Object
+    i32 (STDCALLP GetPrivateData)(ID3D12CommandAllocator *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32 (STDCALLP SetPrivateData)(ID3D12CommandAllocator *self, const GUID *guid, u32 data_size, const void *data);
+    i32 (STDCALLP SetPrivateDataInterface)(ID3D12CommandAllocator *self, const GUID *guid, const IUnknown *data);
+    i32 (STDCALLP SetName)(ID3D12CommandAllocator *self, const u16 *name);
+    // ID3D12DeviceChild
+    i32 (STDCALLP GetDevice)(ID3D12CommandAllocator *self, const GUID *guid, void **out_device);
+    // ID3D12Pageable
+    // ID3D12CommandAllocator
+    i32 (STDCALLP Reset)(ID3D12CommandAllocator *self);
 } ID3D12CommandAllocatorDispatchTable;
 struct ID3D12CommandAllocator { const ID3D12CommandAllocatorDispatchTable *dtbl; };
 
@@ -1840,18 +1888,24 @@ struct ID3D12CommandAllocator { const ID3D12CommandAllocatorDispatchTable *dtbl;
 #define ID3D12CommandAllocator_GetDevice(self, ...) ((self)->dtbl->GetDevice(self, __VA_ARGS__))
 #define ID3D12CommandAllocator_Reset(self, ...) ((self)->dtbl->Reset(self, __VA_ARGS__))
 
+// ID3D12Fence
 typedef struct ID3D12FenceDispatchTable {
-    i32 (STDCALLP QueryInterface)(ID3D12Fence *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(ID3D12Fence *);
-    u32 (STDCALLP Release)(ID3D12Fence *);
-    i32 (STDCALLP GetPrivateData)(ID3D12Fence *, const GUID *, u32 *, void *);
-    i32 (STDCALLP SetPrivateData)(ID3D12Fence *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(ID3D12Fence *, const GUID *, const IUnknown *);
-    i32 (STDCALLP SetName)(ID3D12Fence *, const u16 *);
-    i32 (STDCALLP GetDevice)(ID3D12Fence *, const GUID *, void **);
-    u64(STDCALLP GetCompletedValue)(ID3D12Fence *);
-    i32 (STDCALLP SetEventOnCompletion)(ID3D12Fence *, u64, void *);
-    i32 (STDCALLP Signal)(ID3D12Fence *, u64);
+    // IUnknown
+    i32 (STDCALLP QueryInterface)(ID3D12Fence *self, const GUID *guid, void **out_object);
+    u32 (STDCALLP AddRef)(ID3D12Fence *self);
+    u32 (STDCALLP Release)(ID3D12Fence *self);
+    // ID3D12Object
+    i32 (STDCALLP GetPrivateData)(ID3D12Fence *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32 (STDCALLP SetPrivateData)(ID3D12Fence *self, const GUID *guid, u32 data_size, const void *data);
+    i32 (STDCALLP SetPrivateDataInterface)(ID3D12Fence *self, const GUID *guid, const IUnknown *data);
+    i32 (STDCALLP SetName)(ID3D12Fence *self, const u16 *name);
+    // ID3D12DeviceChild
+    i32 (STDCALLP GetDevice)(ID3D12Fence *self, const GUID *guid, void **out_device);
+    // ID3D12Pageable
+    // ID3D12Fence
+    u64 (STDCALLP GetCompletedValue)(ID3D12Fence *self);
+    i32 (STDCALLP SetEventOnCompletion)(ID3D12Fence *self, u64 value, void *event);
+    i32 (STDCALLP Signal)(ID3D12Fence *self, u64 value);
 } ID3D12FenceDispatchTable;
 struct ID3D12Fence { const ID3D12FenceDispatchTable *dtbl; };
 
@@ -1867,16 +1921,22 @@ struct ID3D12Fence { const ID3D12FenceDispatchTable *dtbl; };
 #define ID3D12Fence_SetEventOnCompletion(self, ...) ((self)->dtbl->SetEventOnCompletion(self, __VA_ARGS__))
 #define ID3D12Fence_Signal(self, ...) ((self)->dtbl->Signal(self, __VA_ARGS__))
 
+// ID3D12PipelineState
 typedef struct ID3D12PipelineStateDispatchTable {
-    i32 (STDCALLP QueryInterface)(ID3D12PipelineState *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(ID3D12PipelineState *);
-    u32 (STDCALLP Release)(ID3D12PipelineState *);
-    i32 (STDCALLP GetPrivateData)(ID3D12PipelineState *, const GUID *, u32 *, void *);
-    i32 (STDCALLP SetPrivateData)(ID3D12PipelineState *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(ID3D12PipelineState *, const GUID *, const IUnknown *);
-    i32 (STDCALLP SetName)(ID3D12PipelineState *, const u16 *);
-    i32 (STDCALLP GetDevice)(ID3D12PipelineState *, const GUID *, void **);
-    i32 (STDCALLP GetCachedBlob)(ID3D12PipelineState *, ID3DBlob **);
+    // IUnknown
+    i32 (STDCALLP QueryInterface)(ID3D12PipelineState *self, const GUID *guid, void **out_object);
+    u32 (STDCALLP AddRef)(ID3D12PipelineState *self);
+    u32 (STDCALLP Release)(ID3D12PipelineState *self);
+    // ID3D12Object
+    i32 (STDCALLP GetPrivateData)(ID3D12PipelineState *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32 (STDCALLP SetPrivateData)(ID3D12PipelineState *self, const GUID *guid, u32 data_size, const void *data);
+    i32 (STDCALLP SetPrivateDataInterface)(ID3D12PipelineState *self, const GUID *guid, const IUnknown *data);
+    i32 (STDCALLP SetName)(ID3D12PipelineState *self, const u16 *name);
+    // ID3D12DeviceChild
+    i32 (STDCALLP GetDevice)(ID3D12PipelineState *self, const GUID *guid, void **out_device);
+    // ID3D12Pageable
+    // ID3D12PipelineState
+    i32 (STDCALLP GetCachedBlob)(ID3D12PipelineState *self, ID3DBlob **out_blob);
 } ID3D12PipelineStateDispatchTable;
 struct ID3D12PipelineState { const ID3D12PipelineStateDispatchTable *dtbl; };
 
@@ -1890,18 +1950,26 @@ struct ID3D12PipelineState { const ID3D12PipelineStateDispatchTable *dtbl; };
 #define ID3D12PipelineState_GetDevice(self, ...) ((self)->dtbl->GetDevice(self, __VA_ARGS__))
 #define ID3D12PipelineState_GetCachedBlob(self, ...) ((self)->dtbl->GetCachedBlob(self, __VA_ARGS__))
 
+// ID3D12DescriptorHeap
 typedef struct ID3D12DescriptorHeapDispatchTable {
-    i32 (STDCALLP QueryInterface)(ID3D12DescriptorHeap *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(ID3D12DescriptorHeap *);
-    u32 (STDCALLP Release)(ID3D12DescriptorHeap *);
-    i32 (STDCALLP GetPrivateData)(ID3D12DescriptorHeap *, const GUID *, u32 *, void *);
-    i32 (STDCALLP SetPrivateData)(ID3D12DescriptorHeap *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(ID3D12DescriptorHeap *, const GUID *, const IUnknown *);
-    i32 (STDCALLP SetName)(ID3D12DescriptorHeap *, const u16 *);
-    i32 (STDCALLP GetDevice)(ID3D12DescriptorHeap *, const GUID *, void **);
-    D3D12_DESCRIPTOR_HEAP_DESC *(STDCALLP GetDesc)(ID3D12DescriptorHeap *, D3D12_DESCRIPTOR_HEAP_DESC *);
-    D3D12_CPU_DESCRIPTOR_HANDLE *(STDCALLP GetCPUDescriptorHandleForHeapStart)(ID3D12DescriptorHeap *, D3D12_CPU_DESCRIPTOR_HANDLE *);
-    D3D12_GPU_DESCRIPTOR_HANDLE *(STDCALLP GetGPUDescriptorHandleForHeapStart)(ID3D12DescriptorHeap *, D3D12_GPU_DESCRIPTOR_HANDLE *);
+    // IUnknown
+    i32 (STDCALLP QueryInterface)(ID3D12DescriptorHeap *self, const GUID *guid, void **out_object);
+    u32 (STDCALLP AddRef)(ID3D12DescriptorHeap *self);
+    u32 (STDCALLP Release)(ID3D12DescriptorHeap *self);
+    // ID3D12Object
+    i32 (STDCALLP GetPrivateData)(ID3D12DescriptorHeap *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32 (STDCALLP SetPrivateData)(ID3D12DescriptorHeap *self, const GUID *guid, u32 data_size, const void *data);
+    i32 (STDCALLP SetPrivateDataInterface)(ID3D12DescriptorHeap *self, const GUID *guid, const IUnknown *data);
+    i32 (STDCALLP SetName)(ID3D12DescriptorHeap *self, const u16 *name);
+    // ID3D12DeviceChild
+    i32 (STDCALLP GetDevice)(ID3D12DescriptorHeap *self, const GUID *guid, void **out_device);
+    // ID3D12Pageable
+    // ID3D12DescriptorHeap
+    D3D12_DESCRIPTOR_HEAP_DESC *(STDCALLP GetDesc)(ID3D12DescriptorHeap *self, D3D12_DESCRIPTOR_HEAP_DESC *out_desc);
+    D3D12_CPU_DESCRIPTOR_HANDLE *(STDCALLP GetCPUDescriptorHandleForHeapStart)(ID3D12DescriptorHeap *self,
+                                                                               D3D12_CPU_DESCRIPTOR_HANDLE *out_handle);
+    D3D12_GPU_DESCRIPTOR_HANDLE *(STDCALLP GetGPUDescriptorHandleForHeapStart)(ID3D12DescriptorHeap *self,
+                                                                               D3D12_GPU_DESCRIPTOR_HANDLE *out_handle);
 } ID3D12DescriptorHeapDispatchTable;
 struct ID3D12DescriptorHeap { const ID3D12DescriptorHeapDispatchTable *dtbl; };
 
@@ -1917,15 +1985,21 @@ struct ID3D12DescriptorHeap { const ID3D12DescriptorHeapDispatchTable *dtbl; };
 #define ID3D12DescriptorHeap_GetCPUDescriptorHandleForHeapStart(self, ...) ((self)->dtbl->GetCPUDescriptorHandleForHeapStart(self, __VA_ARGS__))
 #define ID3D12DescriptorHeap_GetGPUDescriptorHandleForHeapStart(self, ...) ((self)->dtbl->GetGPUDescriptorHandleForHeapStart(self, __VA_ARGS__))
 
+// ID3D12QueryHeap
 typedef struct ID3D12QueryHeapDispatchTable {
-    i32 (STDCALLP QueryInterface)(ID3D12QueryHeap *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(ID3D12QueryHeap *);
-    u32 (STDCALLP Release)(ID3D12QueryHeap *);
-    i32 (STDCALLP GetPrivateData)(ID3D12QueryHeap *, const GUID *, u32 *, void *);
-    i32 (STDCALLP SetPrivateData)(ID3D12QueryHeap *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(ID3D12QueryHeap *, const GUID *, const IUnknown *);
-    i32 (STDCALLP SetName)(ID3D12QueryHeap *, const u16 *);
-    i32 (STDCALLP GetDevice)(ID3D12QueryHeap *, const GUID *, void **);
+    // IUnknown
+    i32 (STDCALLP QueryInterface)(ID3D12QueryHeap *self, const GUID *guid, void **out_object);
+    u32 (STDCALLP AddRef)(ID3D12QueryHeap *self);
+    u32 (STDCALLP Release)(ID3D12QueryHeap *self);
+    // ID3D12Object
+    i32 (STDCALLP GetPrivateData)(ID3D12QueryHeap *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32 (STDCALLP SetPrivateData)(ID3D12QueryHeap *self, const GUID *guid, u32 data_size, const void *data);
+    i32 (STDCALLP SetPrivateDataInterface)(ID3D12QueryHeap *self, const GUID *guid, const IUnknown *data);
+    i32 (STDCALLP SetName)(ID3D12QueryHeap *self, const u16 *name);
+    // ID3D12DeviceChild
+    i32 (STDCALLP GetDevice)(ID3D12QueryHeap *self, const GUID *guid, void **out_device);
+    // ID3D12Pageable
+    // ID3D12QueryHeap
 } ID3D12QueryHeapDispatchTable;
 struct ID3D12QueryHeap { const ID3D12QueryHeapDispatchTable *dtbl; };
 
@@ -1968,7 +2042,7 @@ typedef struct ID3D12CommandListDispatchTable {
     i32 (STDCALLP SetPrivateDataInterface)(ID3D12CommandList *, const GUID *, const IUnknown *);
     i32 (STDCALLP SetName)(ID3D12CommandList *, const u16 *);
     i32 (STDCALLP GetDevice)(ID3D12CommandList *, const GUID *, void **);
-    D3D12_COMMAND_LIST_TYPE(STDCALLP GetType)(ID3D12CommandList *);
+    D3D12_COMMAND_LIST_TYPE (STDCALLP GetType)(ID3D12CommandList *);
 } ID3D12CommandListDispatchTable;
 struct ID3D12CommandList { const ID3D12CommandListDispatchTable *dtbl; };
 
@@ -1982,16 +2056,22 @@ struct ID3D12CommandList { const ID3D12CommandListDispatchTable *dtbl; };
 #define ID3D12CommandList_GetDevice(self, ...) ((self)->dtbl->GetDevice(self, __VA_ARGS__))
 #define ID3D12CommandList_GetType(self, ...) ((self)->dtbl->GetType(self, __VA_ARGS__))
 
+// ID3D12GraphicsCommandList
 typedef struct ID3D12GraphicsCommandListDispatchTable {
+    // IUnknown
     i32 (STDCALLP QueryInterface)(ID3D12GraphicsCommandList *self, const GUID *guid, void **out_object);
     u32 (STDCALLP AddRef)(ID3D12GraphicsCommandList *self);
     u32 (STDCALLP Release)(ID3D12GraphicsCommandList *self);
+    // ID3D12Object
     i32 (STDCALLP GetPrivateData)(ID3D12GraphicsCommandList *self, const GUID *guid, u32 *out_data_size, void *out_data);
     i32 (STDCALLP SetPrivateData)(ID3D12GraphicsCommandList *self, const GUID *guid, u32 data_size, const void *data);
     i32 (STDCALLP SetPrivateDataInterface)(ID3D12GraphicsCommandList *self, const GUID *guid, const IUnknown *data);
     i32 (STDCALLP SetName)(ID3D12GraphicsCommandList *self, const u16 *name);
+    // ID3D12DeviceChild
     i32 (STDCALLP GetDevice)(ID3D12GraphicsCommandList *self, const GUID *guid, void **out_device);
+    // ID3D12CommandList
     D3D12_COMMAND_LIST_TYPE (STDCALLP GetType)(ID3D12GraphicsCommandList *self);
+    // ID3D12GraphicsCommandList
     i32 (STDCALLP Close)(ID3D12GraphicsCommandList *self);
     i32 (STDCALLP Reset)(ID3D12GraphicsCommandList *self,
                          ID3D12CommandAllocator *allocator,
@@ -2045,17 +2125,35 @@ typedef struct ID3D12GraphicsCommandListDispatchTable {
     void (STDCALLP OMSetBlendFactor)(ID3D12GraphicsCommandList *self, const f32 blend_factor[4]);
     void (STDCALLP OMSetStencilRef)(ID3D12GraphicsCommandList *self, u32 stencil_ref);
     void (STDCALLP SetPipelineState)(ID3D12GraphicsCommandList *self, ID3D12PipelineState *pipeline_state);
-    void (STDCALLP ResourceBarrier)(ID3D12GraphicsCommandList *, u32, const D3D12_RESOURCE_BARRIER *);
-    void (STDCALLP ExecuteBundle)(ID3D12GraphicsCommandList *, ID3D12GraphicsCommandList *);
-    void (STDCALLP SetDescriptorHeaps)(ID3D12GraphicsCommandList *, u32, ID3D12DescriptorHeap *const *);
-    void (STDCALLP SetComputeRootSignature)(ID3D12GraphicsCommandList *, ID3D12RootSignature *);
-    void (STDCALLP SetGraphicsRootSignature)(ID3D12GraphicsCommandList *, ID3D12RootSignature *);
-    void (STDCALLP SetComputeRootDescriptorTable)(ID3D12GraphicsCommandList *, u32, D3D12_GPU_DESCRIPTOR_HANDLE);
-    void (STDCALLP SetGraphicsRootDescriptorTable)(ID3D12GraphicsCommandList *, u32, D3D12_GPU_DESCRIPTOR_HANDLE);
-    void (STDCALLP SetComputeRoot32BitConstant)(ID3D12GraphicsCommandList *, u32, u32, u32);
-    void (STDCALLP SetGraphicsRoot32BitConstant)(ID3D12GraphicsCommandList *, u32, u32, u32);
-    void (STDCALLP SetComputeRoot32BitConstants)(ID3D12GraphicsCommandList *, u32, u32, const void *, u32);
-    void (STDCALLP SetGraphicsRoot32BitConstants)(ID3D12GraphicsCommandList *, u32, u32, const void *, u32);
+    void (STDCALLP ResourceBarrier)(ID3D12GraphicsCommandList *self, u32 num_barriers, const D3D12_RESOURCE_BARRIER *barriers);
+    void (STDCALLP ExecuteBundle)(ID3D12GraphicsCommandList *self, ID3D12GraphicsCommandList *command_list);
+    void (STDCALLP SetDescriptorHeaps)(ID3D12GraphicsCommandList *self, u32 num_heaps, ID3D12DescriptorHeap *const *heaps);
+    void (STDCALLP SetComputeRootSignature)(ID3D12GraphicsCommandList *self, ID3D12RootSignature *root_signature);
+    void (STDCALLP SetGraphicsRootSignature)(ID3D12GraphicsCommandList *self, ID3D12RootSignature *root_signature);
+    void (STDCALLP SetComputeRootDescriptorTable)(ID3D12GraphicsCommandList *self,
+                                                  u32 root_parameter_index,
+                                                  D3D12_GPU_DESCRIPTOR_HANDLE base_descriptor);
+    void (STDCALLP SetGraphicsRootDescriptorTable)(ID3D12GraphicsCommandList *self,
+                                                   u32 root_parameter_index,
+                                                   D3D12_GPU_DESCRIPTOR_HANDLE base_descriptor);
+    void (STDCALLP SetComputeRoot32BitConstant)(ID3D12GraphicsCommandList *self,
+                                                u32 root_parameter_index,
+                                                u32 src_data,
+                                                u32 dest_offset_in_32bit_values);
+    void (STDCALLP SetGraphicsRoot32BitConstant)(ID3D12GraphicsCommandList *self,
+                                                 u32 root_parameter_index,
+                                                 u32 src_data,
+                                                 u32 dest_offset_in_32bit_values);
+    void (STDCALLP SetComputeRoot32BitConstants)(ID3D12GraphicsCommandList *self,
+                                                 u32 root_parameter_index,
+                                                 u32 num_32bit_values_to_set,
+                                                 const void *src_data,
+                                                 u32 dest_offset_in_32bit_values);
+    void (STDCALLP SetGraphicsRoot32BitConstants)(ID3D12GraphicsCommandList *self,
+                                                  u32 root_parameter_index,
+                                                  u32 num_32bit_values_to_set,
+                                                  const void *src_data,
+                                                  u32 dest_offset_in_32bit_values);
     void (STDCALLP SetComputeRootConstantBufferView)(ID3D12GraphicsCommandList *, u32, D3D12_GPU_VIRTUAL_ADDRESS);
     void (STDCALLP SetGraphicsRootConstantBufferView)(ID3D12GraphicsCommandList *cmdlist, u32 root_index,
                                                       D3D12_GPU_VIRTUAL_ADDRESS buffer_location);
