@@ -2426,16 +2426,48 @@ typedef struct ID3D12DeviceDispatchTable {
                                        D3D12_FEATURE feature,
                                        void *out_feature_support_data,
                                        u32 feature_support_data_size);
-    i32 (STDCALLP CreateDescriptorHeap)(ID3D12Device *, const D3D12_DESCRIPTOR_HEAP_DESC *, const GUID *, void **);
-    u32 (STDCALLP GetDescriptorHandleIncrementSize)(ID3D12Device *, D3D12_DESCRIPTOR_HEAP_TYPE);
-    i32 (STDCALLP CreateRootSignature)(ID3D12Device *, u32, const void *, u64, const GUID *, void **);
-    void (STDCALLP CreateConstantBufferView)(ID3D12Device *, const D3D12_CONSTANT_BUFFER_VIEW_DESC *, D3D12_CPU_DESCRIPTOR_HANDLE);
-    void (STDCALLP CreateShaderResourceView)(ID3D12Device *, ID3D12Resource *, const D3D12_SHADER_RESOURCE_VIEW_DESC *, D3D12_CPU_DESCRIPTOR_HANDLE);
-    void (STDCALLP CreateUnorderedAccessView)(ID3D12Device *, ID3D12Resource *, ID3D12Resource *, const D3D12_UNORDERED_ACCESS_VIEW_DESC *, D3D12_CPU_DESCRIPTOR_HANDLE);
-    void (STDCALLP CreateRenderTargetView)(ID3D12Device *, ID3D12Resource *, const D3D12_RENDER_TARGET_VIEW_DESC *, D3D12_CPU_DESCRIPTOR_HANDLE);
-    void (STDCALLP CreateDepthStencilView)(ID3D12Device *, ID3D12Resource *, const D3D12_DEPTH_STENCIL_VIEW_DESC *, D3D12_CPU_DESCRIPTOR_HANDLE);
-    void (STDCALLP CreateSampler)(ID3D12Device *, const D3D12_SAMPLER_DESC *, D3D12_CPU_DESCRIPTOR_HANDLE);
-    void (STDCALLP CopyDescriptors)(ID3D12Device *, u32, const D3D12_CPU_DESCRIPTOR_HANDLE *, const u32 *, u32, const D3D12_CPU_DESCRIPTOR_HANDLE *, const u32 *, D3D12_DESCRIPTOR_HEAP_TYPE);
+    i32 (STDCALLP CreateDescriptorHeap)(ID3D12Device *self,
+                                        const D3D12_DESCRIPTOR_HEAP_DESC *desc,
+                                        const GUID *guid,
+                                        void **out_heap);
+    u32 (STDCALLP GetDescriptorHandleIncrementSize)(ID3D12Device *self, D3D12_DESCRIPTOR_HEAP_TYPE type);
+    i32 (STDCALLP CreateRootSignature)(ID3D12Device *self,
+                                       u32 node_mask,
+                                       const void *blob_with_root_signature,
+                                       u64 blob_length_in_bytes,
+                                       const GUID *guid,
+                                       void **root_signature);
+    void (STDCALLP CreateConstantBufferView)(ID3D12Device *self,
+                                             const D3D12_CONSTANT_BUFFER_VIEW_DESC *desc,
+                                             D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
+    void (STDCALLP CreateShaderResourceView)(ID3D12Device *self,
+                                             ID3D12Resource *resource,
+                                             const D3D12_SHADER_RESOURCE_VIEW_DESC *desc,
+                                             D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
+    void (STDCALLP CreateUnorderedAccessView)(ID3D12Device *self,
+                                              ID3D12Resource *resource,
+                                              ID3D12Resource *counter_resource,
+                                              const D3D12_UNORDERED_ACCESS_VIEW_DESC *desc,
+                                              D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
+    void (STDCALLP CreateRenderTargetView)(ID3D12Device *self,
+                                           ID3D12Resource *resource,
+                                           const D3D12_RENDER_TARGET_VIEW_DESC *desc,
+                                           D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
+    void (STDCALLP CreateDepthStencilView)(ID3D12Device *self,
+                                           ID3D12Resource *resource,
+                                           const D3D12_DEPTH_STENCIL_VIEW_DESC *desc,
+                                           D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
+    void (STDCALLP CreateSampler)(ID3D12Device *self,
+                                  const D3D12_SAMPLER_DESC *desc,
+                                  D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
+    void (STDCALLP CopyDescriptors)(ID3D12Device *self,
+                                    u32 num_dest_descriptor_ranges,
+                                    const D3D12_CPU_DESCRIPTOR_HANDLE *dest_descriptor_range_starts,
+                                    const u32 *dest_descriptor_range_sizes,
+                                    u32 num_src_descriptor_ranges,
+                                    const D3D12_CPU_DESCRIPTOR_HANDLE *src_descriptor_range_starts,
+                                    const u32 *src_descriptor_range_sizes,
+                                    D3D12_DESCRIPTOR_HEAP_TYPE descriptor_heaps_type);
     void (STDCALLP CopyDescriptorsSimple)(ID3D12Device *, u32, D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_DESCRIPTOR_HEAP_TYPE);
     D3D12_RESOURCE_ALLOCATION_INFO *(STDCALLP GetResourceAllocationInfo)(ID3D12Device *, u32, u32, const D3D12_RESOURCE_DESC *, D3D12_RESOURCE_ALLOCATION_INFO *);
     D3D12_HEAP_PROPERTIES *(STDCALLP GetCustomHeapProperties)(ID3D12Device *, u32, D3D12_HEAP_TYPE, D3D12_HEAP_PROPERTIES *);
@@ -2455,7 +2487,7 @@ typedef struct ID3D12DeviceDispatchTable {
     i32 (STDCALLP SetStablePowerState)(ID3D12Device *, i32);
     i32 (STDCALLP CreateCommandSignature)(ID3D12Device *, const D3D12_COMMAND_SIGNATURE_DESC *, ID3D12RootSignature *, const GUID *, void **);
     void (STDCALLP GetResourceTiling)(ID3D12Device *, ID3D12Resource *, u32 *, D3D12_PACKED_MIP_INFO *, D3D12_TILE_SHAPE *, u32 *, u32, D3D12_SUBRESOURCE_TILING *);
-    i64(STDCALLP GetAdapterLuid)(ID3D12Device *);
+    i64 (STDCALLP GetAdapterLuid)(ID3D12Device *);
 } ID3D12DeviceDispatchTable;
 struct ID3D12Device { const ID3D12DeviceDispatchTable *dtbl; };
 
