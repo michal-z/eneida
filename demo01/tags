@@ -4,7 +4,7 @@
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
-!_TAG_PROGRAM_VERSION	0.0.0	/70a6275b/
+!_TAG_PROGRAM_VERSION	0.0.0	/8e098045/
 ASM	make.bat	/^set ASM=..\\compiler\\fasm.exe$/;"	v
 AdapterLuid	windows.h	/^    i64 AdapterLuid;$/;"	m	struct:DXGI_ADAPTER_DESC	typeref:typename:i64
 AdapterLuid	windows.h	/^    i64 AdapterLuid;$/;"	m	struct:DXGI_ADAPTER_DESC1	typeref:typename:i64
@@ -1205,7 +1205,7 @@ IBStripCutValue	windows.h	/^    D3D12_INDEX_BUFFER_STRIP_CUT_VALUE IBStripCutVal
 ID3D12CommandAllocator	types.h	/^typedef struct ID3D12CommandAllocator ID3D12CommandAllocator;$/;"	t	typeref:struct:ID3D12CommandAllocator
 ID3D12CommandAllocator	windows.h	/^struct ID3D12CommandAllocator { const ID3D12CommandAllocatorDispatchTable *dtbl; };$/;"	s
 ID3D12CommandAllocator	windows.h	/^typedef struct ID3D12CommandAllocator ID3D12CommandAllocator;$/;"	t	typeref:struct:ID3D12CommandAllocator
-ID3D12CommandAllocatorDispatchTable	windows.h	/^typedef struct ID3D12CommandAllocatorDispatchTable {$/;"	s
+ID3D12CommandAllocatorDispatchTable	windows.h	/^typedef struct ID3D12CommandAllocatorDispatchTable$/;"	s
 ID3D12CommandAllocatorDispatchTable	windows.h	/^} ID3D12CommandAllocatorDispatchTable;$/;"	t	typeref:struct:ID3D12CommandAllocatorDispatchTable
 ID3D12CommandAllocator_AddRef	windows.h	/^#define ID3D12CommandAllocator_AddRef(/;"	d
 ID3D12CommandAllocator_GetDevice	windows.h	/^#define ID3D12CommandAllocator_GetDevice(/;"	d
@@ -1218,7 +1218,7 @@ ID3D12CommandAllocator_SetPrivateData	windows.h	/^#define ID3D12CommandAllocator
 ID3D12CommandAllocator_SetPrivateDataInterface	windows.h	/^#define ID3D12CommandAllocator_SetPrivateDataInterface(/;"	d
 ID3D12CommandList	windows.h	/^struct ID3D12CommandList { const ID3D12CommandListDispatchTable *dtbl; };$/;"	s
 ID3D12CommandList	windows.h	/^typedef struct ID3D12CommandList ID3D12CommandList;$/;"	t	typeref:struct:ID3D12CommandList
-ID3D12CommandListDispatchTable	windows.h	/^typedef struct ID3D12CommandListDispatchTable {$/;"	s
+ID3D12CommandListDispatchTable	windows.h	/^typedef struct ID3D12CommandListDispatchTable$/;"	s
 ID3D12CommandListDispatchTable	windows.h	/^} ID3D12CommandListDispatchTable;$/;"	t	typeref:struct:ID3D12CommandListDispatchTable
 ID3D12CommandList_AddRef	windows.h	/^#define ID3D12CommandList_AddRef(/;"	d
 ID3D12CommandList_GetDevice	windows.h	/^#define ID3D12CommandList_GetDevice(/;"	d
@@ -1232,7 +1232,7 @@ ID3D12CommandList_SetPrivateDataInterface	windows.h	/^#define ID3D12CommandList_
 ID3D12CommandQueue	types.h	/^typedef struct ID3D12CommandQueue ID3D12CommandQueue;$/;"	t	typeref:struct:ID3D12CommandQueue
 ID3D12CommandQueue	windows.h	/^struct ID3D12CommandQueue { const ID3D12CommandQueueDispatchTable *dtbl; };$/;"	s
 ID3D12CommandQueue	windows.h	/^typedef struct ID3D12CommandQueue ID3D12CommandQueue;$/;"	t	typeref:struct:ID3D12CommandQueue
-ID3D12CommandQueueDispatchTable	windows.h	/^typedef struct ID3D12CommandQueueDispatchTable {$/;"	s
+ID3D12CommandQueueDispatchTable	windows.h	/^typedef struct ID3D12CommandQueueDispatchTable$/;"	s
 ID3D12CommandQueueDispatchTable	windows.h	/^} ID3D12CommandQueueDispatchTable;$/;"	t	typeref:struct:ID3D12CommandQueueDispatchTable
 ID3D12CommandQueue_AddRef	windows.h	/^#define ID3D12CommandQueue_AddRef(/;"	d
 ID3D12CommandQueue_BeginEvent	windows.h	/^#define ID3D12CommandQueue_BeginEvent(/;"	d
@@ -1255,7 +1255,7 @@ ID3D12CommandQueue_UpdateTileMappings	windows.h	/^#define ID3D12CommandQueue_Upd
 ID3D12CommandQueue_Wait	windows.h	/^#define ID3D12CommandQueue_Wait(/;"	d
 ID3D12CommandSignature	windows.h	/^struct ID3D12CommandSignature { const ID3D12CommandSignatureDispatchTable *dtbl; };$/;"	s
 ID3D12CommandSignature	windows.h	/^typedef struct ID3D12CommandSignature ID3D12CommandSignature;$/;"	t	typeref:struct:ID3D12CommandSignature
-ID3D12CommandSignatureDispatchTable	windows.h	/^typedef struct ID3D12CommandSignatureDispatchTable {$/;"	s
+ID3D12CommandSignatureDispatchTable	windows.h	/^typedef struct ID3D12CommandSignatureDispatchTable$/;"	s
 ID3D12CommandSignatureDispatchTable	windows.h	/^} ID3D12CommandSignatureDispatchTable;$/;"	t	typeref:struct:ID3D12CommandSignatureDispatchTable
 ID3D12CommandSignature_AddRef	windows.h	/^#define ID3D12CommandSignature_AddRef(/;"	d
 ID3D12CommandSignature_GetDevice	windows.h	/^#define ID3D12CommandSignature_GetDevice(/;"	d
@@ -1267,7 +1267,7 @@ ID3D12CommandSignature_SetPrivateData	windows.h	/^#define ID3D12CommandSignature
 ID3D12CommandSignature_SetPrivateDataInterface	windows.h	/^#define ID3D12CommandSignature_SetPrivateDataInterface(/;"	d
 ID3D12Debug	windows.h	/^struct ID3D12Debug { const ID3D12DebugDispatchTable *dtbl; };$/;"	s
 ID3D12Debug	windows.h	/^typedef struct ID3D12Debug ID3D12Debug;$/;"	t	typeref:struct:ID3D12Debug
-ID3D12DebugDispatchTable	windows.h	/^typedef struct ID3D12DebugDispatchTable {$/;"	s
+ID3D12DebugDispatchTable	windows.h	/^typedef struct ID3D12DebugDispatchTable$/;"	s
 ID3D12DebugDispatchTable	windows.h	/^} ID3D12DebugDispatchTable;$/;"	t	typeref:struct:ID3D12DebugDispatchTable
 ID3D12Debug_AddRef	windows.h	/^#define ID3D12Debug_AddRef(/;"	d
 ID3D12Debug_EnableDebugLayer	windows.h	/^#define ID3D12Debug_EnableDebugLayer(/;"	d
@@ -1275,7 +1275,7 @@ ID3D12Debug_QueryInterface	windows.h	/^#define ID3D12Debug_QueryInterface(/;"	d
 ID3D12Debug_Release	windows.h	/^#define ID3D12Debug_Release(/;"	d
 ID3D12DescriptorHeap	windows.h	/^struct ID3D12DescriptorHeap { const ID3D12DescriptorHeapDispatchTable *dtbl; };$/;"	s
 ID3D12DescriptorHeap	windows.h	/^typedef struct ID3D12DescriptorHeap ID3D12DescriptorHeap;$/;"	t	typeref:struct:ID3D12DescriptorHeap
-ID3D12DescriptorHeapDispatchTable	windows.h	/^typedef struct ID3D12DescriptorHeapDispatchTable {$/;"	s
+ID3D12DescriptorHeapDispatchTable	windows.h	/^typedef struct ID3D12DescriptorHeapDispatchTable$/;"	s
 ID3D12DescriptorHeapDispatchTable	windows.h	/^} ID3D12DescriptorHeapDispatchTable;$/;"	t	typeref:struct:ID3D12DescriptorHeapDispatchTable
 ID3D12DescriptorHeap_AddRef	windows.h	/^#define ID3D12DescriptorHeap_AddRef(/;"	d
 ID3D12DescriptorHeap_GetCPUDescriptorHandleForHeapStart	windows.h	/^#define ID3D12DescriptorHeap_GetCPUDescriptorHandleForHeapStart(/;"	d
@@ -1293,7 +1293,7 @@ ID3D12Device	windows.h	/^struct ID3D12Device { const ID3D12DeviceDispatchTable *
 ID3D12Device	windows.h	/^typedef struct ID3D12Device ID3D12Device;$/;"	t	typeref:struct:ID3D12Device
 ID3D12DeviceChild	windows.h	/^struct ID3D12DeviceChild { const ID3D12DeviceChildDispatchTable *dtbl; };$/;"	s
 ID3D12DeviceChild	windows.h	/^typedef struct ID3D12DeviceChild ID3D12DeviceChild;$/;"	t	typeref:struct:ID3D12DeviceChild
-ID3D12DeviceChildDispatchTable	windows.h	/^typedef struct ID3D12DeviceChildDispatchTable {$/;"	s
+ID3D12DeviceChildDispatchTable	windows.h	/^typedef struct ID3D12DeviceChildDispatchTable$/;"	s
 ID3D12DeviceChildDispatchTable	windows.h	/^} ID3D12DeviceChildDispatchTable;$/;"	t	typeref:struct:ID3D12DeviceChildDispatchTable
 ID3D12DeviceChild_AddRef	windows.h	/^#define ID3D12DeviceChild_AddRef(/;"	d
 ID3D12DeviceChild_GetDevice	windows.h	/^#define ID3D12DeviceChild_GetDevice(/;"	d
@@ -1303,7 +1303,7 @@ ID3D12DeviceChild_Release	windows.h	/^#define ID3D12DeviceChild_Release(/;"	d
 ID3D12DeviceChild_SetName	windows.h	/^#define ID3D12DeviceChild_SetName(/;"	d
 ID3D12DeviceChild_SetPrivateData	windows.h	/^#define ID3D12DeviceChild_SetPrivateData(/;"	d
 ID3D12DeviceChild_SetPrivateDataInterface	windows.h	/^#define ID3D12DeviceChild_SetPrivateDataInterface(/;"	d
-ID3D12DeviceDispatchTable	windows.h	/^typedef struct ID3D12DeviceDispatchTable {$/;"	s
+ID3D12DeviceDispatchTable	windows.h	/^typedef struct ID3D12DeviceDispatchTable$/;"	s
 ID3D12DeviceDispatchTable	windows.h	/^} ID3D12DeviceDispatchTable;$/;"	t	typeref:struct:ID3D12DeviceDispatchTable
 ID3D12Device_AddRef	windows.h	/^#define ID3D12Device_AddRef(/;"	d
 ID3D12Device_CheckFeatureSupport	windows.h	/^#define ID3D12Device_CheckFeatureSupport(/;"	d
@@ -1351,7 +1351,7 @@ ID3D12Device_SetPrivateDataInterface	windows.h	/^#define ID3D12Device_SetPrivate
 ID3D12Device_SetStablePowerState	windows.h	/^#define ID3D12Device_SetStablePowerState(/;"	d
 ID3D12Fence	windows.h	/^struct ID3D12Fence { const ID3D12FenceDispatchTable *dtbl; };$/;"	s
 ID3D12Fence	windows.h	/^typedef struct ID3D12Fence ID3D12Fence;$/;"	t	typeref:struct:ID3D12Fence
-ID3D12FenceDispatchTable	windows.h	/^typedef struct ID3D12FenceDispatchTable {$/;"	s
+ID3D12FenceDispatchTable	windows.h	/^typedef struct ID3D12FenceDispatchTable$/;"	s
 ID3D12FenceDispatchTable	windows.h	/^} ID3D12FenceDispatchTable;$/;"	t	typeref:struct:ID3D12FenceDispatchTable
 ID3D12Fence_AddRef	windows.h	/^#define ID3D12Fence_AddRef(/;"	d
 ID3D12Fence_GetCompletedValue	windows.h	/^#define ID3D12Fence_GetCompletedValue(/;"	d
@@ -1367,7 +1367,7 @@ ID3D12Fence_Signal	windows.h	/^#define ID3D12Fence_Signal(/;"	d
 ID3D12GraphicsCommandList	types.h	/^typedef struct ID3D12GraphicsCommandList ID3D12GraphicsCommandList;$/;"	t	typeref:struct:ID3D12GraphicsCommandList
 ID3D12GraphicsCommandList	windows.h	/^struct ID3D12GraphicsCommandList { const ID3D12GraphicsCommandListDispatchTable *dtbl; };$/;"	s
 ID3D12GraphicsCommandList	windows.h	/^typedef struct ID3D12GraphicsCommandList ID3D12GraphicsCommandList;$/;"	t	typeref:struct:ID3D12GraphicsCommandList
-ID3D12GraphicsCommandListDispatchTable	windows.h	/^typedef struct ID3D12GraphicsCommandListDispatchTable {$/;"	s
+ID3D12GraphicsCommandListDispatchTable	windows.h	/^typedef struct ID3D12GraphicsCommandListDispatchTable$/;"	s
 ID3D12GraphicsCommandListDispatchTable	windows.h	/^} ID3D12GraphicsCommandListDispatchTable;$/;"	t	typeref:struct:ID3D12GraphicsCommandListDispatchTable
 ID3D12GraphicsCommandList_AddRef	windows.h	/^#define ID3D12GraphicsCommandList_AddRef(/;"	d
 ID3D12GraphicsCommandList_BeginEvent	windows.h	/^#define ID3D12GraphicsCommandList_BeginEvent(/;"	d
@@ -1431,7 +1431,7 @@ ID3D12GraphicsCommandList_SetPrivateData	windows.h	/^#define ID3D12GraphicsComma
 ID3D12GraphicsCommandList_SetPrivateDataInterface	windows.h	/^#define ID3D12GraphicsCommandList_SetPrivateDataInterface(/;"	d
 ID3D12Heap	windows.h	/^struct ID3D12Heap { const ID3D12HeapDispatchTable *dtbl; };$/;"	s
 ID3D12Heap	windows.h	/^typedef struct ID3D12Heap ID3D12Heap;$/;"	t	typeref:struct:ID3D12Heap
-ID3D12HeapDispatchTable	windows.h	/^typedef struct ID3D12HeapDispatchTable {$/;"	s
+ID3D12HeapDispatchTable	windows.h	/^typedef struct ID3D12HeapDispatchTable$/;"	s
 ID3D12HeapDispatchTable	windows.h	/^} ID3D12HeapDispatchTable;$/;"	t	typeref:struct:ID3D12HeapDispatchTable
 ID3D12Heap_AddRef	windows.h	/^#define ID3D12Heap_AddRef(/;"	d
 ID3D12Heap_GetDesc	windows.h	/^#define ID3D12Heap_GetDesc(/;"	d
@@ -1444,7 +1444,7 @@ ID3D12Heap_SetPrivateData	windows.h	/^#define ID3D12Heap_SetPrivateData(/;"	d
 ID3D12Heap_SetPrivateDataInterface	windows.h	/^#define ID3D12Heap_SetPrivateDataInterface(/;"	d
 ID3D12Object	windows.h	/^struct ID3D12Object { const ID3D12ObjectDispatchTable *dtbl; };$/;"	s
 ID3D12Object	windows.h	/^typedef struct ID3D12Object ID3D12Object;$/;"	t	typeref:struct:ID3D12Object
-ID3D12ObjectDispatchTable	windows.h	/^typedef struct ID3D12ObjectDispatchTable {$/;"	s
+ID3D12ObjectDispatchTable	windows.h	/^typedef struct ID3D12ObjectDispatchTable$/;"	s
 ID3D12ObjectDispatchTable	windows.h	/^} ID3D12ObjectDispatchTable;$/;"	t	typeref:struct:ID3D12ObjectDispatchTable
 ID3D12Object_AddRef	windows.h	/^#define ID3D12Object_AddRef(/;"	d
 ID3D12Object_GetPrivateData	windows.h	/^#define ID3D12Object_GetPrivateData(/;"	d
@@ -1455,7 +1455,7 @@ ID3D12Object_SetPrivateData	windows.h	/^#define ID3D12Object_SetPrivateData(/;"	
 ID3D12Object_SetPrivateDataInterface	windows.h	/^#define ID3D12Object_SetPrivateDataInterface(/;"	d
 ID3D12Pageable	windows.h	/^struct ID3D12Pageable { const ID3D12PageableDispatchTable *dtbl; };$/;"	s
 ID3D12Pageable	windows.h	/^typedef struct ID3D12Pageable ID3D12Pageable;$/;"	t	typeref:struct:ID3D12Pageable
-ID3D12PageableDispatchTable	windows.h	/^typedef struct ID3D12PageableDispatchTable {$/;"	s
+ID3D12PageableDispatchTable	windows.h	/^typedef struct ID3D12PageableDispatchTable$/;"	s
 ID3D12PageableDispatchTable	windows.h	/^} ID3D12PageableDispatchTable;$/;"	t	typeref:struct:ID3D12PageableDispatchTable
 ID3D12Pageable_AddRef	windows.h	/^#define ID3D12Pageable_AddRef(/;"	d
 ID3D12Pageable_GetDevice	windows.h	/^#define ID3D12Pageable_GetDevice(/;"	d
@@ -1467,7 +1467,7 @@ ID3D12Pageable_SetPrivateData	windows.h	/^#define ID3D12Pageable_SetPrivateData(
 ID3D12Pageable_SetPrivateDataInterface	windows.h	/^#define ID3D12Pageable_SetPrivateDataInterface(/;"	d
 ID3D12PipelineState	windows.h	/^struct ID3D12PipelineState { const ID3D12PipelineStateDispatchTable *dtbl; };$/;"	s
 ID3D12PipelineState	windows.h	/^typedef struct ID3D12PipelineState ID3D12PipelineState;$/;"	t	typeref:struct:ID3D12PipelineState
-ID3D12PipelineStateDispatchTable	windows.h	/^typedef struct ID3D12PipelineStateDispatchTable {$/;"	s
+ID3D12PipelineStateDispatchTable	windows.h	/^typedef struct ID3D12PipelineStateDispatchTable$/;"	s
 ID3D12PipelineStateDispatchTable	windows.h	/^} ID3D12PipelineStateDispatchTable;$/;"	t	typeref:struct:ID3D12PipelineStateDispatchTable
 ID3D12PipelineState_AddRef	windows.h	/^#define ID3D12PipelineState_AddRef(/;"	d
 ID3D12PipelineState_GetCachedBlob	windows.h	/^#define ID3D12PipelineState_GetCachedBlob(/;"	d
@@ -1480,7 +1480,7 @@ ID3D12PipelineState_SetPrivateData	windows.h	/^#define ID3D12PipelineState_SetPr
 ID3D12PipelineState_SetPrivateDataInterface	windows.h	/^#define ID3D12PipelineState_SetPrivateDataInterface(/;"	d
 ID3D12QueryHeap	windows.h	/^struct ID3D12QueryHeap { const ID3D12QueryHeapDispatchTable *dtbl; };$/;"	s
 ID3D12QueryHeap	windows.h	/^typedef struct ID3D12QueryHeap ID3D12QueryHeap;$/;"	t	typeref:struct:ID3D12QueryHeap
-ID3D12QueryHeapDispatchTable	windows.h	/^typedef struct ID3D12QueryHeapDispatchTable {$/;"	s
+ID3D12QueryHeapDispatchTable	windows.h	/^typedef struct ID3D12QueryHeapDispatchTable$/;"	s
 ID3D12QueryHeapDispatchTable	windows.h	/^} ID3D12QueryHeapDispatchTable;$/;"	t	typeref:struct:ID3D12QueryHeapDispatchTable
 ID3D12QueryHeap_AddRef	windows.h	/^#define ID3D12QueryHeap_AddRef(/;"	d
 ID3D12QueryHeap_GetDevice	windows.h	/^#define ID3D12QueryHeap_GetDevice(/;"	d
@@ -1493,7 +1493,7 @@ ID3D12QueryHeap_SetPrivateDataInterface	windows.h	/^#define ID3D12QueryHeap_SetP
 ID3D12Resource	types.h	/^typedef struct ID3D12Resource ID3D12Resource;$/;"	t	typeref:struct:ID3D12Resource
 ID3D12Resource	windows.h	/^struct ID3D12Resource { const ID3D12ResourceDispatchTable *dtbl; };$/;"	s
 ID3D12Resource	windows.h	/^typedef struct ID3D12Resource ID3D12Resource;$/;"	t	typeref:struct:ID3D12Resource
-ID3D12ResourceDispatchTable	windows.h	/^typedef struct ID3D12ResourceDispatchTable {$/;"	s
+ID3D12ResourceDispatchTable	windows.h	/^typedef struct ID3D12ResourceDispatchTable$/;"	s
 ID3D12ResourceDispatchTable	windows.h	/^} ID3D12ResourceDispatchTable;$/;"	t	typeref:struct:ID3D12ResourceDispatchTable
 ID3D12Resource_AddRef	windows.h	/^#define ID3D12Resource_AddRef(/;"	d
 ID3D12Resource_GetDesc	windows.h	/^#define ID3D12Resource_GetDesc(/;"	d
@@ -1512,7 +1512,7 @@ ID3D12Resource_Unmap	windows.h	/^#define ID3D12Resource_Unmap(/;"	d
 ID3D12Resource_WriteToSubresource	windows.h	/^#define ID3D12Resource_WriteToSubresource(/;"	d
 ID3D12RootSignature	windows.h	/^struct ID3D12RootSignature { const ID3D12RootSignatureDispatchTable *dtbl; };$/;"	s
 ID3D12RootSignature	windows.h	/^typedef struct ID3D12RootSignature ID3D12RootSignature;$/;"	t	typeref:struct:ID3D12RootSignature
-ID3D12RootSignatureDispatchTable	windows.h	/^typedef struct ID3D12RootSignatureDispatchTable {$/;"	s
+ID3D12RootSignatureDispatchTable	windows.h	/^typedef struct ID3D12RootSignatureDispatchTable$/;"	s
 ID3D12RootSignatureDispatchTable	windows.h	/^} ID3D12RootSignatureDispatchTable;$/;"	t	typeref:struct:ID3D12RootSignatureDispatchTable
 ID3D12RootSignature_AddRef	windows.h	/^#define ID3D12RootSignature_AddRef(/;"	d
 ID3D12RootSignature_GetDevice	windows.h	/^#define ID3D12RootSignature_GetDevice(/;"	d
@@ -1524,7 +1524,7 @@ ID3D12RootSignature_SetPrivateData	windows.h	/^#define ID3D12RootSignature_SetPr
 ID3D12RootSignature_SetPrivateDataInterface	windows.h	/^#define ID3D12RootSignature_SetPrivateDataInterface(/;"	d
 ID3DBlob	windows.h	/^struct ID3DBlob { const ID3DBlobDispatchTable *dtbl; };$/;"	s
 ID3DBlob	windows.h	/^typedef struct ID3DBlob ID3DBlob;$/;"	t	typeref:struct:ID3DBlob
-ID3DBlobDispatchTable	windows.h	/^typedef struct ID3DBlobDispatchTable {$/;"	s
+ID3DBlobDispatchTable	windows.h	/^typedef struct ID3DBlobDispatchTable$/;"	s
 ID3DBlobDispatchTable	windows.h	/^} ID3DBlobDispatchTable;$/;"	t	typeref:struct:ID3DBlobDispatchTable
 ID3DBlob_AddRef	windows.h	/^#define ID3DBlob_AddRef(/;"	d
 ID3DBlob_GetBufferPointer	windows.h	/^#define ID3DBlob_GetBufferPointer(/;"	d
@@ -1651,7 +1651,7 @@ IID_IDXGISwapChain3	main.c	/^const GUID IID_IDXGISwapChain3 = { 0x94d99bdb,0xf1f
 INFINITE	windows.h	/^#define INFINITE /;"	d
 IUnknown	windows.h	/^struct IUnknown { const IUnknownDispatchTable *dtbl; };$/;"	s
 IUnknown	windows.h	/^typedef struct IUnknown IUnknown;$/;"	t	typeref:struct:IUnknown
-IUnknownDispatchTable	windows.h	/^typedef struct IUnknownDispatchTable {$/;"	s
+IUnknownDispatchTable	windows.h	/^typedef struct IUnknownDispatchTable$/;"	s
 IUnknownDispatchTable	windows.h	/^} IUnknownDispatchTable;$/;"	t	typeref:struct:IUnknownDispatchTable
 IUnknown_AddRef	windows.h	/^#define IUnknown_AddRef(/;"	d
 IUnknown_QueryInterface	windows.h	/^#define IUnknown_QueryInterface(/;"	d
@@ -1821,84 +1821,84 @@ SECURITY_ATTRIBUTES	windows.h	/^typedef struct SECURITY_ATTRIBUTES {$/;"	s
 SECURITY_ATTRIBUTES	windows.h	/^} SECURITY_ATTRIBUTES;$/;"	t	typeref:struct:SECURITY_ATTRIBUTES
 STANDARD_RIGHTS_REQUIRED	windows.h	/^#define STANDARD_RIGHTS_REQUIRED /;"	d
 STDCALL	windows.h	/^#define STDCALL /;"	d
-STDCALLP	windows.h	/^    D3D12_COMMAND_QUEUE_DESC *(STDCALLP GetDesc)(ID3D12CommandQueue *, D3D12_COMMAND_QUEUE_DESC /;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:D3D12_COMMAND_QUEUE_DESC * (GetDesc)(ID3D12CommandQueue *,D3D12_COMMAND_QUEUE_DESC *)
-STDCALLP	windows.h	/^    D3D12_CPU_DESCRIPTOR_HANDLE *(STDCALLP GetCPUDescriptorHandleForHeapStart)(ID3D12DescriptorH/;"	m	struct:ID3D12DescriptorHeapDispatchTable	typeref:typename:D3D12_CPU_DESCRIPTOR_HANDLE * (GetCPUDescriptorHandleForHeapStart)(ID3D12DescriptorHeap *,D3D12_CPU_DESCRIPTOR_HANDLE *)
-STDCALLP	windows.h	/^    D3D12_DESCRIPTOR_HEAP_DESC *(STDCALLP GetDesc)(ID3D12DescriptorHeap *, D3D12_DESCRIPTOR_HEAP/;"	m	struct:ID3D12DescriptorHeapDispatchTable	typeref:typename:D3D12_DESCRIPTOR_HEAP_DESC * (GetDesc)(ID3D12DescriptorHeap *,D3D12_DESCRIPTOR_HEAP_DESC *)
-STDCALLP	windows.h	/^    D3D12_GPU_DESCRIPTOR_HANDLE *(STDCALLP GetGPUDescriptorHandleForHeapStart)(ID3D12DescriptorH/;"	m	struct:ID3D12DescriptorHeapDispatchTable	typeref:typename:D3D12_GPU_DESCRIPTOR_HANDLE * (GetGPUDescriptorHandleForHeapStart)(ID3D12DescriptorHeap *,D3D12_GPU_DESCRIPTOR_HANDLE *)
-STDCALLP	windows.h	/^    D3D12_HEAP_DESC *(STDCALLP GetDesc)(ID3D12Heap *, D3D12_HEAP_DESC *);$/;"	m	struct:ID3D12HeapDispatchTable	typeref:typename:D3D12_HEAP_DESC * (GetDesc)(ID3D12Heap *,D3D12_HEAP_DESC *)
-STDCALLP	windows.h	/^    D3D12_HEAP_PROPERTIES *(STDCALLP GetCustomHeapProperties)(ID3D12Device *, u32, D3D12_HEAP_TY/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:D3D12_HEAP_PROPERTIES * (GetCustomHeapProperties)(ID3D12Device *,u32,D3D12_HEAP_TYPE,D3D12_HEAP_PROPERTIES *)
-STDCALLP	windows.h	/^    D3D12_RESOURCE_ALLOCATION_INFO *(STDCALLP GetResourceAllocationInfo)(ID3D12Device *, u32, u3/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:D3D12_RESOURCE_ALLOCATION_INFO * (GetResourceAllocationInfo)(ID3D12Device *,u32,u32,const D3D12_RESOURCE_DESC *,D3D12_RESOURCE_ALLOCATION_INFO *)
-STDCALLP	windows.h	/^    D3D12_RESOURCE_DESC *(STDCALLP GetDesc)(ID3D12Resource *, D3D12_RESOURCE_DESC *);$/;"	m	struct:ID3D12ResourceDispatchTable	typeref:typename:D3D12_RESOURCE_DESC * (GetDesc)(ID3D12Resource *,D3D12_RESOURCE_DESC *)
-STDCALLP	windows.h	/^    void (STDCALLP BeginEvent)(ID3D12CommandQueue *, u32, const void *, u32);$/;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:void (BeginEvent)(ID3D12CommandQueue *,u32,const void *,u32)
-STDCALLP	windows.h	/^    void (STDCALLP BeginEvent)(ID3D12GraphicsCommandList *, u32, const void *, u32);$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (BeginEvent)(ID3D12GraphicsCommandList *,u32,const void *,u32)
-STDCALLP	windows.h	/^    void (STDCALLP BeginQuery)(ID3D12GraphicsCommandList *, ID3D12QueryHeap *, D3D12_QUERY_TYPE,/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (BeginQuery)(ID3D12GraphicsCommandList *,ID3D12QueryHeap *,D3D12_QUERY_TYPE,u32)
-STDCALLP	windows.h	/^    void (STDCALLP ClearDepthStencilView)(ID3D12GraphicsCommandList *, D3D12_CPU_DESCRIPTOR_HAND/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ClearDepthStencilView)(ID3D12GraphicsCommandList *,D3D12_CPU_DESCRIPTOR_HANDLE,D3D12_CLEAR_FLAGS,f32,u8,u32,const D3D12_RECT *)
-STDCALLP	windows.h	/^    void (STDCALLP ClearRenderTargetView)(ID3D12GraphicsCommandList *, D3D12_CPU_DESCRIPTOR_HAND/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ClearRenderTargetView)(ID3D12GraphicsCommandList *,D3D12_CPU_DESCRIPTOR_HANDLE,const f32[4],u32,const D3D12_RECT *)
+STDCALLP	windows.h	/^    D3D12_COMMAND_QUEUE_DESC *(STDCALLP GetDesc)(ID3D12CommandQueue *self, D3D12_COMMAND_QUEUE_D/;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:D3D12_COMMAND_QUEUE_DESC * (GetDesc)(ID3D12CommandQueue * self,D3D12_COMMAND_QUEUE_DESC * out_desc)
+STDCALLP	windows.h	/^    D3D12_CPU_DESCRIPTOR_HANDLE *(STDCALLP GetCPUDescriptorHandleForHeapStart)(ID3D12DescriptorH/;"	m	struct:ID3D12DescriptorHeapDispatchTable	typeref:typename:D3D12_CPU_DESCRIPTOR_HANDLE * (GetCPUDescriptorHandleForHeapStart)(ID3D12DescriptorHeap * self,D3D12_CPU_DESCRIPTOR_HANDLE * out_handle)
+STDCALLP	windows.h	/^    D3D12_DESCRIPTOR_HEAP_DESC *(STDCALLP GetDesc)(ID3D12DescriptorHeap *self, D3D12_DESCRIPTOR_/;"	m	struct:ID3D12DescriptorHeapDispatchTable	typeref:typename:D3D12_DESCRIPTOR_HEAP_DESC * (GetDesc)(ID3D12DescriptorHeap * self,D3D12_DESCRIPTOR_HEAP_DESC * out_desc)
+STDCALLP	windows.h	/^    D3D12_GPU_DESCRIPTOR_HANDLE *(STDCALLP GetGPUDescriptorHandleForHeapStart)(ID3D12DescriptorH/;"	m	struct:ID3D12DescriptorHeapDispatchTable	typeref:typename:D3D12_GPU_DESCRIPTOR_HANDLE * (GetGPUDescriptorHandleForHeapStart)(ID3D12DescriptorHeap * self,D3D12_GPU_DESCRIPTOR_HANDLE * out_handle)
+STDCALLP	windows.h	/^    D3D12_HEAP_DESC *(STDCALLP GetDesc)(ID3D12Heap *self, D3D12_HEAP_DESC *out_heap_desc);$/;"	m	struct:ID3D12HeapDispatchTable	typeref:typename:D3D12_HEAP_DESC * (GetDesc)(ID3D12Heap * self,D3D12_HEAP_DESC * out_heap_desc)
+STDCALLP	windows.h	/^    D3D12_HEAP_PROPERTIES *(STDCALLP GetCustomHeapProperties)(ID3D12Device *self,$/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:D3D12_HEAP_PROPERTIES * (GetCustomHeapProperties)(ID3D12Device * self,u32 node_mask,D3D12_HEAP_TYPE heap_type,D3D12_HEAP_PROPERTIES * out_heap_properties)
+STDCALLP	windows.h	/^    D3D12_RESOURCE_ALLOCATION_INFO *(STDCALLP GetResourceAllocationInfo)(ID3D12Device *self,$/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:D3D12_RESOURCE_ALLOCATION_INFO * (GetResourceAllocationInfo)(ID3D12Device * self,u32 visible_mask,u32 num_resource_descs,const D3D12_RESOURCE_DESC * resource_descs,D3D12_RESOURCE_ALLOCATION_INFO * out_alloc_info)
+STDCALLP	windows.h	/^    D3D12_RESOURCE_DESC *(STDCALLP GetDesc)(ID3D12Resource *self, D3D12_RESOURCE_DESC *out_resou/;"	m	struct:ID3D12ResourceDispatchTable	typeref:typename:D3D12_RESOURCE_DESC * (GetDesc)(ID3D12Resource * self,D3D12_RESOURCE_DESC * out_resource_desc)
+STDCALLP	windows.h	/^    void (STDCALLP BeginEvent)(ID3D12CommandQueue *self, u32 metadata, const void *data, u32 siz/;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:void (BeginEvent)(ID3D12CommandQueue * self,u32 metadata,const void * data,u32 size)
+STDCALLP	windows.h	/^    void (STDCALLP BeginEvent)(ID3D12GraphicsCommandList *self, u32 metadata, const void *data, /;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (BeginEvent)(ID3D12GraphicsCommandList * self,u32 metadata,const void * data,u32 size)
+STDCALLP	windows.h	/^    void (STDCALLP BeginQuery)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (BeginQuery)(ID3D12GraphicsCommandList * self,ID3D12QueryHeap * query_heap,D3D12_QUERY_TYPE type,u32 index)
+STDCALLP	windows.h	/^    void (STDCALLP ClearDepthStencilView)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ClearDepthStencilView)(ID3D12GraphicsCommandList * self,D3D12_CPU_DESCRIPTOR_HANDLE depth_stencil_view,D3D12_CLEAR_FLAGS clear_flags,f32 depth,u8 stencil,u32 num_rects,const D3D12_RECT * rects)
+STDCALLP	windows.h	/^    void (STDCALLP ClearRenderTargetView)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ClearRenderTargetView)(ID3D12GraphicsCommandList * self,D3D12_CPU_DESCRIPTOR_HANDLE render_target_view,const f32 color_rgba[4],u32 num_rects,const D3D12_RECT * rects)
 STDCALLP	windows.h	/^    void (STDCALLP ClearState)(ID3D12GraphicsCommandList *self, ID3D12PipelineState *pipeline_st/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ClearState)(ID3D12GraphicsCommandList * self,ID3D12PipelineState * pipeline_state)
-STDCALLP	windows.h	/^    void (STDCALLP ClearUnorderedAccessViewFloat)(ID3D12GraphicsCommandList *, D3D12_GPU_DESCRIP/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ClearUnorderedAccessViewFloat)(ID3D12GraphicsCommandList *,D3D12_GPU_DESCRIPTOR_HANDLE,D3D12_CPU_DESCRIPTOR_HANDLE,ID3D12Resource *,const f32[4],u32,const D3D12_RECT *)
-STDCALLP	windows.h	/^    void (STDCALLP ClearUnorderedAccessViewUint)(ID3D12GraphicsCommandList *, D3D12_GPU_DESCRIPT/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ClearUnorderedAccessViewUint)(ID3D12GraphicsCommandList *,D3D12_GPU_DESCRIPTOR_HANDLE,D3D12_CPU_DESCRIPTOR_HANDLE,ID3D12Resource *,const u32[4],u32,const D3D12_RECT *)
+STDCALLP	windows.h	/^    void (STDCALLP ClearUnorderedAccessViewFloat)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ClearUnorderedAccessViewFloat)(ID3D12GraphicsCommandList * self,D3D12_GPU_DESCRIPTOR_HANDLE view_gpu_handle_in_current_heap,D3D12_CPU_DESCRIPTOR_HANDLE view_cpu_handle,ID3D12Resource * resource,const f32 values[4],u32 num_rects,const D3D12_RECT * rects)
+STDCALLP	windows.h	/^    void (STDCALLP ClearUnorderedAccessViewUint)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ClearUnorderedAccessViewUint)(ID3D12GraphicsCommandList * self,D3D12_GPU_DESCRIPTOR_HANDLE view_gpu_handle_in_current_heap,D3D12_CPU_DESCRIPTOR_HANDLE view_cpu_handle,ID3D12Resource * resource,const u32 values[4],u32 num_rects,const D3D12_RECT * rects)
 STDCALLP	windows.h	/^    void (STDCALLP CopyBufferRegion)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (CopyBufferRegion)(ID3D12GraphicsCommandList * self,ID3D12Resource * dst_buffer,u64 dst_offset,ID3D12Resource * src_buffer,u64 src_offset,u64 num_bytes)
-STDCALLP	windows.h	/^    void (STDCALLP CopyDescriptors)(ID3D12Device *, u32, const D3D12_CPU_DESCRIPTOR_HANDLE *, co/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CopyDescriptors)(ID3D12Device *,u32,const D3D12_CPU_DESCRIPTOR_HANDLE *,const u32 *,u32,const D3D12_CPU_DESCRIPTOR_HANDLE *,const u32 *,D3D12_DESCRIPTOR_HEAP_TYPE)
-STDCALLP	windows.h	/^    void (STDCALLP CopyDescriptorsSimple)(ID3D12Device *, u32, D3D12_CPU_DESCRIPTOR_HANDLE, D3D1/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CopyDescriptorsSimple)(ID3D12Device *,u32,D3D12_CPU_DESCRIPTOR_HANDLE,D3D12_CPU_DESCRIPTOR_HANDLE,D3D12_DESCRIPTOR_HEAP_TYPE)
+STDCALLP	windows.h	/^    void (STDCALLP CopyDescriptors)(ID3D12Device *self,$/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CopyDescriptors)(ID3D12Device * self,u32 num_dest_descriptor_ranges,const D3D12_CPU_DESCRIPTOR_HANDLE * dest_descriptor_range_starts,const u32 * dest_descriptor_range_sizes,u32 num_src_descriptor_ranges,const D3D12_CPU_DESCRIPTOR_HANDLE * src_descriptor_range_starts,const u32 * src_descriptor_range_sizes,D3D12_DESCRIPTOR_HEAP_TYPE descriptor_heaps_type)
+STDCALLP	windows.h	/^    void (STDCALLP CopyDescriptorsSimple)(ID3D12Device *self,$/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CopyDescriptorsSimple)(ID3D12Device * self,u32 num_descriptors,D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor_range_start,D3D12_CPU_DESCRIPTOR_HANDLE src_descriptor_range_start,D3D12_DESCRIPTOR_HEAP_TYPE descriptor_heaps_type)
 STDCALLP	windows.h	/^    void (STDCALLP CopyResource)(ID3D12GraphicsCommandList *self, ID3D12Resource *dst, ID3D12Res/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (CopyResource)(ID3D12GraphicsCommandList * self,ID3D12Resource * dst,ID3D12Resource * src)
 STDCALLP	windows.h	/^    void (STDCALLP CopyTextureRegion)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (CopyTextureRegion)(ID3D12GraphicsCommandList * self,const D3D12_TEXTURE_COPY_LOCATION * dst,u32 dst_x,u32 dst_y,u32 dst_z,const D3D12_TEXTURE_COPY_LOCATION * src,const D3D12_BOX * src_box)
-STDCALLP	windows.h	/^    void (STDCALLP CopyTileMappings)(ID3D12CommandQueue *, ID3D12Resource *, const D3D12_TILED_R/;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:void (CopyTileMappings)(ID3D12CommandQueue *,ID3D12Resource *,const D3D12_TILED_RESOURCE_COORDINATE *,ID3D12Resource *,const D3D12_TILED_RESOURCE_COORDINATE *,const D3D12_TILE_REGION_SIZE *,D3D12_TILE_MAPPING_FLAGS)
+STDCALLP	windows.h	/^    void (STDCALLP CopyTileMappings)(ID3D12CommandQueue *self,$/;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:void (CopyTileMappings)(ID3D12CommandQueue * self,ID3D12Resource * dst_resource,const D3D12_TILED_RESOURCE_COORDINATE * dst_region_start_coordinate,ID3D12Resource * src_resource,const D3D12_TILED_RESOURCE_COORDINATE * src_region_start_coordinate,const D3D12_TILE_REGION_SIZE * region_size,D3D12_TILE_MAPPING_FLAGS flags)
 STDCALLP	windows.h	/^    void (STDCALLP CopyTiles)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (CopyTiles)(ID3D12GraphicsCommandList * self,ID3D12Resource * tiled_resource,const D3D12_TILED_RESOURCE_COORDINATE * tile_region_start_coordinate,const D3D12_TILE_REGION_SIZE * tile_region_size,ID3D12Resource * buffer,u64 buffer_start_offset_in_bytes,D3D12_TILE_COPY_FLAGS flags)
-STDCALLP	windows.h	/^    void (STDCALLP CreateConstantBufferView)(ID3D12Device *, const D3D12_CONSTANT_BUFFER_VIEW_DE/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CreateConstantBufferView)(ID3D12Device *,const D3D12_CONSTANT_BUFFER_VIEW_DESC *,D3D12_CPU_DESCRIPTOR_HANDLE)
-STDCALLP	windows.h	/^    void (STDCALLP CreateDepthStencilView)(ID3D12Device *, ID3D12Resource *, const D3D12_DEPTH_S/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CreateDepthStencilView)(ID3D12Device *,ID3D12Resource *,const D3D12_DEPTH_STENCIL_VIEW_DESC *,D3D12_CPU_DESCRIPTOR_HANDLE)
-STDCALLP	windows.h	/^    void (STDCALLP CreateRenderTargetView)(ID3D12Device *, ID3D12Resource *, const D3D12_RENDER_/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CreateRenderTargetView)(ID3D12Device *,ID3D12Resource *,const D3D12_RENDER_TARGET_VIEW_DESC *,D3D12_CPU_DESCRIPTOR_HANDLE)
-STDCALLP	windows.h	/^    void (STDCALLP CreateSampler)(ID3D12Device *, const D3D12_SAMPLER_DESC *, D3D12_CPU_DESCRIPT/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CreateSampler)(ID3D12Device *,const D3D12_SAMPLER_DESC *,D3D12_CPU_DESCRIPTOR_HANDLE)
-STDCALLP	windows.h	/^    void (STDCALLP CreateShaderResourceView)(ID3D12Device *, ID3D12Resource *, const D3D12_SHADE/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CreateShaderResourceView)(ID3D12Device *,ID3D12Resource *,const D3D12_SHADER_RESOURCE_VIEW_DESC *,D3D12_CPU_DESCRIPTOR_HANDLE)
-STDCALLP	windows.h	/^    void (STDCALLP CreateUnorderedAccessView)(ID3D12Device *, ID3D12Resource *, ID3D12Resource */;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CreateUnorderedAccessView)(ID3D12Device *,ID3D12Resource *,ID3D12Resource *,const D3D12_UNORDERED_ACCESS_VIEW_DESC *,D3D12_CPU_DESCRIPTOR_HANDLE)
-STDCALLP	windows.h	/^    void (STDCALLP DiscardResource)(ID3D12GraphicsCommandList *, ID3D12Resource *, const D3D12_D/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (DiscardResource)(ID3D12GraphicsCommandList *,ID3D12Resource *,const D3D12_DISCARD_REGION *)
+STDCALLP	windows.h	/^    void (STDCALLP CreateConstantBufferView)(ID3D12Device *self,$/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CreateConstantBufferView)(ID3D12Device * self,const D3D12_CONSTANT_BUFFER_VIEW_DESC * desc,D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor)
+STDCALLP	windows.h	/^    void (STDCALLP CreateDepthStencilView)(ID3D12Device *self,$/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CreateDepthStencilView)(ID3D12Device * self,ID3D12Resource * resource,const D3D12_DEPTH_STENCIL_VIEW_DESC * desc,D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor)
+STDCALLP	windows.h	/^    void (STDCALLP CreateRenderTargetView)(ID3D12Device *self,$/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CreateRenderTargetView)(ID3D12Device * self,ID3D12Resource * resource,const D3D12_RENDER_TARGET_VIEW_DESC * desc,D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor)
+STDCALLP	windows.h	/^    void (STDCALLP CreateSampler)(ID3D12Device *self,$/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CreateSampler)(ID3D12Device * self,const D3D12_SAMPLER_DESC * desc,D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor)
+STDCALLP	windows.h	/^    void (STDCALLP CreateShaderResourceView)(ID3D12Device *self,$/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CreateShaderResourceView)(ID3D12Device * self,ID3D12Resource * resource,const D3D12_SHADER_RESOURCE_VIEW_DESC * desc,D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor)
+STDCALLP	windows.h	/^    void (STDCALLP CreateUnorderedAccessView)(ID3D12Device *self,$/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (CreateUnorderedAccessView)(ID3D12Device * self,ID3D12Resource * resource,ID3D12Resource * counter_resource,const D3D12_UNORDERED_ACCESS_VIEW_DESC * desc,D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor)
+STDCALLP	windows.h	/^    void (STDCALLP DiscardResource)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (DiscardResource)(ID3D12GraphicsCommandList * self,ID3D12Resource * resource,const D3D12_DISCARD_REGION * region)
 STDCALLP	windows.h	/^    void (STDCALLP Dispatch)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (Dispatch)(ID3D12GraphicsCommandList * self,u32 thread_group_count_x,u32 thread_group_count_y,u32 thread_group_count_z)
 STDCALLP	windows.h	/^    void (STDCALLP DrawIndexedInstanced)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (DrawIndexedInstanced)(ID3D12GraphicsCommandList * self,u32 index_count_per_instance,u32 instance_count,u32 start_index_location,i32 base_vertex_location,u32 start_instance_location)
 STDCALLP	windows.h	/^    void (STDCALLP DrawInstanced)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (DrawInstanced)(ID3D12GraphicsCommandList * self,u32 vertex_count_per_instance,u32 instance_count,u32 start_vertex_location,u32 start_instance_location)
-STDCALLP	windows.h	/^    void (STDCALLP EnableDebugLayer)(ID3D12Debug *);$/;"	m	struct:ID3D12DebugDispatchTable	typeref:typename:void (EnableDebugLayer)(ID3D12Debug *)
-STDCALLP	windows.h	/^    void (STDCALLP EndEvent)(ID3D12CommandQueue *);$/;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:void (EndEvent)(ID3D12CommandQueue *)
-STDCALLP	windows.h	/^    void (STDCALLP EndEvent)(ID3D12GraphicsCommandList *);$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (EndEvent)(ID3D12GraphicsCommandList *)
-STDCALLP	windows.h	/^    void (STDCALLP EndQuery)(ID3D12GraphicsCommandList *, ID3D12QueryHeap *, D3D12_QUERY_TYPE, u/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (EndQuery)(ID3D12GraphicsCommandList *,ID3D12QueryHeap *,D3D12_QUERY_TYPE,u32)
-STDCALLP	windows.h	/^    void (STDCALLP ExecuteBundle)(ID3D12GraphicsCommandList *, ID3D12GraphicsCommandList *);$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ExecuteBundle)(ID3D12GraphicsCommandList *,ID3D12GraphicsCommandList *)
-STDCALLP	windows.h	/^    void (STDCALLP ExecuteCommandLists)(ID3D12CommandQueue *, u32, ID3D12CommandList *const *);$/;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:void (ExecuteCommandLists)(ID3D12CommandQueue *,u32,ID3D12CommandList * const *)
-STDCALLP	windows.h	/^    void (STDCALLP ExecuteIndirect)(ID3D12GraphicsCommandList *, ID3D12CommandSignature *, u32, /;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ExecuteIndirect)(ID3D12GraphicsCommandList *,ID3D12CommandSignature *,u32,ID3D12Resource *,u64,ID3D12Resource *,u64)
-STDCALLP	windows.h	/^    void (STDCALLP GetCopyableFootprints)(ID3D12Device *, const D3D12_RESOURCE_DESC *, u32, u32,/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (GetCopyableFootprints)(ID3D12Device *,const D3D12_RESOURCE_DESC *,u32,u32,u64,D3D12_PLACED_SUBRESOURCE_FOOTPRINT *,u32 *,u64 *,u64 *)
-STDCALLP	windows.h	/^    void (STDCALLP GetResourceTiling)(ID3D12Device *, ID3D12Resource *, u32 *, D3D12_PACKED_MIP_/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (GetResourceTiling)(ID3D12Device *,ID3D12Resource *,u32 *,D3D12_PACKED_MIP_INFO *,D3D12_TILE_SHAPE *,u32 *,u32,D3D12_SUBRESOURCE_TILING *)
-STDCALLP	windows.h	/^    void (STDCALLP IASetIndexBuffer)(ID3D12GraphicsCommandList *, const D3D12_INDEX_BUFFER_VIEW /;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (IASetIndexBuffer)(ID3D12GraphicsCommandList *,const D3D12_INDEX_BUFFER_VIEW *)
+STDCALLP	windows.h	/^    void (STDCALLP EnableDebugLayer)(ID3D12Debug *self);$/;"	m	struct:ID3D12DebugDispatchTable	typeref:typename:void (EnableDebugLayer)(ID3D12Debug * self)
+STDCALLP	windows.h	/^    void (STDCALLP EndEvent)(ID3D12CommandQueue *self);$/;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:void (EndEvent)(ID3D12CommandQueue * self)
+STDCALLP	windows.h	/^    void (STDCALLP EndEvent)(ID3D12GraphicsCommandList *self);$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (EndEvent)(ID3D12GraphicsCommandList * self)
+STDCALLP	windows.h	/^    void (STDCALLP EndQuery)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (EndQuery)(ID3D12GraphicsCommandList * self,ID3D12QueryHeap * query_heap,D3D12_QUERY_TYPE type,u32 index)
+STDCALLP	windows.h	/^    void (STDCALLP ExecuteBundle)(ID3D12GraphicsCommandList *self, ID3D12GraphicsCommandList *co/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ExecuteBundle)(ID3D12GraphicsCommandList * self,ID3D12GraphicsCommandList * command_list)
+STDCALLP	windows.h	/^    void (STDCALLP ExecuteCommandLists)(ID3D12CommandQueue *self,$/;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:void (ExecuteCommandLists)(ID3D12CommandQueue * self,u32 num_command_lists,ID3D12CommandList * const * command_lists)
+STDCALLP	windows.h	/^    void (STDCALLP ExecuteIndirect)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ExecuteIndirect)(ID3D12GraphicsCommandList * self,ID3D12CommandSignature * command_signature,u32 max_command_count,ID3D12Resource * argument_buffer,u64 argument_buffer_offset,ID3D12Resource * count_buffer,u64 count_buffer_offset)
+STDCALLP	windows.h	/^    void (STDCALLP GetCopyableFootprints)(ID3D12Device *self,$/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (GetCopyableFootprints)(ID3D12Device * self,const D3D12_RESOURCE_DESC * desc,u32 first_subresource,u32 num_subresources,u64 base_offset,D3D12_PLACED_SUBRESOURCE_FOOTPRINT * out_layouts,u32 * out_num_rows,u64 * out_row_size_in_bytes,u64 * out_total_bytes)
+STDCALLP	windows.h	/^    void (STDCALLP GetResourceTiling)(ID3D12Device *self,$/;"	m	struct:ID3D12DeviceDispatchTable	typeref:typename:void (GetResourceTiling)(ID3D12Device * self,ID3D12Resource * tiled_resource,u32 * out_num_tiles_for_entire_resource,D3D12_PACKED_MIP_INFO * out_packed_mip_desc,D3D12_TILE_SHAPE * out_standard_tile_shape_for_non_packed_mips,u32 * out_num_subresource_tilings,u32 first_subresource_tiling_to_get,D3D12_SUBRESOURCE_TILING * out_subresource_tiling_for_non_packed_mips)
+STDCALLP	windows.h	/^    void (STDCALLP IASetIndexBuffer)(ID3D12GraphicsCommandList *self, const D3D12_INDEX_BUFFER_V/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (IASetIndexBuffer)(ID3D12GraphicsCommandList * self,const D3D12_INDEX_BUFFER_VIEW * view)
 STDCALLP	windows.h	/^    void (STDCALLP IASetPrimitiveTopology)(ID3D12GraphicsCommandList *self, D3D12_PRIMITIVE_TOPO/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (IASetPrimitiveTopology)(ID3D12GraphicsCommandList * self,D3D12_PRIMITIVE_TOPOLOGY primitive_topology)
-STDCALLP	windows.h	/^    void (STDCALLP IASetVertexBuffers)(ID3D12GraphicsCommandList *cmdlist, u32 start_slot, u32 n/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (IASetVertexBuffers)(ID3D12GraphicsCommandList * cmdlist,u32 start_slot,u32 num_views,const D3D12_VERTEX_BUFFER_VIEW * views)
+STDCALLP	windows.h	/^    void (STDCALLP IASetVertexBuffers)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (IASetVertexBuffers)(ID3D12GraphicsCommandList * self,u32 start_slot,u32 num_views,const D3D12_VERTEX_BUFFER_VIEW * views)
 STDCALLP	windows.h	/^    void (STDCALLP OMSetBlendFactor)(ID3D12GraphicsCommandList *self, const f32 blend_factor[4])/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (OMSetBlendFactor)(ID3D12GraphicsCommandList * self,const f32 blend_factor[4])
-STDCALLP	windows.h	/^    void (STDCALLP OMSetRenderTargets)(ID3D12GraphicsCommandList *, u32, const D3D12_CPU_DESCRIP/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (OMSetRenderTargets)(ID3D12GraphicsCommandList *,u32,const D3D12_CPU_DESCRIPTOR_HANDLE *,i32,const D3D12_CPU_DESCRIPTOR_HANDLE *)
+STDCALLP	windows.h	/^    void (STDCALLP OMSetRenderTargets)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (OMSetRenderTargets)(ID3D12GraphicsCommandList * self,u32 num_render_target_descriptors,const D3D12_CPU_DESCRIPTOR_HANDLE * render_target_descriptors,i32 single_handle_to_descriptor_range,const D3D12_CPU_DESCRIPTOR_HANDLE * depth_stencil_descriptor)
 STDCALLP	windows.h	/^    void (STDCALLP OMSetStencilRef)(ID3D12GraphicsCommandList *self, u32 stencil_ref);$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (OMSetStencilRef)(ID3D12GraphicsCommandList * self,u32 stencil_ref)
 STDCALLP	windows.h	/^    void (STDCALLP RSSetScissorRects)(ID3D12GraphicsCommandList *self, u32 num_rects, const D3D1/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (RSSetScissorRects)(ID3D12GraphicsCommandList * self,u32 num_rects,const D3D12_RECT * rects)
 STDCALLP	windows.h	/^    void (STDCALLP RSSetViewports)(ID3D12GraphicsCommandList *self, u32 num_viewports, const D3D/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (RSSetViewports)(ID3D12GraphicsCommandList * self,u32 num_viewports,const D3D12_VIEWPORT * viewports)
-STDCALLP	windows.h	/^    void (STDCALLP ResolveQueryData)(ID3D12GraphicsCommandList *, ID3D12QueryHeap *, D3D12_QUERY/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ResolveQueryData)(ID3D12GraphicsCommandList *,ID3D12QueryHeap *,D3D12_QUERY_TYPE,u32,u32,ID3D12Resource *,u64)
+STDCALLP	windows.h	/^    void (STDCALLP ResolveQueryData)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ResolveQueryData)(ID3D12GraphicsCommandList * self,ID3D12QueryHeap * query_heap,D3D12_QUERY_TYPE type,u32 start_index,u32 num_queries,ID3D12Resource * destination_buffer,u64 aligned_destination_buffer_offset)
 STDCALLP	windows.h	/^    void (STDCALLP ResolveSubresource)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ResolveSubresource)(ID3D12GraphicsCommandList * self,ID3D12Resource * dst_resource,u32 dst_subresource,ID3D12Resource * src_resource,u32 src_subresource,DXGI_FORMAT format)
-STDCALLP	windows.h	/^    void (STDCALLP ResourceBarrier)(ID3D12GraphicsCommandList *, u32, const D3D12_RESOURCE_BARRI/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ResourceBarrier)(ID3D12GraphicsCommandList *,u32,const D3D12_RESOURCE_BARRIER *)
-STDCALLP	windows.h	/^    void (STDCALLP SOSetTargets)(ID3D12GraphicsCommandList *, u32, u32, const D3D12_STREAM_OUTPU/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SOSetTargets)(ID3D12GraphicsCommandList *,u32,u32,const D3D12_STREAM_OUTPUT_BUFFER_VIEW *)
-STDCALLP	windows.h	/^    void (STDCALLP SetComputeRoot32BitConstant)(ID3D12GraphicsCommandList *, u32, u32, u32);$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetComputeRoot32BitConstant)(ID3D12GraphicsCommandList *,u32,u32,u32)
-STDCALLP	windows.h	/^    void (STDCALLP SetComputeRoot32BitConstants)(ID3D12GraphicsCommandList *, u32, u32, const vo/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetComputeRoot32BitConstants)(ID3D12GraphicsCommandList *,u32,u32,const void *,u32)
-STDCALLP	windows.h	/^    void (STDCALLP SetComputeRootConstantBufferView)(ID3D12GraphicsCommandList *, u32, D3D12_GPU/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetComputeRootConstantBufferView)(ID3D12GraphicsCommandList *,u32,D3D12_GPU_VIRTUAL_ADDRESS)
-STDCALLP	windows.h	/^    void (STDCALLP SetComputeRootDescriptorTable)(ID3D12GraphicsCommandList *, u32, D3D12_GPU_DE/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetComputeRootDescriptorTable)(ID3D12GraphicsCommandList *,u32,D3D12_GPU_DESCRIPTOR_HANDLE)
-STDCALLP	windows.h	/^    void (STDCALLP SetComputeRootShaderResourceView)(ID3D12GraphicsCommandList *, u32, D3D12_GPU/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetComputeRootShaderResourceView)(ID3D12GraphicsCommandList *,u32,D3D12_GPU_VIRTUAL_ADDRESS)
-STDCALLP	windows.h	/^    void (STDCALLP SetComputeRootSignature)(ID3D12GraphicsCommandList *, ID3D12RootSignature *);$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetComputeRootSignature)(ID3D12GraphicsCommandList *,ID3D12RootSignature *)
-STDCALLP	windows.h	/^    void (STDCALLP SetComputeRootUnorderedAccessView)(ID3D12GraphicsCommandList *, u32, D3D12_GP/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetComputeRootUnorderedAccessView)(ID3D12GraphicsCommandList *,u32,D3D12_GPU_VIRTUAL_ADDRESS)
-STDCALLP	windows.h	/^    void (STDCALLP SetDescriptorHeaps)(ID3D12GraphicsCommandList *, u32, ID3D12DescriptorHeap *c/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetDescriptorHeaps)(ID3D12GraphicsCommandList *,u32,ID3D12DescriptorHeap * const *)
-STDCALLP	windows.h	/^    void (STDCALLP SetGraphicsRoot32BitConstant)(ID3D12GraphicsCommandList *, u32, u32, u32);$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetGraphicsRoot32BitConstant)(ID3D12GraphicsCommandList *,u32,u32,u32)
-STDCALLP	windows.h	/^    void (STDCALLP SetGraphicsRoot32BitConstants)(ID3D12GraphicsCommandList *, u32, u32, const v/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetGraphicsRoot32BitConstants)(ID3D12GraphicsCommandList *,u32,u32,const void *,u32)
-STDCALLP	windows.h	/^    void (STDCALLP SetGraphicsRootConstantBufferView)(ID3D12GraphicsCommandList *cmdlist, u32 ro/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetGraphicsRootConstantBufferView)(ID3D12GraphicsCommandList * cmdlist,u32 root_index,D3D12_GPU_VIRTUAL_ADDRESS buffer_location)
-STDCALLP	windows.h	/^    void (STDCALLP SetGraphicsRootDescriptorTable)(ID3D12GraphicsCommandList *, u32, D3D12_GPU_D/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetGraphicsRootDescriptorTable)(ID3D12GraphicsCommandList *,u32,D3D12_GPU_DESCRIPTOR_HANDLE)
-STDCALLP	windows.h	/^    void (STDCALLP SetGraphicsRootShaderResourceView)(ID3D12GraphicsCommandList *, u32, D3D12_GP/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetGraphicsRootShaderResourceView)(ID3D12GraphicsCommandList *,u32,D3D12_GPU_VIRTUAL_ADDRESS)
-STDCALLP	windows.h	/^    void (STDCALLP SetGraphicsRootSignature)(ID3D12GraphicsCommandList *, ID3D12RootSignature *)/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetGraphicsRootSignature)(ID3D12GraphicsCommandList *,ID3D12RootSignature *)
-STDCALLP	windows.h	/^    void (STDCALLP SetGraphicsRootUnorderedAccessView)(ID3D12GraphicsCommandList *, u32, D3D12_G/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetGraphicsRootUnorderedAccessView)(ID3D12GraphicsCommandList *,u32,D3D12_GPU_VIRTUAL_ADDRESS)
-STDCALLP	windows.h	/^    void (STDCALLP SetMarker)(ID3D12CommandQueue *, u32, const void *, u32);$/;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:void (SetMarker)(ID3D12CommandQueue *,u32,const void *,u32)
-STDCALLP	windows.h	/^    void (STDCALLP SetMarker)(ID3D12GraphicsCommandList *, u32, const void *, u32);$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetMarker)(ID3D12GraphicsCommandList *,u32,const void *,u32)
+STDCALLP	windows.h	/^    void (STDCALLP ResourceBarrier)(ID3D12GraphicsCommandList *self, u32 num_barriers, const D3D/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (ResourceBarrier)(ID3D12GraphicsCommandList * self,u32 num_barriers,const D3D12_RESOURCE_BARRIER * barriers)
+STDCALLP	windows.h	/^    void (STDCALLP SOSetTargets)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SOSetTargets)(ID3D12GraphicsCommandList * self,u32 start_slot,u32 num_views,const D3D12_STREAM_OUTPUT_BUFFER_VIEW * views)
+STDCALLP	windows.h	/^    void (STDCALLP SetComputeRoot32BitConstant)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetComputeRoot32BitConstant)(ID3D12GraphicsCommandList * self,u32 root_parameter_index,u32 src_data,u32 dest_offset_in_32bit_values)
+STDCALLP	windows.h	/^    void (STDCALLP SetComputeRoot32BitConstants)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetComputeRoot32BitConstants)(ID3D12GraphicsCommandList * self,u32 root_parameter_index,u32 num_32bit_values_to_set,const void * src_data,u32 dest_offset_in_32bit_values)
+STDCALLP	windows.h	/^    void (STDCALLP SetComputeRootConstantBufferView)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetComputeRootConstantBufferView)(ID3D12GraphicsCommandList * self,u32 root_parameter_index,D3D12_GPU_VIRTUAL_ADDRESS buffer_location)
+STDCALLP	windows.h	/^    void (STDCALLP SetComputeRootDescriptorTable)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetComputeRootDescriptorTable)(ID3D12GraphicsCommandList * self,u32 root_parameter_index,D3D12_GPU_DESCRIPTOR_HANDLE base_descriptor)
+STDCALLP	windows.h	/^    void (STDCALLP SetComputeRootShaderResourceView)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetComputeRootShaderResourceView)(ID3D12GraphicsCommandList * self,u32 root_parameter_index,D3D12_GPU_VIRTUAL_ADDRESS buffer_location)
+STDCALLP	windows.h	/^    void (STDCALLP SetComputeRootSignature)(ID3D12GraphicsCommandList *self, ID3D12RootSignature/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetComputeRootSignature)(ID3D12GraphicsCommandList * self,ID3D12RootSignature * root_signature)
+STDCALLP	windows.h	/^    void (STDCALLP SetComputeRootUnorderedAccessView)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetComputeRootUnorderedAccessView)(ID3D12GraphicsCommandList * self,u32 root_parameter_index,D3D12_GPU_VIRTUAL_ADDRESS buffer_location)
+STDCALLP	windows.h	/^    void (STDCALLP SetDescriptorHeaps)(ID3D12GraphicsCommandList *self, u32 num_heaps, ID3D12Des/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetDescriptorHeaps)(ID3D12GraphicsCommandList * self,u32 num_heaps,ID3D12DescriptorHeap * const * heaps)
+STDCALLP	windows.h	/^    void (STDCALLP SetGraphicsRoot32BitConstant)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetGraphicsRoot32BitConstant)(ID3D12GraphicsCommandList * self,u32 root_parameter_index,u32 src_data,u32 dest_offset_in_32bit_values)
+STDCALLP	windows.h	/^    void (STDCALLP SetGraphicsRoot32BitConstants)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetGraphicsRoot32BitConstants)(ID3D12GraphicsCommandList * self,u32 root_parameter_index,u32 num_32bit_values_to_set,const void * src_data,u32 dest_offset_in_32bit_values)
+STDCALLP	windows.h	/^    void (STDCALLP SetGraphicsRootConstantBufferView)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetGraphicsRootConstantBufferView)(ID3D12GraphicsCommandList * self,u32 root_parameter_index,D3D12_GPU_VIRTUAL_ADDRESS buffer_location)
+STDCALLP	windows.h	/^    void (STDCALLP SetGraphicsRootDescriptorTable)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetGraphicsRootDescriptorTable)(ID3D12GraphicsCommandList * self,u32 root_parameter_index,D3D12_GPU_DESCRIPTOR_HANDLE base_descriptor)
+STDCALLP	windows.h	/^    void (STDCALLP SetGraphicsRootShaderResourceView)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetGraphicsRootShaderResourceView)(ID3D12GraphicsCommandList * self,u32 root_parameter_index,D3D12_GPU_VIRTUAL_ADDRESS buffer_location)
+STDCALLP	windows.h	/^    void (STDCALLP SetGraphicsRootSignature)(ID3D12GraphicsCommandList *self, ID3D12RootSignatur/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetGraphicsRootSignature)(ID3D12GraphicsCommandList * self,ID3D12RootSignature * root_signature)
+STDCALLP	windows.h	/^    void (STDCALLP SetGraphicsRootUnorderedAccessView)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetGraphicsRootUnorderedAccessView)(ID3D12GraphicsCommandList * self,u32 root_parameter_index,D3D12_GPU_VIRTUAL_ADDRESS buffer_location)
+STDCALLP	windows.h	/^    void (STDCALLP SetMarker)(ID3D12CommandQueue *self, u32 metadata, const void *data, u32 size/;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:void (SetMarker)(ID3D12CommandQueue * self,u32 metadata,const void * data,u32 size)
+STDCALLP	windows.h	/^    void (STDCALLP SetMarker)(ID3D12GraphicsCommandList *self, u32 metadata, const void *data, u/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetMarker)(ID3D12GraphicsCommandList * self,u32 metadata,const void * data,u32 size)
 STDCALLP	windows.h	/^    void (STDCALLP SetPipelineState)(ID3D12GraphicsCommandList *self, ID3D12PipelineState *pipel/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetPipelineState)(ID3D12GraphicsCommandList * self,ID3D12PipelineState * pipeline_state)
-STDCALLP	windows.h	/^    void (STDCALLP SetPredication)(ID3D12GraphicsCommandList *, ID3D12Resource *, u64, D3D12_PRE/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetPredication)(ID3D12GraphicsCommandList *,ID3D12Resource *,u64,D3D12_PREDICATION_OP)
-STDCALLP	windows.h	/^    void (STDCALLP Unmap)(ID3D12Resource *resource, u32 subresource, const D3D12_RANGE *range);$/;"	m	struct:ID3D12ResourceDispatchTable	typeref:typename:void (Unmap)(ID3D12Resource * resource,u32 subresource,const D3D12_RANGE * range)
+STDCALLP	windows.h	/^    void (STDCALLP SetPredication)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetPredication)(ID3D12GraphicsCommandList * self,ID3D12Resource * buffer,u64 aligned_buffer_offset,D3D12_PREDICATION_OP operation)
+STDCALLP	windows.h	/^    void (STDCALLP Unmap)(ID3D12Resource *self, u32 subresource, const D3D12_RANGE *written_rang/;"	m	struct:ID3D12ResourceDispatchTable	typeref:typename:void (Unmap)(ID3D12Resource * self,u32 subresource,const D3D12_RANGE * written_range)
 STDCALLP	windows.h	/^    void (STDCALLP UnregisterOcclusionStatus)(IDXGIFactory4 *, u32);$/;"	m	struct:IDXGIFactory4DispatchTable	typeref:typename:void (UnregisterOcclusionStatus)(IDXGIFactory4 *,u32)
 STDCALLP	windows.h	/^    void (STDCALLP UnregisterStereoStatus)(IDXGIFactory4 *, u32);$/;"	m	struct:IDXGIFactory4DispatchTable	typeref:typename:void (UnregisterStereoStatus)(IDXGIFactory4 *,u32)
-STDCALLP	windows.h	/^    void (STDCALLP UpdateTileMappings)(ID3D12CommandQueue *, ID3D12Resource *, u32, const D3D12_/;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:void (UpdateTileMappings)(ID3D12CommandQueue *,ID3D12Resource *,u32,const D3D12_TILED_RESOURCE_COORDINATE *,const D3D12_TILE_REGION_SIZE *,ID3D12Heap *,u32,const D3D12_TILE_RANGE_FLAGS *,const u32 *,const u32 *,D3D12_TILE_MAPPING_FLAGS)
-STDCALLP	windows.h	/^    void *(STDCALLP GetBufferPointer)(ID3DBlob *);$/;"	m	struct:ID3DBlobDispatchTable	typeref:typename:void * (GetBufferPointer)(ID3DBlob *)
+STDCALLP	windows.h	/^    void (STDCALLP UpdateTileMappings)(ID3D12CommandQueue *self,$/;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:void (UpdateTileMappings)(ID3D12CommandQueue * self,ID3D12Resource * resource,u32 num_resource_regions,const D3D12_TILED_RESOURCE_COORDINATE * resource_region_start_coordinates,const D3D12_TILE_REGION_SIZE * resource_region_sizes,ID3D12Heap * heap,u32 num_ranges,const D3D12_TILE_RANGE_FLAGS * range_flags,const u32 * heap_range_start_offsets,const u32 * range_tile_counts,D3D12_TILE_MAPPING_FLAGS flags)
+STDCALLP	windows.h	/^    void *(STDCALLP GetBufferPointer)(ID3DBlob *self);$/;"	m	struct:ID3DBlobDispatchTable	typeref:typename:void * (GetBufferPointer)(ID3DBlob * self)
 STDCALLP	windows.h	/^    void *(STDCALLP GetFrameLatencyWaitableObject)(IDXGISwapChain3 *);$/;"	m	struct:IDXGISwapChain3DispatchTable	typeref:typename:void * (GetFrameLatencyWaitableObject)(IDXGISwapChain3 *)
 STDCALLP	windows.h	/^#define STDCALLP /;"	d
 SYNCHRONIZE	windows.h	/^#define SYNCHRONIZE /;"	d
@@ -2273,6 +2273,7 @@ r3	math.h	/^        struct { f32vec4 r0, r1, r2, r3; };$/;"	m	struct:f32mat4::__
 renderer	demo01.c	/^    renderer_t *renderer;$/;"	m	struct:demo	typeref:typename:renderer_t *	file:
 renderer	renderer.h	/^typedef struct renderer {$/;"	s
 renderer_t	renderer.h	/^} renderer_t;$/;"	t	typeref:struct:renderer
+restrict	types.h	/^#define restrict /;"	d
 right	windows.h	/^    i32 right;$/;"	m	struct:RECT	typeref:typename:i32
 right	windows.h	/^    u32 right;$/;"	m	struct:D3D12_BOX	typeref:typename:u32
 root_sig	demo01.c	/^    ID3D12RootSignature *root_sig;$/;"	m	struct:demo	typeref:typename:ID3D12RootSignature *	file:
