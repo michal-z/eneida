@@ -2,6 +2,9 @@
 #include "windows.h"
 
 
+#define MAX_NUM_SHADER_DESCRIPTORS 1024
+#define MAX_NUM_NON_SHADER_DESCRIPTORS 1024
+
 typedef struct priv_renderer {
     ID3D12Fence *frame_fence;
     void *frame_fence_event;
@@ -10,6 +13,19 @@ typedef struct priv_renderer {
     ID3D12DescriptorHeap *rtv_heap;
     ID3D12DescriptorHeap *dsv_heap;
     u64 frame_count;
+    // shader visible descriptor heaps
+    struct {
+        ID3D12DescriptorHeap *heap;
+        D3D12_CPU_DESCRIPTOR_HANDLE cpu_start;
+        D3D12_GPU_DESCRIPTOR_HANDLE gpu_start;
+        u32 num_allocated;
+    } shader_descriptors[2];
+    // shader non-visible descriptor heap
+    struct {
+        ID3D12DescriptorHeap *heap;
+        D3D12_CPU_DESCRIPTOR_HANDLE cpu_start;
+        u32 num_allocated;
+    } non_shader_descriptors;
 } priv_renderer_t;
 
 renderer_t *gr_init(void *window)
@@ -116,6 +132,21 @@ renderer_t *gr_init(void *window)
             .Format = DXGI_FORMAT_D32_FLOAT, .ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D, .Flags = D3D12_DSV_FLAG_NONE
         };
         ID3D12Device_CreateDepthStencilView(rend->d3d, rend->depth_buffer, &view_desc, rend->dsv_heap_start);
+    }
+    // shader visible descriptor heaps
+    for (u32 i = 0; i < 2; ++i) {
+        D3D12_DESCRIPTOR_HEAP_DESC heap_desc = {
+            .NumDescriptors = MAX_NUM_SHADER_DESCRIPTORS,
+            .Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
+            .Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE
+        };
+        VHR(ID3D12Device_CreateDescriptorHeap(rend->d3d, &heap_desc, &IID_ID3D12DescriptorHeap,
+                                              &prend->shader_descriptors[i].heap));
+
+        ID3D12DescriptorHeap_GetCPUDescriptorHandleForHeapStart(prend->shader_descriptors[i].heap,
+                                                                &prend->shader_descriptors[i].cpu_start);
+        ID3D12DescriptorHeap_GetGPUDescriptorHandleForHeapStart(prend->shader_descriptors[i].heap,
+                                                                &prend->shader_descriptors[i].gpu_start);
     }
 
     VHR(ID3D12Device_CreateCommandList(rend->d3d, 0, D3D12_COMMAND_LIST_TYPE_DIRECT, rend->cmdalloc[0], NULL,
