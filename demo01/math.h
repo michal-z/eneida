@@ -31,6 +31,25 @@ typedef struct f32mat4 {
     };
 } f32mat4;
 
+inline u32 u32_rand(u32 *state)
+{
+    assert(state);
+    *state = *state * 1103515245 + 12345;
+    return (*state >> 16) & 0x7fff;
+}
+
+inline f32 f32_rand(u32 *state)
+{
+    u32 result = (127 << 23) | (u32_rand(state) << 8);
+    return *(f32 *)&result - 1.0f;
+}
+
+inline f32 f32_rand_range(u32 *state, f32 begin, f32 end)
+{
+    assert(begin < end);
+    return begin + (end - begin) * f32_rand(state);
+}
+
 extern f32 sqrtf(f32 x);
 __forceinline f32 f32_sqrt(f32 x)
 {

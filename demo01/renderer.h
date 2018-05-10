@@ -21,3 +21,6 @@ renderer_t *gr_init(void *window);
 void gr_shutdown(renderer_t *rend);
 void gr_present_frame(renderer_t *rend);
 void gr_flush(renderer_t *rend);
+void gr_alloc_non_shader_descriptors(renderer_t *rend, u32 num, D3D12_CPU_DESCRIPTOR_HANDLE *out_first);
+void gr_alloc_shader_descriptors(renderer_t *rend, u32 num, D3D12_CPU_DESCRIPTOR_HANDLE *out_first_cpu,
+                                 D3D12_GPU_DESCRIPTOR_HANDLE *out_first_gpu);

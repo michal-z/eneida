@@ -1671,6 +1671,8 @@ LoadCursor	main.c	/^void *(__stdcall *LoadCursor)(void *, const char *);$/;"	v	t
 LogicOp	windows.h	/^    D3D12_LOGIC_OP LogicOp;$/;"	m	struct:D3D12_RENDER_TARGET_BLEND_DESC	typeref:typename:D3D12_LOGIC_OP
 LogicOpEnable	windows.h	/^    i32 LogicOpEnable;$/;"	m	struct:D3D12_RENDER_TARGET_BLEND_DESC	typeref:typename:i32
 MAKEINTRESOURCE	windows.h	/^#define MAKEINTRESOURCE(/;"	d
+MAX_NUM_NON_SHADER_DESCRIPTORS	renderer.c	/^#define MAX_NUM_NON_SHADER_DESCRIPTORS /;"	d	file:
+MAX_NUM_SHADER_DESCRIPTORS	renderer.c	/^#define MAX_NUM_SHADER_DESCRIPTORS /;"	d	file:
 MEM_COMMIT	windows.h	/^#define MEM_COMMIT /;"	d
 MEM_RELEASE	windows.h	/^#define MEM_RELEASE /;"	d
 MEM_RESERVE	windows.h	/^#define MEM_RESERVE /;"	d
@@ -2095,6 +2097,8 @@ __anon0d3df6e50408	math.h	/^        struct { f32 x, y, z, w; };$/;"	s	union:f32v
 __anon0d3df6e5050a	math.h	/^    union {$/;"	u	struct:f32mat4
 __anon0d3df6e50608	math.h	/^        struct { f32vec4 r0, r1, r2, r3; };$/;"	s	union:f32mat4::__anon0d3df6e5050a
 __anon0d3df6e5070a	math.h	/^    union {$/;"	u	function:f32_abs
+__anon816587ed0108	renderer.c	/^    struct {$/;"	s	struct:priv_renderer	file:
+__anon816587ed0208	renderer.c	/^    struct {$/;"	s	struct:priv_renderer	file:
 _fltused	main.c	/^i32 _fltused;$/;"	v	typeref:typename:i32
 assert	types.h	/^#define assert(/;"	d
 bInheritHandle	windows.h	/^    i32 bInheritHandle;$/;"	m	struct:SECURITY_ATTRIBUTES	typeref:typename:i32
@@ -2110,6 +2114,8 @@ cmdqueue	renderer.h	/^    ID3D12CommandQueue *cmdqueue;$/;"	m	struct:renderer	ty
 color_buffers	renderer.h	/^    ID3D12Resource *color_buffers[4];$/;"	m	struct:renderer	typeref:typename:ID3D12Resource * [4]
 constant_buffer	demo01.c	/^    ID3D12Resource *constant_buffer;$/;"	m	struct:demo	typeref:typename:ID3D12Resource *	file:
 constant_buffer_cpu_addr	demo01.c	/^    void *constant_buffer_cpu_addr;$/;"	m	struct:demo	typeref:typename:void *	file:
+cpu_start	renderer.c	/^        D3D12_CPU_DESCRIPTOR_HANDLE cpu_start;$/;"	m	struct:priv_renderer::__anon816587ed0108	typeref:typename:D3D12_CPU_DESCRIPTOR_HANDLE	file:
+cpu_start	renderer.c	/^        D3D12_CPU_DESCRIPTOR_HANDLE cpu_start;$/;"	m	struct:priv_renderer::__anon816587ed0208	typeref:typename:D3D12_CPU_DESCRIPTOR_HANDLE	file:
 create_window	main.c	/^static void *create_window(const char *name, u32 width, u32 height)$/;"	f	typeref:typename:void *	file:
 d3d	renderer.h	/^    ID3D12Device *d3d;$/;"	m	struct:renderer	typeref:typename:ID3D12Device *
 d3d_create_buffer	windows.h	/^inline ID3D12Resource *d3d_create_buffer(ID3D12Device *d3d, D3D12_HEAP_TYPE heap_type, u64 size)$/;"	f	typeref:typename:ID3D12Resource *
@@ -2158,6 +2164,8 @@ f32_abs	math.h	/^__forceinline f32 f32_abs(f32 x)$/;"	f	typeref:typename:f32
 f32_cos	math.h	/^inline f32 f32_cos(f32 x)$/;"	f	typeref:typename:f32
 f32_cos_fast	math.h	/^inline f32 f32_cos_fast(f32 x)$/;"	f	typeref:typename:f32
 f32_equal	math.h	/^__forceinline i32 f32_equal(f32 x, f32 y, f32 epsilon)$/;"	f	typeref:typename:i32
+f32_rand	math.h	/^inline f32 f32_rand(u32 *state)$/;"	f	typeref:typename:f32
+f32_rand_range	math.h	/^inline f32 f32_rand_range(u32 *state, f32 begin, f32 end)$/;"	f	typeref:typename:f32
 f32_sin	math.h	/^inline f32 f32_sin(f32 x)$/;"	f	typeref:typename:f32
 f32_sin_fast	math.h	/^inline f32 f32_sin_fast(f32 x)$/;"	f	typeref:typename:f32
 f32_sincos	math.h	/^inline void f32_sincos(f32 *osin, f32 *ocos, f32 x)$/;"	f	typeref:typename:void
@@ -2193,6 +2201,9 @@ frame_fence	renderer.c	/^    ID3D12Fence *frame_fence;$/;"	m	struct:priv_rendere
 frame_fence_event	renderer.c	/^    void *frame_fence_event;$/;"	m	struct:priv_renderer	typeref:typename:void *	file:
 frame_index	renderer.h	/^    u32 frame_index;$/;"	m	struct:renderer	typeref:typename:u32
 front	windows.h	/^    u32 front;$/;"	m	struct:D3D12_BOX	typeref:typename:u32
+gpu_start	renderer.c	/^        D3D12_GPU_DESCRIPTOR_HANDLE gpu_start;$/;"	m	struct:priv_renderer::__anon816587ed0108	typeref:typename:D3D12_GPU_DESCRIPTOR_HANDLE	file:
+gr_alloc_non_shader_descriptors	renderer.c	/^void gr_alloc_non_shader_descriptors(renderer_t *rend, u32 num, D3D12_CPU_DESCRIPTOR_HANDLE *out/;"	f	typeref:typename:void
+gr_alloc_shader_descriptors	renderer.c	/^void gr_alloc_shader_descriptors(renderer_t *rend, u32 num, D3D12_CPU_DESCRIPTOR_HANDLE *out_fir/;"	f	typeref:typename:void
 gr_flush	renderer.c	/^void gr_flush(renderer_t *rend)$/;"	f	typeref:typename:void
 gr_init	renderer.c	/^renderer_t *gr_init(void *window)$/;"	f	typeref:typename:renderer_t *
 gr_present_frame	renderer.c	/^void gr_present_frame(renderer_t *rend)$/;"	f	typeref:typename:void
@@ -2201,6 +2212,8 @@ hCursor	windows.h	/^    void *hCursor;$/;"	m	struct:WNDCLASS	typeref:typename:vo
 hIcon	windows.h	/^    void *hIcon;$/;"	m	struct:WNDCLASS	typeref:typename:void *
 hInstance	windows.h	/^    void *hInstance;$/;"	m	struct:WNDCLASS	typeref:typename:void *
 hbrBackground	windows.h	/^    void *hbrBackground;$/;"	m	struct:WNDCLASS	typeref:typename:void *
+heap	renderer.c	/^        ID3D12DescriptorHeap *heap;$/;"	m	struct:priv_renderer::__anon816587ed0108	typeref:typename:ID3D12DescriptorHeap *	file:
+heap	renderer.c	/^        ID3D12DescriptorHeap *heap;$/;"	m	struct:priv_renderer::__anon816587ed0208	typeref:typename:ID3D12DescriptorHeap *	file:
 hwnd	windows.h	/^    void *hwnd;$/;"	m	struct:MSG	typeref:typename:void *
 i16	types.h	/^typedef short i16;$/;"	t	typeref:typename:short
 i32	types.h	/^typedef int i32;$/;"	t	typeref:typename:int
@@ -2234,6 +2247,9 @@ mem_realloc	library.c	/^void *mem_realloc(void *addr, size_t size)$/;"	f	typeref
 memset	asmlib.asm	/^memset: XOR eax, eax$/;"	l
 message	windows.h	/^    u32 message;$/;"	m	struct:MSG	typeref:typename:u32
 nLength	windows.h	/^    u32 nLength;$/;"	m	struct:SECURITY_ATTRIBUTES	typeref:typename:u32
+non_shader_descriptors	renderer.c	/^    } non_shader_descriptors;$/;"	m	struct:priv_renderer	typeref:struct:priv_renderer::__anon816587ed0208	file:
+num_allocated	renderer.c	/^        u32 num_allocated;$/;"	m	struct:priv_renderer::__anon816587ed0108	typeref:typename:u32	file:
+num_allocated	renderer.c	/^        u32 num_allocated;$/;"	m	struct:priv_renderer::__anon816587ed0208	typeref:typename:u32	file:
 pArgumentDescs	windows.h	/^    const D3D12_INDIRECT_ARGUMENT_DESC *pArgumentDescs;$/;"	m	struct:D3D12_COMMAND_SIGNATURE_DESC	typeref:typename:const D3D12_INDIRECT_ARGUMENT_DESC *
 pBits	windows.h	/^    u8 *pBits;$/;"	m	struct:DXGI_MAPPED_RECT	typeref:typename:u8 *
 pBufferStrides	windows.h	/^    const u32 *pBufferStrides;$/;"	m	struct:D3D12_STREAM_OUTPUT_DESC	typeref:typename:const u32 *
@@ -2280,6 +2296,7 @@ root_sig	demo01.c	/^    ID3D12RootSignature *root_sig;$/;"	m	struct:demo	typeref
 rtv_heap	renderer.c	/^    ID3D12DescriptorHeap *rtv_heap;$/;"	m	struct:priv_renderer	typeref:typename:ID3D12DescriptorHeap *	file:
 rtv_heap_start	renderer.h	/^    D3D12_CPU_DESCRIPTOR_HANDLE rtv_heap_start;$/;"	m	struct:renderer	typeref:typename:D3D12_CPU_DESCRIPTOR_HANDLE
 sh	asmlib.asm	/^  sh: file `sh#'.cso'$/;"	l
+shader_descriptors	renderer.c	/^    } shader_descriptors[2];$/;"	m	struct:priv_renderer	typeref:struct:priv_renderer::__anon816587ed0108[2]	file:
 short	types.h	/^#define short /;"	d
 sqrtf	asmlib.asm	/^sqrtf:  SQRTSS xmm0, xmm0$/;"	l
 start	main.c	/^void start(void)$/;"	f	typeref:typename:void
@@ -2291,6 +2308,7 @@ top	windows.h	/^    u32 top;$/;"	m	struct:D3D12_BOX	typeref:typename:u32
 u	math.h	/^        u32 u;$/;"	m	union:f32_abs::__anon0d3df6e5070a	typeref:typename:u32
 u16	types.h	/^typedef unsigned short u16;$/;"	t	typeref:typename:unsigned short
 u32	types.h	/^typedef unsigned int u32;$/;"	t	typeref:typename:unsigned int
+u32_rand	math.h	/^inline u32 u32_rand(u32 *state)$/;"	f	typeref:typename:u32
 u64	types.h	/^typedef unsigned long long u64;$/;"	t	typeref:typename:unsigned long long
 u8	types.h	/^typedef unsigned char u8;$/;"	t	typeref:typename:unsigned char
 unsigned	types.h	/^#define unsigned /;"	d

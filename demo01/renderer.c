@@ -148,6 +148,17 @@ renderer_t *gr_init(void *window)
         ID3D12DescriptorHeap_GetGPUDescriptorHandleForHeapStart(prend->shader_descriptors[i].heap,
                                                                 &prend->shader_descriptors[i].gpu_start);
     }
+    /* shader non-visible descriptor heap */ {
+        D3D12_DESCRIPTOR_HEAP_DESC heap_desc = {
+            .NumDescriptors = MAX_NUM_NON_SHADER_DESCRIPTORS,
+            .Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV
+        };
+        VHR(ID3D12Device_CreateDescriptorHeap(rend->d3d, &heap_desc, &IID_ID3D12DescriptorHeap,
+                                              &prend->non_shader_descriptors.heap));
+
+        ID3D12DescriptorHeap_GetCPUDescriptorHandleForHeapStart(prend->non_shader_descriptors.heap,
+                                                                &prend->non_shader_descriptors.cpu_start);
+    }
 
     VHR(ID3D12Device_CreateCommandList(rend->d3d, 0, D3D12_COMMAND_LIST_TYPE_DIRECT, rend->cmdalloc[0], NULL,
                                        &IID_ID3D12GraphicsCommandList, &rend->cmdlist));
@@ -204,4 +215,38 @@ void gr_present_frame(renderer_t *rend)
 
     rend->frame_index = !rend->frame_index;
     rend->back_buffer_index = IDXGISwapChain3_GetCurrentBackBufferIndex(prend->swapchain);
+
+    prend->shader_descriptors[rend->frame_index].num_allocated = 0;
+}
+
+void gr_alloc_non_shader_descriptors(renderer_t *rend, u32 num, D3D12_CPU_DESCRIPTOR_HANDLE *out_first)
+{
+    assert(rend && rend->priv && out_first);
+    priv_renderer_t *prend = rend->priv;
+
+    assert((prend->non_shader_descriptors.num_allocated + num) < MAX_NUM_NON_SHADER_DESCRIPTORS);
+
+    out_first->ptr = prend->non_shader_descriptors.cpu_start.ptr +
+        prend->non_shader_descriptors.num_allocated * rend->descriptor_size;
+
+    prend->non_shader_descriptors.num_allocated += num;
+}
+
+void gr_alloc_shader_descriptors(renderer_t *rend, u32 num, D3D12_CPU_DESCRIPTOR_HANDLE *out_first_cpu,
+                                 D3D12_GPU_DESCRIPTOR_HANDLE *out_first_gpu)
+{
+    assert(rend && rend->priv && out_first_cpu && out_first_gpu);
+    priv_renderer_t *prend = rend->priv;
+
+    u32 frame = rend->frame_index;
+
+    assert((prend->shader_descriptors[frame].num_allocated + num) < MAX_NUM_SHADER_DESCRIPTORS);
+
+    out_first_cpu->ptr = prend->shader_descriptors[frame].cpu_start.ptr +
+        prend->shader_descriptors[frame].num_allocated * rend->descriptor_size;
+
+    out_first_gpu->ptr = prend->shader_descriptors[frame].gpu_start.ptr +
+        prend->shader_descriptors[frame].num_allocated * rend->descriptor_size;
+
+    prend->shader_descriptors[frame].num_allocated += num;
 }
