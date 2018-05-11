@@ -155,6 +155,33 @@ demo_t *demo_init(void *window)
         VHR(ID3D12Resource_Map(demo->constant_buffer, 0, &range, &demo->constant_buffer_cpu_addr));
     }
 
+#if 0
+    i32 **array = NULL;
+    char buffer[64];
+    for (u32 i = 0; i < 128; ++i) {
+        i32 *item = (i32 *)mem_alloc(sizeof(i32));
+        array_add(array, item);
+        wsprintf(buffer, "%p     (%u / %u)\n", array[i], array_size(array), array_capacity(array));
+        OutputDebugString(buffer);
+    }
+#else
+    typedef struct my_test_type {
+        u32 x;
+        u32 y;
+    } my_test_type_t;
+
+    my_test_type_t *array = NULL;
+    char buffer[64];
+    for (u32 i = 0; i < 128; ++i) {
+        my_test_type_t s;
+        s.x = i;
+        s.y = i + 1;
+        array_add(array, s);
+        wsprintf(buffer, "%u     (%u / %u)\n", array[i].x, array_size(array), array_capacity(array));
+        OutputDebugString(buffer);
+    }
+#endif
+
     return demo;
 }
 

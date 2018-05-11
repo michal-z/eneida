@@ -1,6 +1,6 @@
 @echo off
 
-set CFLAGS=/Od
+set CFLAGS=/Od /D_DEBUG
 ::set CFLAGS=/O2 /GL /Oi /fp:fast
 ::set LFLAGS=/LTCG
 

@@ -59,7 +59,7 @@ ByteStride	windows.h	/^    u32 ByteStride;$/;"	m	struct:D3D12_COMMAND_SIGNATURE_
 BytecodeLength	windows.h	/^    u64 BytecodeLength;$/;"	m	struct:D3D12_SHADER_BYTECODE	typeref:typename:u64
 CC	make.bat	/^set CC=..\\compiler\\cl.exe$/;"	v
 CFLAGS	make.bat	/^::set CFLAGS=\/O2 \/GL \/Oi \/fp:fast$/;"	v
-CFLAGS	make.bat	/^set CFLAGS=\/Od$/;"	v
+CFLAGS	make.bat	/^set CFLAGS=\/Od \/D_DEBUG$/;"	v
 CInvocations	windows.h	/^    u64 CInvocations;$/;"	m	struct:D3D12_QUERY_DATA_PIPELINE_STATISTICS	typeref:typename:u64
 COMRELEASE	windows.h	/^#define COMRELEASE(/;"	d
 CPUPageProperty	windows.h	/^    D3D12_CPU_PAGE_PROPERTY CPUPageProperty;$/;"	m	struct:D3D12_HEAP_PROPERTIES	typeref:typename:D3D12_CPU_PAGE_PROPERTY
@@ -2099,13 +2099,22 @@ __anon0d3df6e50608	math.h	/^        struct { f32vec4 r0, r1, r2, r3; };$/;"	s	un
 __anon0d3df6e5070a	math.h	/^    union {$/;"	u	function:f32_abs
 __anon816587ed0108	renderer.c	/^    struct {$/;"	s	struct:priv_renderer	file:
 __anon816587ed0208	renderer.c	/^    struct {$/;"	s	struct:priv_renderer	file:
+__anon866fb6100108	library.h	/^typedef struct {$/;"	s
 _fltused	main.c	/^i32 _fltused;$/;"	v	typeref:typename:i32
+array_add	library.h	/^#define array_add(/;"	d
+array_capacity	library.h	/^#define array_capacity(/;"	d
+array_full	library.h	/^#define array_full(/;"	d
+array_grow	library.h	/^inline void *array_grow(void *array, u32 item_size)$/;"	f	typeref:typename:void *
+array_header	library.h	/^#define array_header(/;"	d
+array_header_t	library.h	/^} array_header_t;$/;"	t	typeref:struct:__anon866fb6100108
+array_size	library.h	/^#define array_size(/;"	d
 assert	types.h	/^#define assert(/;"	d
 bInheritHandle	windows.h	/^    i32 bInheritHandle;$/;"	m	struct:SECURITY_ATTRIBUTES	typeref:typename:i32
 back	windows.h	/^    u32 back;$/;"	m	struct:D3D12_BOX	typeref:typename:u32
 back_buffer_index	renderer.h	/^    u32 back_buffer_index;$/;"	m	struct:renderer	typeref:typename:u32
 bottom	windows.h	/^    i32 bottom;$/;"	m	struct:RECT	typeref:typename:i32
 bottom	windows.h	/^    u32 bottom;$/;"	m	struct:D3D12_BOX	typeref:typename:u32
+capacity	library.h	/^    u32 capacity;$/;"	m	struct:__anon866fb6100108	typeref:typename:u32
 cbClsExtra	windows.h	/^    i32 cbClsExtra;$/;"	m	struct:WNDCLASS	typeref:typename:i32
 cbWndExtra	windows.h	/^    i32 cbWndExtra;$/;"	m	struct:WNDCLASS	typeref:typename:i32
 cmdalloc	renderer.h	/^    ID3D12CommandAllocator *cmdalloc[2];$/;"	m	struct:renderer	typeref:typename:ID3D12CommandAllocator * [2]
@@ -2246,6 +2255,8 @@ mem_free	library.c	/^void mem_free(void *addr)$/;"	f	typeref:typename:void
 mem_realloc	library.c	/^void *mem_realloc(void *addr, size_t size)$/;"	f	typeref:typename:void *
 memset	asmlib.asm	/^memset: XOR eax, eax$/;"	l
 message	windows.h	/^    u32 message;$/;"	m	struct:MSG	typeref:typename:u32
+my_test_type	demo01.c	/^    typedef struct my_test_type {$/;"	s	function:demo_init	file:
+my_test_type_t	demo01.c	/^    } my_test_type_t;$/;"	t	function:demo_init	typeref:struct:demo_init::my_test_type	file:
 nLength	windows.h	/^    u32 nLength;$/;"	m	struct:SECURITY_ATTRIBUTES	typeref:typename:u32
 non_shader_descriptors	renderer.c	/^    } non_shader_descriptors;$/;"	m	struct:priv_renderer	typeref:struct:priv_renderer::__anon816587ed0208	file:
 num_allocated	renderer.c	/^        u32 num_allocated;$/;"	m	struct:priv_renderer::__anon816587ed0108	typeref:typename:u32	file:
@@ -2298,6 +2309,7 @@ rtv_heap_start	renderer.h	/^    D3D12_CPU_DESCRIPTOR_HANDLE rtv_heap_start;$/;"	
 sh	asmlib.asm	/^  sh: file `sh#'.cso'$/;"	l
 shader_descriptors	renderer.c	/^    } shader_descriptors[2];$/;"	m	struct:priv_renderer	typeref:struct:priv_renderer::__anon816587ed0108[2]	file:
 short	types.h	/^#define short /;"	d
+size	library.h	/^    u32 size;$/;"	m	struct:__anon866fb6100108	typeref:typename:u32
 sqrtf	asmlib.asm	/^sqrtf:  SQRTSS xmm0, xmm0$/;"	l
 start	main.c	/^void start(void)$/;"	f	typeref:typename:void
 style	windows.h	/^    u32 style;$/;"	m	struct:WNDCLASS	typeref:typename:u32
@@ -2319,9 +2331,11 @@ v	math.h	/^        f32 v[4];$/;"	m	union:f32vec4::__anon0d3df6e5030a	typeref:typ
 vertex_buffer	demo01.c	/^    ID3D12Resource *vertex_buffer;$/;"	m	struct:demo	typeref:typename:ID3D12Resource *	file:
 w	math.h	/^        struct { f32 x, y, z, w; };$/;"	m	struct:f32vec4::__anon0d3df6e5030a::__anon0d3df6e50408	typeref:typename:f32
 wParam	windows.h	/^    u64 wParam;$/;"	m	struct:MSG	typeref:typename:u64
+x	demo01.c	/^        u32 x;$/;"	m	struct:demo_init::my_test_type	typeref:typename:u32	file:
 x	math.h	/^        struct { f32 x, y, z, w; };$/;"	m	struct:f32vec4::__anon0d3df6e5030a::__anon0d3df6e50408	typeref:typename:f32
 x	math.h	/^        struct { f32 x, y, z; };$/;"	m	struct:f32vec3::__anon0d3df6e5010a::__anon0d3df6e50208	typeref:typename:f32
 x	windows.h	/^    i32 x;$/;"	m	struct:POINT	typeref:typename:i32
+y	demo01.c	/^        u32 y;$/;"	m	struct:demo_init::my_test_type	typeref:typename:u32	file:
 y	math.h	/^        struct { f32 x, y, z, w; };$/;"	m	struct:f32vec4::__anon0d3df6e5030a::__anon0d3df6e50408	typeref:typename:f32
 y	math.h	/^        struct { f32 x, y, z; };$/;"	m	struct:f32vec3::__anon0d3df6e5010a::__anon0d3df6e50208	typeref:typename:f32
 y	windows.h	/^    i32 y;$/;"	m	struct:POINT	typeref:typename:i32
