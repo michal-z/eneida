@@ -12,6 +12,7 @@ typedef struct {
 #define array_size(a) ((a) ? array_header(a)->size : 0)
 #define array_capacity(a) ((a) ? array_header(a)->capacity : 0)
 #define array_full(a) (array_size(a) == array_capacity(a) ? 1 : 0)
+#define array_free(a) ((a) ? (mem_free(array_header(a)), 0) : 0)
 
 #define array_add(a, item) \
     (array_full(a) ? a = array_grow((a), sizeof(*(a))) : 0), \

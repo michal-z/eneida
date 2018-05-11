@@ -4,7 +4,7 @@
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
-!_TAG_PROGRAM_VERSION	0.0.0	/8e098045/
+!_TAG_PROGRAM_VERSION	0.0.0	/70a6275b/
 ASM	make.bat	/^set ASM=..\\compiler\\fasm.exe$/;"	v
 AdapterLuid	windows.h	/^    i64 AdapterLuid;$/;"	m	struct:DXGI_ADAPTER_DESC	typeref:typename:i64
 AdapterLuid	windows.h	/^    i64 AdapterLuid;$/;"	m	struct:DXGI_ADAPTER_DESC1	typeref:typename:i64
@@ -2103,6 +2103,7 @@ __anon866fb6100108	library.h	/^typedef struct {$/;"	s
 _fltused	main.c	/^i32 _fltused;$/;"	v	typeref:typename:i32
 array_add	library.h	/^#define array_add(/;"	d
 array_capacity	library.h	/^#define array_capacity(/;"	d
+array_free	library.h	/^#define array_free(/;"	d
 array_full	library.h	/^#define array_full(/;"	d
 array_grow	library.h	/^inline void *array_grow(void *array, u32 item_size)$/;"	f	typeref:typename:void *
 array_header	library.h	/^#define array_header(/;"	d
@@ -2255,8 +2256,8 @@ mem_free	library.c	/^void mem_free(void *addr)$/;"	f	typeref:typename:void
 mem_realloc	library.c	/^void *mem_realloc(void *addr, size_t size)$/;"	f	typeref:typename:void *
 memset	asmlib.asm	/^memset: XOR eax, eax$/;"	l
 message	windows.h	/^    u32 message;$/;"	m	struct:MSG	typeref:typename:u32
-my_test_type	demo01.c	/^    typedef struct my_test_type {$/;"	s	function:demo_init	file:
-my_test_type_t	demo01.c	/^    } my_test_type_t;$/;"	t	function:demo_init	typeref:struct:demo_init::my_test_type	file:
+my_test_type	demo01.c	/^        typedef struct my_test_type {$/;"	s	function:demo_init	file:
+my_test_type_t	demo01.c	/^        } my_test_type_t;$/;"	t	function:demo_init	typeref:struct:demo_init::my_test_type	file:
 nLength	windows.h	/^    u32 nLength;$/;"	m	struct:SECURITY_ATTRIBUTES	typeref:typename:u32
 non_shader_descriptors	renderer.c	/^    } non_shader_descriptors;$/;"	m	struct:priv_renderer	typeref:struct:priv_renderer::__anon816587ed0208	file:
 num_allocated	renderer.c	/^        u32 num_allocated;$/;"	m	struct:priv_renderer::__anon816587ed0108	typeref:typename:u32	file:
@@ -2331,11 +2332,11 @@ v	math.h	/^        f32 v[4];$/;"	m	union:f32vec4::__anon0d3df6e5030a	typeref:typ
 vertex_buffer	demo01.c	/^    ID3D12Resource *vertex_buffer;$/;"	m	struct:demo	typeref:typename:ID3D12Resource *	file:
 w	math.h	/^        struct { f32 x, y, z, w; };$/;"	m	struct:f32vec4::__anon0d3df6e5030a::__anon0d3df6e50408	typeref:typename:f32
 wParam	windows.h	/^    u64 wParam;$/;"	m	struct:MSG	typeref:typename:u64
-x	demo01.c	/^        u32 x;$/;"	m	struct:demo_init::my_test_type	typeref:typename:u32	file:
+x	demo01.c	/^            u32 x;$/;"	m	struct:demo_init::my_test_type	typeref:typename:u32	file:
 x	math.h	/^        struct { f32 x, y, z, w; };$/;"	m	struct:f32vec4::__anon0d3df6e5030a::__anon0d3df6e50408	typeref:typename:f32
 x	math.h	/^        struct { f32 x, y, z; };$/;"	m	struct:f32vec3::__anon0d3df6e5010a::__anon0d3df6e50208	typeref:typename:f32
 x	windows.h	/^    i32 x;$/;"	m	struct:POINT	typeref:typename:i32
-y	demo01.c	/^        u32 y;$/;"	m	struct:demo_init::my_test_type	typeref:typename:u32	file:
+y	demo01.c	/^            u32 y;$/;"	m	struct:demo_init::my_test_type	typeref:typename:u32	file:
 y	math.h	/^        struct { f32 x, y, z, w; };$/;"	m	struct:f32vec4::__anon0d3df6e5030a::__anon0d3df6e50408	typeref:typename:f32
 y	math.h	/^        struct { f32 x, y, z; };$/;"	m	struct:f32vec3::__anon0d3df6e5010a::__anon0d3df6e50208	typeref:typename:f32
 y	windows.h	/^    i32 y;$/;"	m	struct:POINT	typeref:typename:i32
