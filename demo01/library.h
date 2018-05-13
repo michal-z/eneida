@@ -16,7 +16,7 @@ typedef struct {
 
 #define array_add(a, item) \
     (array_full(a) ? a = array_grow((a), sizeof(*(a))) : 0), \
-    ((a)[array_header(a)->size++] = item)
+    ((a)[array_header(a)->size++] = (item))
 
 void *mem_alloc(size_t size);
 void *mem_realloc(void *addr, size_t size);
