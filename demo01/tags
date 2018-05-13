@@ -1536,7 +1536,7 @@ IDXGIAdapter	windows.h	/^typedef struct IDXGIAdapter IDXGIAdapter;$/;"	t	typeref
 IDXGIAdapter1	windows.h	/^typedef struct IDXGIAdapter1 IDXGIAdapter1;$/;"	t	typeref:struct:IDXGIAdapter1
 IDXGIFactory4	windows.h	/^struct IDXGIFactory4 { const IDXGIFactory4DispatchTable *dtbl; };$/;"	s
 IDXGIFactory4	windows.h	/^typedef struct IDXGIFactory4 IDXGIFactory4;$/;"	t	typeref:struct:IDXGIFactory4
-IDXGIFactory4DispatchTable	windows.h	/^typedef struct IDXGIFactory4DispatchTable {$/;"	s
+IDXGIFactory4DispatchTable	windows.h	/^typedef struct IDXGIFactory4DispatchTable$/;"	s
 IDXGIFactory4DispatchTable	windows.h	/^} IDXGIFactory4DispatchTable;$/;"	t	typeref:struct:IDXGIFactory4DispatchTable
 IDXGIFactory4_AddRef	windows.h	/^#define IDXGIFactory4_AddRef(/;"	d
 IDXGIFactory4_CreateSoftwareAdapter	windows.h	/^#define IDXGIFactory4_CreateSoftwareAdapter(/;"	d
@@ -1573,7 +1573,7 @@ IDXGISwapChain1	windows.h	/^typedef struct IDXGISwapChain1 IDXGISwapChain1;$/;"	
 IDXGISwapChain3	types.h	/^typedef struct IDXGISwapChain3 IDXGISwapChain3;$/;"	t	typeref:struct:IDXGISwapChain3
 IDXGISwapChain3	windows.h	/^struct IDXGISwapChain3 { const IDXGISwapChain3DispatchTable *dtbl; };$/;"	s
 IDXGISwapChain3	windows.h	/^typedef struct IDXGISwapChain3 IDXGISwapChain3;$/;"	t	typeref:struct:IDXGISwapChain3
-IDXGISwapChain3DispatchTable	windows.h	/^typedef struct IDXGISwapChain3DispatchTable {$/;"	s
+IDXGISwapChain3DispatchTable	windows.h	/^typedef struct IDXGISwapChain3DispatchTable$/;"	s
 IDXGISwapChain3DispatchTable	windows.h	/^} IDXGISwapChain3DispatchTable;$/;"	t	typeref:struct:IDXGISwapChain3DispatchTable
 IDXGISwapChain3_AddRef	windows.h	/^#define IDXGISwapChain3_AddRef(/;"	d
 IDXGISwapChain3_CheckColorSpaceSupport	windows.h	/^#define IDXGISwapChain3_CheckColorSpaceSupport(/;"	d
@@ -1615,7 +1615,7 @@ IDXGISwapChain3_SetPrivateData	windows.h	/^#define IDXGISwapChain3_SetPrivateDat
 IDXGISwapChain3_SetPrivateDataInterface	windows.h	/^#define IDXGISwapChain3_SetPrivateDataInterface(/;"	d
 IDXGISwapChain3_SetRotation	windows.h	/^#define IDXGISwapChain3_SetRotation(/;"	d
 IDXGISwapChain3_SetSourceSize	windows.h	/^#define IDXGISwapChain3_SetSourceSize(/;"	d
-IDXGISwapChainDispatchTable	windows.h	/^typedef struct IDXGISwapChainDispatchTable {$/;"	s
+IDXGISwapChainDispatchTable	windows.h	/^typedef struct IDXGISwapChainDispatchTable$/;"	s
 IDXGISwapChainDispatchTable	windows.h	/^} IDXGISwapChainDispatchTable;$/;"	t	typeref:struct:IDXGISwapChainDispatchTable
 IDXGISwapChain_AddRef	windows.h	/^#define IDXGISwapChain_AddRef(/;"	d
 IDXGISwapChain_GetBuffer	windows.h	/^#define IDXGISwapChain_GetBuffer(/;"	d
@@ -1897,11 +1897,11 @@ STDCALLP	windows.h	/^    void (STDCALLP SetMarker)(ID3D12GraphicsCommandList *se
 STDCALLP	windows.h	/^    void (STDCALLP SetPipelineState)(ID3D12GraphicsCommandList *self, ID3D12PipelineState *pipel/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetPipelineState)(ID3D12GraphicsCommandList * self,ID3D12PipelineState * pipeline_state)
 STDCALLP	windows.h	/^    void (STDCALLP SetPredication)(ID3D12GraphicsCommandList *self,$/;"	m	struct:ID3D12GraphicsCommandListDispatchTable	typeref:typename:void (SetPredication)(ID3D12GraphicsCommandList * self,ID3D12Resource * buffer,u64 aligned_buffer_offset,D3D12_PREDICATION_OP operation)
 STDCALLP	windows.h	/^    void (STDCALLP Unmap)(ID3D12Resource *self, u32 subresource, const D3D12_RANGE *written_rang/;"	m	struct:ID3D12ResourceDispatchTable	typeref:typename:void (Unmap)(ID3D12Resource * self,u32 subresource,const D3D12_RANGE * written_range)
-STDCALLP	windows.h	/^    void (STDCALLP UnregisterOcclusionStatus)(IDXGIFactory4 *, u32);$/;"	m	struct:IDXGIFactory4DispatchTable	typeref:typename:void (UnregisterOcclusionStatus)(IDXGIFactory4 *,u32)
-STDCALLP	windows.h	/^    void (STDCALLP UnregisterStereoStatus)(IDXGIFactory4 *, u32);$/;"	m	struct:IDXGIFactory4DispatchTable	typeref:typename:void (UnregisterStereoStatus)(IDXGIFactory4 *,u32)
+STDCALLP	windows.h	/^    void (STDCALLP UnregisterOcclusionStatus)(IDXGIFactory4 *self, u32 cookie);$/;"	m	struct:IDXGIFactory4DispatchTable	typeref:typename:void (UnregisterOcclusionStatus)(IDXGIFactory4 * self,u32 cookie)
+STDCALLP	windows.h	/^    void (STDCALLP UnregisterStereoStatus)(IDXGIFactory4 *self, u32 cookie);$/;"	m	struct:IDXGIFactory4DispatchTable	typeref:typename:void (UnregisterStereoStatus)(IDXGIFactory4 * self,u32 cookie)
 STDCALLP	windows.h	/^    void (STDCALLP UpdateTileMappings)(ID3D12CommandQueue *self,$/;"	m	struct:ID3D12CommandQueueDispatchTable	typeref:typename:void (UpdateTileMappings)(ID3D12CommandQueue * self,ID3D12Resource * resource,u32 num_resource_regions,const D3D12_TILED_RESOURCE_COORDINATE * resource_region_start_coordinates,const D3D12_TILE_REGION_SIZE * resource_region_sizes,ID3D12Heap * heap,u32 num_ranges,const D3D12_TILE_RANGE_FLAGS * range_flags,const u32 * heap_range_start_offsets,const u32 * range_tile_counts,D3D12_TILE_MAPPING_FLAGS flags)
 STDCALLP	windows.h	/^    void *(STDCALLP GetBufferPointer)(ID3DBlob *self);$/;"	m	struct:ID3DBlobDispatchTable	typeref:typename:void * (GetBufferPointer)(ID3DBlob * self)
-STDCALLP	windows.h	/^    void *(STDCALLP GetFrameLatencyWaitableObject)(IDXGISwapChain3 *);$/;"	m	struct:IDXGISwapChain3DispatchTable	typeref:typename:void * (GetFrameLatencyWaitableObject)(IDXGISwapChain3 *)
+STDCALLP	windows.h	/^    void *(STDCALLP GetFrameLatencyWaitableObject)(IDXGISwapChain3 *self);$/;"	m	struct:IDXGISwapChain3DispatchTable	typeref:typename:void * (GetFrameLatencyWaitableObject)(IDXGISwapChain3 * self)
 STDCALLP	windows.h	/^#define STDCALLP /;"	d
 STDCALLP	windows.h	/^void (STDCALLP ExitProcess)(u32 exit_code);$/;"	v	typeref:typename:void (ExitProcess)(u32 exit_code)
 STDCALLP	windows.h	/^void (STDCALLP OutputDebugString)(const char *output_string);$/;"	v	typeref:typename:void (OutputDebugString)(const char * output_string)

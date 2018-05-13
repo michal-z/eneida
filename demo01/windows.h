@@ -2848,192 +2848,241 @@ typedef enum DXGI_COLOR_SPACE_TYPE {
     DXGI_COLOR_SPACE_CUSTOM = 0xFFFFFFFF
 } DXGI_COLOR_SPACE_TYPE;
 
-typedef struct IDXGISwapChainDispatchTable {
-    i32 (STDCALLP QueryInterface)(IDXGISwapChain *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(IDXGISwapChain *);
-    u32 (STDCALLP Release)(IDXGISwapChain *);
-    i32 (STDCALLP SetPrivateData)(IDXGISwapChain *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(IDXGISwapChain *, const GUID *, const IUnknown *);
-    i32 (STDCALLP GetPrivateData)(IDXGISwapChain *, const GUID *, u32 *, void *);
-    i32 (STDCALLP GetParent)(IDXGISwapChain *, const GUID *, void **);
-    i32 (STDCALLP GetDevice)(IDXGISwapChain *, const GUID *, void **);
-    i32 (STDCALLP Present)(IDXGISwapChain *, u32, u32);
-    i32 (STDCALLP GetBuffer)(IDXGISwapChain *, u32, const GUID *, void **);
-    i32 (STDCALLP SetFullscreenState)(IDXGISwapChain *, i32, IDXGIOutput *);
-    i32 (STDCALLP GetFullscreenState)(IDXGISwapChain *, i32 *, IDXGIOutput **);
-    i32 (STDCALLP GetDesc)(IDXGISwapChain *, DXGI_SWAP_CHAIN_DESC *);
-    i32 (STDCALLP ResizeBuffers)(IDXGISwapChain *, u32, u32, u32, DXGI_FORMAT, u32);
-    i32 (STDCALLP ResizeTarget)(IDXGISwapChain *, const DXGI_MODE_DESC *);
-    i32 (STDCALLP GetContainingOutput)(IDXGISwapChain *, IDXGIOutput **);
-    i32 (STDCALLP GetFrameStatistics)(IDXGISwapChain *, DXGI_FRAME_STATISTICS *);
-    i32 (STDCALLP GetLastPresentCount)(IDXGISwapChain *, u32 *);
+typedef struct IDXGISwapChainDispatchTable
+{
+    // IUnknown
+#define IDXGISwapChain_QueryInterface(self, ...) ((self)->dtbl->QueryInterface(self, __VA_ARGS__))
+    i32 (STDCALLP QueryInterface)(IDXGISwapChain *self, const GUID *guid, void **out_object);
+#define IDXGISwapChain_AddRef(self, ...) ((self)->dtbl->AddRef(self, __VA_ARGS__))
+    u32 (STDCALLP AddRef)(IDXGISwapChain *self);
+#define IDXGISwapChain_Release(self, ...) ((self)->dtbl->Release(self, __VA_ARGS__))
+    u32 (STDCALLP Release)(IDXGISwapChain *self);
+    // IDXGIObject
+#define IDXGISwapChain_SetPrivateData(self, ...) ((self)->dtbl->SetPrivateData(self, __VA_ARGS__))
+    i32 (STDCALLP SetPrivateData)(IDXGISwapChain *self, const GUID *guid, u32 data_size, const void *data);
+#define IDXGISwapChain_SetPrivateDataInterface(self, ...) ((self)->dtbl->SetPrivateDataInterface(self, __VA_ARGS__))
+    i32 (STDCALLP SetPrivateDataInterface)(IDXGISwapChain *self, const GUID *guid, const IUnknown *data);
+#define IDXGISwapChain_GetPrivateData(self, ...) ((self)->dtbl->GetPrivateData(self, __VA_ARGS__))
+    i32 (STDCALLP GetPrivateData)(IDXGISwapChain *self, const GUID *guid, u32 *out_data_size, void *out_data);
+#define IDXGISwapChain_GetParent(self, ...) ((self)->dtbl->GetParent(self, __VA_ARGS__))
+    i32 (STDCALLP GetParent)(IDXGISwapChain *self, const GUID *guid, void **out_parent);
+    // IDXGIDeviceSubObject
+#define IDXGISwapChain_GetDevice(self, ...) ((self)->dtbl->GetDevice(self, __VA_ARGS__))
+    i32 (STDCALLP GetDevice)(IDXGISwapChain *self, const GUID *guid, void **out_device);
+    // IDXGISwapChain
+#define IDXGISwapChain_Present(self, ...) ((self)->dtbl->Present(self, __VA_ARGS__))
+    i32 (STDCALLP Present)(IDXGISwapChain *self, u32 sync_interval, u32 flags);
+#define IDXGISwapChain_GetBuffer(self, ...) ((self)->dtbl->GetBuffer(self, __VA_ARGS__))
+    i32 (STDCALLP GetBuffer)(IDXGISwapChain *self, u32 buffer, const GUID *guid, void **out_surface);
+#define IDXGISwapChain_SetFullscreenState(self, ...) ((self)->dtbl->SetFullscreenState(self, __VA_ARGS__))
+    i32 (STDCALLP SetFullscreenState)(IDXGISwapChain *self, i32 fullscreen, IDXGIOutput *target);
+#define IDXGISwapChain_GetFullscreenState(self, ...) ((self)->dtbl->GetFullscreenState(self, __VA_ARGS__))
+    i32 (STDCALLP GetFullscreenState)(IDXGISwapChain *self, i32 *out_fullscreen, IDXGIOutput **out_target);
+#define IDXGISwapChain_GetDesc(self, ...) ((self)->dtbl->GetDesc(self, __VA_ARGS__))
+    i32 (STDCALLP GetDesc)(IDXGISwapChain *self, DXGI_SWAP_CHAIN_DESC *out_desc);
+#define IDXGISwapChain_ResizeBuffers(self, ...) ((self)->dtbl->ResizeBuffers(self, __VA_ARGS__))
+    i32 (STDCALLP ResizeBuffers)(IDXGISwapChain *self,
+                                 u32 buffer_count,
+                                 u32 width,
+                                 u32 height,
+                                 DXGI_FORMAT new_format,
+                                 u32 swap_chain_flags);
+#define IDXGISwapChain_ResizeTarget(self, ...) ((self)->dtbl->ResizeTarget(self, __VA_ARGS__))
+    i32 (STDCALLP ResizeTarget)(IDXGISwapChain *self, const DXGI_MODE_DESC *new_target_parameters);
+#define IDXGISwapChain_GetContainingOutput(self, ...) ((self)->dtbl->GetContainingOutput(self, __VA_ARGS__))
+    i32 (STDCALLP GetContainingOutput)(IDXGISwapChain *self, IDXGIOutput **out_output);
+#define IDXGISwapChain_GetFrameStatistics(self, ...) ((self)->dtbl->GetFrameStatistics(self, __VA_ARGS__))
+    i32 (STDCALLP GetFrameStatistics)(IDXGISwapChain *self, DXGI_FRAME_STATISTICS *out_stats);
+#define IDXGISwapChain_GetLastPresentCount(self, ...) ((self)->dtbl->GetLastPresentCount(self, __VA_ARGS__))
+    i32 (STDCALLP GetLastPresentCount)(IDXGISwapChain *self, u32 *out_last_present_count);
 } IDXGISwapChainDispatchTable;
 struct IDXGISwapChain { const IDXGISwapChainDispatchTable *dtbl; };
 
-#define IDXGISwapChain_QueryInterface(self, ...) ((self)->dtbl->QueryInterface(self, __VA_ARGS__))
-#define IDXGISwapChain_AddRef(self, ...) ((self)->dtbl->AddRef(self, __VA_ARGS__))
-#define IDXGISwapChain_Release(self, ...) ((self)->dtbl->Release(self, __VA_ARGS__))
-#define IDXGISwapChain_SetPrivateData(self, ...) ((self)->dtbl->SetPrivateData(self, __VA_ARGS__))
-#define IDXGISwapChain_SetPrivateDataInterface(self, ...) ((self)->dtbl->SetPrivateDataInterface(self, __VA_ARGS__))
-#define IDXGISwapChain_GetPrivateData(self, ...) ((self)->dtbl->GetPrivateData(self, __VA_ARGS__))
-#define IDXGISwapChain_GetParent(self, ...) ((self)->dtbl->GetParent(self, __VA_ARGS__))
-#define IDXGISwapChain_GetDevice(self, ...) ((self)->dtbl->GetDevice(self, __VA_ARGS__))
-#define IDXGISwapChain_Present(self, ...) ((self)->dtbl->Present(self, __VA_ARGS__))
-#define IDXGISwapChain_GetBuffer(self, ...) ((self)->dtbl->GetBuffer(self, __VA_ARGS__))
-#define IDXGISwapChain_SetFullscreenState(self, ...) ((self)->dtbl->SetFullscreenState(self, __VA_ARGS__))
-#define IDXGISwapChain_GetFullscreenState(self, ...) ((self)->dtbl->GetFullscreenState(self, __VA_ARGS__))
-#define IDXGISwapChain_GetDesc(self, ...) ((self)->dtbl->GetDesc(self, __VA_ARGS__))
-#define IDXGISwapChain_ResizeBuffers(self, ...) ((self)->dtbl->ResizeBuffers(self, __VA_ARGS__))
-#define IDXGISwapChain_ResizeTarget(self, ...) ((self)->dtbl->ResizeTarget(self, __VA_ARGS__))
-#define IDXGISwapChain_GetContainingOutput(self, ...) ((self)->dtbl->GetContainingOutput(self, __VA_ARGS__))
-#define IDXGISwapChain_GetFrameStatistics(self, ...) ((self)->dtbl->GetFrameStatistics(self, __VA_ARGS__))
-#define IDXGISwapChain_GetLastPresentCount(self, ...) ((self)->dtbl->GetLastPresentCount(self, __VA_ARGS__))
-
-typedef struct IDXGISwapChain3DispatchTable {
-    i32 (STDCALLP QueryInterface)(IDXGISwapChain3 *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(IDXGISwapChain3 *);
-    u32 (STDCALLP Release)(IDXGISwapChain3 *);
-    i32 (STDCALLP SetPrivateData)(IDXGISwapChain3 *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(IDXGISwapChain3 *, const GUID *, const IUnknown *);
-    i32 (STDCALLP GetPrivateData)(IDXGISwapChain3 *, const GUID *, u32 *, void *);
-    i32 (STDCALLP GetParent)(IDXGISwapChain3 *, const GUID *, void **);
-    i32 (STDCALLP GetDevice)(IDXGISwapChain3 *, const GUID *, void **);
-    i32 (STDCALLP Present)(IDXGISwapChain3 *, u32, u32);
-    i32 (STDCALLP GetBuffer)(IDXGISwapChain3 *, u32, const GUID *, void **);
-    i32 (STDCALLP SetFullscreenState)(IDXGISwapChain3 *, i32, IDXGIOutput *);
-    i32 (STDCALLP GetFullscreenState)(IDXGISwapChain3 *, i32 *, IDXGIOutput **);
-    i32 (STDCALLP GetDesc)(IDXGISwapChain3 *, DXGI_SWAP_CHAIN_DESC *);
-    i32 (STDCALLP ResizeBuffers)(IDXGISwapChain3 *, u32, u32, u32, DXGI_FORMAT, u32);
-    i32 (STDCALLP ResizeTarget)(IDXGISwapChain3 *, const DXGI_MODE_DESC *);
-    i32 (STDCALLP GetContainingOutput)(IDXGISwapChain3 *, IDXGIOutput **);
-    i32 (STDCALLP GetFrameStatistics)(IDXGISwapChain3 *, DXGI_FRAME_STATISTICS *);
-    i32 (STDCALLP GetLastPresentCount)(IDXGISwapChain3 *, u32 *);
-    i32 (STDCALLP GetDesc1)(IDXGISwapChain3 *, DXGI_SWAP_CHAIN_DESC1 *);
-    i32 (STDCALLP GetFullscreenDesc)(IDXGISwapChain3 *, DXGI_SWAP_CHAIN_FULLSCREEN_DESC *);
-    i32 (STDCALLP GetHwnd)(IDXGISwapChain3 *, void **);
-    i32 (STDCALLP GetCoreWindow)(IDXGISwapChain3 *, const GUID *, void **);
-    i32 (STDCALLP Present1)(IDXGISwapChain3 *, u32, u32, const DXGI_PRESENT_PARAMETERS *);
-    i32 (STDCALLP IsTemporaryMonoSupported)(IDXGISwapChain3 *);
-    i32 (STDCALLP GetRestrictToOutput)(IDXGISwapChain3 *, IDXGIOutput **);
-    i32 (STDCALLP SetBackgroundColor)(IDXGISwapChain3 *, const DXGI_RGBA *);
-    i32 (STDCALLP GetBackgroundColor)(IDXGISwapChain3 *, DXGI_RGBA *);
-    i32 (STDCALLP SetRotation)(IDXGISwapChain3 *, DXGI_MODE_ROTATION);
-    i32 (STDCALLP GetRotation)(IDXGISwapChain3 *, DXGI_MODE_ROTATION *);
-    i32 (STDCALLP SetSourceSize)(IDXGISwapChain3 *, u32, u32);
-    i32 (STDCALLP GetSourceSize)(IDXGISwapChain3 *, u32 *, u32 *);
-    i32 (STDCALLP SetMaximumFrameLatency)(IDXGISwapChain3 *, u32);
-    i32 (STDCALLP GetMaximumFrameLatency)(IDXGISwapChain3 *, u32 *);
-    void *(STDCALLP GetFrameLatencyWaitableObject)(IDXGISwapChain3 *);
-    i32 (STDCALLP SetMatrixTransform)(IDXGISwapChain3 *, const DXGI_MATRIX_3X2_F *);
-    i32 (STDCALLP GetMatrixTransform)(IDXGISwapChain3 *, DXGI_MATRIX_3X2_F *);
-    u32 (STDCALLP GetCurrentBackBufferIndex)(IDXGISwapChain3 *);
-    i32 (STDCALLP CheckColorSpaceSupport)(IDXGISwapChain3 *, DXGI_COLOR_SPACE_TYPE, u32 *);
-    i32 (STDCALLP SetColorSpace1)(IDXGISwapChain3 *, DXGI_COLOR_SPACE_TYPE);
-    i32 (STDCALLP ResizeBuffers1)(IDXGISwapChain3 *, u32, u32, u32, DXGI_FORMAT, u32, const u32 *, IUnknown *const *);
+typedef struct IDXGISwapChain3DispatchTable
+{
+    // IUnknown
+#define IDXGISwapChain3_QueryInterface(self, ...) ((self)->dtbl->QueryInterface(self, __VA_ARGS__))
+    i32 (STDCALLP QueryInterface)(IDXGISwapChain3 *self, const GUID *guid, void **out_object);
+#define IDXGISwapChain3_AddRef(self, ...) ((self)->dtbl->AddRef(self, __VA_ARGS__))
+    u32 (STDCALLP AddRef)(IDXGISwapChain3 *self);
+#define IDXGISwapChain3_Release(self, ...) ((self)->dtbl->Release(self, __VA_ARGS__))
+    u32 (STDCALLP Release)(IDXGISwapChain3 *self);
+    // IDXGIObject
+#define IDXGISwapChain3_SetPrivateData(self, ...) ((self)->dtbl->SetPrivateData(self, __VA_ARGS__))
+    i32 (STDCALLP SetPrivateData)(IDXGISwapChain3 *self, const GUID *guid, u32 data_size, const void *data);
+#define IDXGISwapChain3_SetPrivateDataInterface(self, ...) ((self)->dtbl->SetPrivateDataInterface(self, __VA_ARGS__))
+    i32 (STDCALLP SetPrivateDataInterface)(IDXGISwapChain3 *self, const GUID *guid, const IUnknown *data);
+#define IDXGISwapChain3_GetPrivateData(self, ...) ((self)->dtbl->GetPrivateData(self, __VA_ARGS__))
+    i32 (STDCALLP GetPrivateData)(IDXGISwapChain3 *self, const GUID *guid, u32 *out_data_size, void *out_data);
+#define IDXGISwapChain3_GetParent(self, ...) ((self)->dtbl->GetParent(self, __VA_ARGS__))
+    i32 (STDCALLP GetParent)(IDXGISwapChain3 *self, const GUID *guid, void **out_parent);
+    // IDXGIDeviceSubObject
+#define IDXGISwapChain3_GetDevice(self, ...) ((self)->dtbl->GetDevice(self, __VA_ARGS__))
+    i32 (STDCALLP GetDevice)(IDXGISwapChain3 *self, const GUID *guid, void **out_device);
+    // IDXGISwapChain
+#define IDXGISwapChain3_Present(self, ...) ((self)->dtbl->Present(self, __VA_ARGS__))
+    i32 (STDCALLP Present)(IDXGISwapChain3 *self, u32 sync_interval, u32 flags);
+#define IDXGISwapChain3_GetBuffer(self, ...) ((self)->dtbl->GetBuffer(self, __VA_ARGS__))
+    i32 (STDCALLP GetBuffer)(IDXGISwapChain3 *self, u32 buffer, const GUID *guid, void **out_surface);
+#define IDXGISwapChain3_SetFullscreenState(self, ...) ((self)->dtbl->SetFullscreenState(self, __VA_ARGS__))
+    i32 (STDCALLP SetFullscreenState)(IDXGISwapChain3 *self, i32 fullscreen, IDXGIOutput *target);
+#define IDXGISwapChain3_GetFullscreenState(self, ...) ((self)->dtbl->GetFullscreenState(self, __VA_ARGS__))
+    i32 (STDCALLP GetFullscreenState)(IDXGISwapChain3 *self, i32 *out_fullscreen, IDXGIOutput **out_target);
+#define IDXGISwapChain3_GetDesc(self, ...) ((self)->dtbl->GetDesc(self, __VA_ARGS__))
+    i32 (STDCALLP GetDesc)(IDXGISwapChain3 *self, DXGI_SWAP_CHAIN_DESC *out_desc);
+#define IDXGISwapChain3_ResizeBuffers(self, ...) ((self)->dtbl->ResizeBuffers(self, __VA_ARGS__))
+    i32 (STDCALLP ResizeBuffers)(IDXGISwapChain3 *self,
+                                 u32 buffer_count,
+                                 u32 width,
+                                 u32 height,
+                                 DXGI_FORMAT new_format,
+                                 u32 swap_chain_flags);
+#define IDXGISwapChain3_ResizeTarget(self, ...) ((self)->dtbl->ResizeTarget(self, __VA_ARGS__))
+    i32 (STDCALLP ResizeTarget)(IDXGISwapChain3 *self, const DXGI_MODE_DESC *new_target_parameters);
+#define IDXGISwapChain3_GetContainingOutput(self, ...) ((self)->dtbl->GetContainingOutput(self, __VA_ARGS__))
+    i32 (STDCALLP GetContainingOutput)(IDXGISwapChain3 *self, IDXGIOutput **out_output);
+#define IDXGISwapChain3_GetFrameStatistics(self, ...) ((self)->dtbl->GetFrameStatistics(self, __VA_ARGS__))
+    i32 (STDCALLP GetFrameStatistics)(IDXGISwapChain3 *self, DXGI_FRAME_STATISTICS *out_stats);
+#define IDXGISwapChain3_GetLastPresentCount(self, ...) ((self)->dtbl->GetLastPresentCount(self, __VA_ARGS__))
+    i32 (STDCALLP GetLastPresentCount)(IDXGISwapChain3 *self, u32 *out_last_present_count);
+    // IDXGISwapChain2
+#define IDXGISwapChain3_GetDesc1(self, ...) ((self)->dtbl->GetDesc1(self, __VA_ARGS__))
+    i32 (STDCALLP GetDesc1)(IDXGISwapChain3 *self, DXGI_SWAP_CHAIN_DESC1 *out_desc);
+#define IDXGISwapChain3_GetFullscreenDesc(self, ...) ((self)->dtbl->GetFullscreenDesc(self, __VA_ARGS__))
+    i32 (STDCALLP GetFullscreenDesc)(IDXGISwapChain3 *self, DXGI_SWAP_CHAIN_FULLSCREEN_DESC *out_desc);
+#define IDXGISwapChain3_GetHwnd(self, ...) ((self)->dtbl->GetHwnd(self, __VA_ARGS__))
+    i32 (STDCALLP GetHwnd)(IDXGISwapChain3 *self, void **out_hwnd);
+#define IDXGISwapChain3_GetCoreWindow(self, ...) ((self)->dtbl->GetCoreWindow(self, __VA_ARGS__))
+    i32 (STDCALLP GetCoreWindow)(IDXGISwapChain3 *self, const GUID *guid, void **out_window);
+#define IDXGISwapChain3_Present1(self, ...) ((self)->dtbl->Present1(self, __VA_ARGS__))
+    i32 (STDCALLP Present1)(IDXGISwapChain3 *self, u32 sync_interval, u32 flags, const DXGI_PRESENT_PARAMETERS *params);
+#define IDXGISwapChain3_IsTemporaryMonoSupported(self, ...) ((self)->dtbl->IsTemporaryMonoSupported(self, __VA_ARGS__))
+    i32 (STDCALLP IsTemporaryMonoSupported)(IDXGISwapChain3 *self);
+#define IDXGISwapChain3_GetRestrictToOutput(self, ...) ((self)->dtbl->GetRestrictToOutput(self, __VA_ARGS__))
+    i32 (STDCALLP GetRestrictToOutput)(IDXGISwapChain3 *self, IDXGIOutput **out_restrict_to_output);
+#define IDXGISwapChain3_SetBackgroundColor(self, ...) ((self)->dtbl->SetBackgroundColor(self, __VA_ARGS__))
+    i32 (STDCALLP SetBackgroundColor)(IDXGISwapChain3 *self, const DXGI_RGBA *color);
+#define IDXGISwapChain3_GetBackgroundColor(self, ...) ((self)->dtbl->GetBackgroundColor(self, __VA_ARGS__))
+    i32 (STDCALLP GetBackgroundColor)(IDXGISwapChain3 *self, DXGI_RGBA *out_color);
+#define IDXGISwapChain3_SetRotation(self, ...) ((self)->dtbl->SetRotation(self, __VA_ARGS__))
+    i32 (STDCALLP SetRotation)(IDXGISwapChain3 *self, DXGI_MODE_ROTATION rotation);
+#define IDXGISwapChain3_GetRotation(self, ...) ((self)->dtbl->GetRotation(self, __VA_ARGS__))
+    i32 (STDCALLP GetRotation)(IDXGISwapChain3 *self, DXGI_MODE_ROTATION *out_rotation);
+#define IDXGISwapChain3_SetSourceSize(self, ...) ((self)->dtbl->SetSourceSize(self, __VA_ARGS__))
+    i32 (STDCALLP SetSourceSize)(IDXGISwapChain3 *self, u32 width, u32 height);
+#define IDXGISwapChain3_GetSourceSize(self, ...) ((self)->dtbl->GetSourceSize(self, __VA_ARGS__))
+    i32 (STDCALLP GetSourceSize)(IDXGISwapChain3 *self, u32 *out_width, u32 *out_height);
+#define IDXGISwapChain3_SetMaximumFrameLatency(self, ...) ((self)->dtbl->SetMaximumFrameLatency(self, __VA_ARGS__))
+    i32 (STDCALLP SetMaximumFrameLatency)(IDXGISwapChain3 *self, u32 max_latency);
+#define IDXGISwapChain3_GetMaximumFrameLatency(self, ...) ((self)->dtbl->GetMaximumFrameLatency(self, __VA_ARGS__))
+    i32 (STDCALLP GetMaximumFrameLatency)(IDXGISwapChain3 *self, u32 *out_max_latency);
+#define IDXGISwapChain3_GetFrameLatencyWaitableObject(self, ...) ((self)->dtbl->GetFrameLatencyWaitableObject(self, __VA_ARGS__))
+    void *(STDCALLP GetFrameLatencyWaitableObject)(IDXGISwapChain3 *self);
+#define IDXGISwapChain3_SetMatrixTransform(self, ...) ((self)->dtbl->SetMatrixTransform(self, __VA_ARGS__))
+    i32 (STDCALLP SetMatrixTransform)(IDXGISwapChain3 *self, const DXGI_MATRIX_3X2_F *matrix);
+#define IDXGISwapChain3_GetMatrixTransform(self, ...) ((self)->dtbl->GetMatrixTransform(self, __VA_ARGS__))
+    i32 (STDCALLP GetMatrixTransform)(IDXGISwapChain3 *self, DXGI_MATRIX_3X2_F *out_matrix);
+    // IDXGISwapChain3
+#define IDXGISwapChain3_GetCurrentBackBufferIndex(self, ...) ((self)->dtbl->GetCurrentBackBufferIndex(self, __VA_ARGS__))
+    u32 (STDCALLP GetCurrentBackBufferIndex)(IDXGISwapChain3 *self);
+#define IDXGISwapChain3_CheckColorSpaceSupport(self, ...) ((self)->dtbl->CheckColorSpaceSupport(self, __VA_ARGS__))
+    i32 (STDCALLP CheckColorSpaceSupport)(IDXGISwapChain3 *self, DXGI_COLOR_SPACE_TYPE color_space, u32 *out_support);
+#define IDXGISwapChain3_SetColorSpace1(self, ...) ((self)->dtbl->SetColorSpace1(self, __VA_ARGS__))
+    i32 (STDCALLP SetColorSpace1)(IDXGISwapChain3 *self, DXGI_COLOR_SPACE_TYPE color_space);
+#define IDXGISwapChain3_ResizeBuffers1(self, ...) ((self)->dtbl->ResizeBuffers1(self, __VA_ARGS__))
+    i32 (STDCALLP ResizeBuffers1)(IDXGISwapChain3 *self,
+                                  u32 buffer_count,
+                                  u32 width,
+                                  u32 height,
+                                  DXGI_FORMAT format,
+                                  u32 swap_chain_flags,
+                                  const u32 *creation_node_mask,
+                                  IUnknown *const *present_queue);
 } IDXGISwapChain3DispatchTable;
 struct IDXGISwapChain3 { const IDXGISwapChain3DispatchTable *dtbl; };
 
-#define IDXGISwapChain3_QueryInterface(self, ...) ((self)->dtbl->QueryInterface(self, __VA_ARGS__))
-#define IDXGISwapChain3_AddRef(self, ...) ((self)->dtbl->AddRef(self, __VA_ARGS__))
-#define IDXGISwapChain3_Release(self, ...) ((self)->dtbl->Release(self, __VA_ARGS__))
-#define IDXGISwapChain3_SetPrivateData(self, ...) ((self)->dtbl->SetPrivateData(self, __VA_ARGS__))
-#define IDXGISwapChain3_SetPrivateDataInterface(self, ...) ((self)->dtbl->SetPrivateDataInterface(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetPrivateData(self, ...) ((self)->dtbl->GetPrivateData(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetParent(self, ...) ((self)->dtbl->GetParent(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetDevice(self, ...) ((self)->dtbl->GetDevice(self, __VA_ARGS__))
-#define IDXGISwapChain3_Present(self, ...) ((self)->dtbl->Present(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetBuffer(self, ...) ((self)->dtbl->GetBuffer(self, __VA_ARGS__))
-#define IDXGISwapChain3_SetFullscreenState(self, ...) ((self)->dtbl->SetFullscreenState(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetFullscreenState(self, ...) ((self)->dtbl->GetFullscreenState(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetDesc(self, ...) ((self)->dtbl->GetDesc(self, __VA_ARGS__))
-#define IDXGISwapChain3_ResizeBuffers(self, ...) ((self)->dtbl->ResizeBuffers(self, __VA_ARGS__))
-#define IDXGISwapChain3_ResizeTarget(self, ...) ((self)->dtbl->ResizeTarget(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetContainingOutput(self, ...) ((self)->dtbl->GetContainingOutput(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetFrameStatistics(self, ...) ((self)->dtbl->GetFrameStatistics(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetLastPresentCount(self, ...) ((self)->dtbl->GetLastPresentCount(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetDesc1(self, ...) ((self)->dtbl->GetDesc1(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetFullscreenDesc(self, ...) ((self)->dtbl->GetFullscreenDesc(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetHwnd(self, ...) ((self)->dtbl->GetHwnd(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetCoreWindow(self, ...) ((self)->dtbl->GetCoreWindow(self, __VA_ARGS__))
-#define IDXGISwapChain3_Present1(self, ...) ((self)->dtbl->Present1(self, __VA_ARGS__))
-#define IDXGISwapChain3_IsTemporaryMonoSupported(self, ...) ((self)->dtbl->IsTemporaryMonoSupported(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetRestrictToOutput(self, ...) ((self)->dtbl->GetRestrictToOutput(self, __VA_ARGS__))
-#define IDXGISwapChain3_SetBackgroundColor(self, ...) ((self)->dtbl->SetBackgroundColor(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetBackgroundColor(self, ...) ((self)->dtbl->GetBackgroundColor(self, __VA_ARGS__))
-#define IDXGISwapChain3_SetRotation(self, ...) ((self)->dtbl->SetRotation(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetRotation(self, ...) ((self)->dtbl->GetRotation(self, __VA_ARGS__))
-#define IDXGISwapChain3_SetSourceSize(self, ...) ((self)->dtbl->SetSourceSize(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetSourceSize(self, ...) ((self)->dtbl->GetSourceSize(self, __VA_ARGS__))
-#define IDXGISwapChain3_SetMaximumFrameLatency(self, ...) ((self)->dtbl->SetMaximumFrameLatency(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetMaximumFrameLatency(self, ...) ((self)->dtbl->GetMaximumFrameLatency(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetFrameLatencyWaitableObject(self, ...) ((self)->dtbl->GetFrameLatencyWaitableObject(self, __VA_ARGS__))
-#define IDXGISwapChain3_SetMatrixTransform(self, ...) ((self)->dtbl->SetMatrixTransform(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetMatrixTransform(self, ...) ((self)->dtbl->GetMatrixTransform(self, __VA_ARGS__))
-#define IDXGISwapChain3_GetCurrentBackBufferIndex(self, ...) ((self)->dtbl->GetCurrentBackBufferIndex(self, __VA_ARGS__))
-#define IDXGISwapChain3_CheckColorSpaceSupport(self, ...) ((self)->dtbl->CheckColorSpaceSupport(self, __VA_ARGS__))
-#define IDXGISwapChain3_SetColorSpace1(self, ...) ((self)->dtbl->SetColorSpace1(self, __VA_ARGS__))
-#define IDXGISwapChain3_ResizeBuffers1(self, ...) ((self)->dtbl->ResizeBuffers1(self, __VA_ARGS__))
-
-typedef struct IDXGIFactory4DispatchTable {
-    i32 (STDCALLP QueryInterface)(IDXGIFactory4 *, const GUID *, void **);
-    u32 (STDCALLP AddRef)(IDXGIFactory4 *);
-    u32 (STDCALLP Release)(IDXGIFactory4 *);
-    i32 (STDCALLP SetPrivateData)(IDXGIFactory4 *, const GUID *, u32, const void *);
-    i32 (STDCALLP SetPrivateDataInterface)(IDXGIFactory4 *, const GUID *, const IUnknown *);
-    i32 (STDCALLP GetPrivateData)(IDXGIFactory4 *, const GUID *, u32 *, void *);
-    i32 (STDCALLP GetParent)(IDXGIFactory4 *, const GUID *, void **);
-    i32 (STDCALLP EnumAdapters)(IDXGIFactory4 *, u32, IDXGIAdapter **);
-    i32 (STDCALLP MakeWindowAssociation)(IDXGIFactory4 *, void *, u32);
-    i32 (STDCALLP GetWindowAssociation)(IDXGIFactory4 *, void **);
-    i32 (STDCALLP CreateSwapChain)(IDXGIFactory4 *, IUnknown *, DXGI_SWAP_CHAIN_DESC *, IDXGISwapChain **);
-    i32 (STDCALLP CreateSoftwareAdapter)(IDXGIFactory4 *, void *, IDXGIAdapter **);
-    i32 (STDCALLP EnumAdapters1)(IDXGIFactory4 *, u32, IDXGIAdapter1 **);
-    i32 (STDCALLP IsCurrent)(IDXGIFactory4 *);
-    i32 (STDCALLP IsWindowedStereoEnabled)(IDXGIFactory4 *);
-    i32 (STDCALLP CreateSwapChainForHwnd)(IDXGIFactory4 *, IUnknown *, void *, const DXGI_SWAP_CHAIN_DESC1 *, const DXGI_SWAP_CHAIN_FULLSCREEN_DESC *, IDXGIOutput *, IDXGISwapChain1 **);
-    i32 (STDCALLP CreateSwapChainForCoreWindow)(IDXGIFactory4 *, IUnknown *, IUnknown *, const DXGI_SWAP_CHAIN_DESC1 *, IDXGIOutput *, IDXGISwapChain1 **);
-    i32 (STDCALLP GetSharedResourceAdapterLuid)(IDXGIFactory4 *, void *, i64 *);
-    i32 (STDCALLP RegisterStereoStatusWindow)(IDXGIFactory4 *, void *, u32, u32 *);
-    i32 (STDCALLP RegisterStereoStatusEvent)(IDXGIFactory4 *, void *, u32 *);
-    void (STDCALLP UnregisterStereoStatus)(IDXGIFactory4 *, u32);
-    i32 (STDCALLP RegisterOcclusionStatusWindow)(IDXGIFactory4 *, void *, u32, u32 *);
-    i32 (STDCALLP RegisterOcclusionStatusEvent)(IDXGIFactory4 *, void *, u32 *);
-    void (STDCALLP UnregisterOcclusionStatus)(IDXGIFactory4 *, u32);
-    i32 (STDCALLP CreateSwapChainForComposition)(IDXGIFactory4 *, IUnknown *, const DXGI_SWAP_CHAIN_DESC1 *, IDXGIOutput *, IDXGISwapChain1 **);
-    u32 (STDCALLP GetCreationFlags)(IDXGIFactory4 *);
-    i32 (STDCALLP EnumAdapterByLuid)(IDXGIFactory4 *, i64, const GUID *, void **);
-    i32 (STDCALLP EnumWarpAdapter)(IDXGIFactory4 *, const GUID *, void **);
+typedef struct IDXGIFactory4DispatchTable
+{
+    // IUnknown
+#define IDXGIFactory4_QueryInterface(self, ...) ((self)->dtbl->QueryInterface(self, __VA_ARGS__))
+    i32 (STDCALLP QueryInterface)(IDXGIFactory4 *self, const GUID *guid, void **out_object);
+#define IDXGIFactory4_AddRef(self, ...) ((self)->dtbl->AddRef(self, __VA_ARGS__))
+    u32 (STDCALLP AddRef)(IDXGIFactory4 *self);
+#define IDXGIFactory4_Release(self, ...) ((self)->dtbl->Release(self, __VA_ARGS__))
+    u32 (STDCALLP Release)(IDXGIFactory4 *self);
+    // IDXGIObject
+#define IDXGIFactory4_SetPrivateData(self, ...) ((self)->dtbl->SetPrivateData(self, __VA_ARGS__))
+    i32 (STDCALLP SetPrivateData)(IDXGIFactory4 *self, const GUID *guid, u32 data_size, const void *data);
+#define IDXGIFactory4_SetPrivateDataInterface(self, ...) ((self)->dtbl->SetPrivateDataInterface(self, __VA_ARGS__))
+    i32 (STDCALLP SetPrivateDataInterface)(IDXGIFactory4 *self, const GUID *guid, const IUnknown *data);
+#define IDXGIFactory4_GetPrivateData(self, ...) ((self)->dtbl->GetPrivateData(self, __VA_ARGS__))
+    i32 (STDCALLP GetPrivateData)(IDXGIFactory4 *self, const GUID *guid, u32 *out_data_size, void *out_data);
+#define IDXGIFactory4_GetParent(self, ...) ((self)->dtbl->GetParent(self, __VA_ARGS__))
+    i32 (STDCALLP GetParent)(IDXGIFactory4 *self, const GUID *guid, void **out_parent);
+    // IDXGIFactory
+#define IDXGIFactory4_EnumAdapters(self, ...) ((self)->dtbl->EnumAdapters(self, __VA_ARGS__))
+    i32 (STDCALLP EnumAdapters)(IDXGIFactory4 *self, u32 adapter, IDXGIAdapter **out_adapter);
+#define IDXGIFactory4_MakeWindowAssociation(self, ...) ((self)->dtbl->MakeWindowAssociation(self, __VA_ARGS__))
+    i32 (STDCALLP MakeWindowAssociation)(IDXGIFactory4 *self, void *hwnd, u32 flags);
+#define IDXGIFactory4_GetWindowAssociation(self, ...) ((self)->dtbl->GetWindowAssociation(self, __VA_ARGS__))
+    i32 (STDCALLP GetWindowAssociation)(IDXGIFactory4 *self, void **out_hwnd);
+#define IDXGIFactory4_CreateSwapChain(self, ...) ((self)->dtbl->CreateSwapChain(self, __VA_ARGS__))
+    i32 (STDCALLP CreateSwapChain)(IDXGIFactory4 *self,
+                                   IUnknown *device,
+                                   DXGI_SWAP_CHAIN_DESC *desc,
+                                   IDXGISwapChain **out_swap_chain);
+#define IDXGIFactory4_CreateSoftwareAdapter(self, ...) ((self)->dtbl->CreateSoftwareAdapter(self, __VA_ARGS__))
+    i32 (STDCALLP CreateSoftwareAdapter)(IDXGIFactory4 *self, void *module, IDXGIAdapter **out_adapter);
+#define IDXGIFactory4_EnumAdapters1(self, ...) ((self)->dtbl->EnumAdapters1(self, __VA_ARGS__))
+    i32 (STDCALLP EnumAdapters1)(IDXGIFactory4 *self, u32 adapter, IDXGIAdapter1 **out_adapter);
+#define IDXGIFactory4_IsCurrent(self, ...) ((self)->dtbl->IsCurrent(self, __VA_ARGS__))
+    i32 (STDCALLP IsCurrent)(IDXGIFactory4 *self);
+#define IDXGIFactory4_IsWindowedStereoEnabled(self, ...) ((self)->dtbl->IsWindowedStereoEnabled(self, __VA_ARGS__))
+    i32 (STDCALLP IsWindowedStereoEnabled)(IDXGIFactory4 *self);
+#define IDXGIFactory4_CreateSwapChainForHwnd(self, ...) ((self)->dtbl->CreateSwapChainForHwnd(self, __VA_ARGS__))
+    i32 (STDCALLP CreateSwapChainForHwnd)(IDXGIFactory4 *self,
+                                          IUnknown *device,
+                                          void *hwnd,
+                                          const DXGI_SWAP_CHAIN_DESC1 *desc,
+                                          const DXGI_SWAP_CHAIN_FULLSCREEN_DESC *fullscreen_desc,
+                                          IDXGIOutput *restrict_to_output,
+                                          IDXGISwapChain1 **out_swap_chain);
+#define IDXGIFactory4_CreateSwapChainForCoreWindow(self, ...) ((self)->dtbl->CreateSwapChainForCoreWindow(self, __VA_ARGS__))
+    i32 (STDCALLP CreateSwapChainForCoreWindow)(IDXGIFactory4 *self,
+                                                IUnknown *device,
+                                                IUnknown *window,
+                                                const DXGI_SWAP_CHAIN_DESC1 *desc,
+                                                IDXGIOutput *restrict_to_output,
+                                                IDXGISwapChain1 **out_swap_chain);
+#define IDXGIFactory4_GetSharedResourceAdapterLuid(self, ...) ((self)->dtbl->GetSharedResourceAdapterLuid(self, __VA_ARGS__))
+    i32 (STDCALLP GetSharedResourceAdapterLuid)(IDXGIFactory4 *self, void *resource, i64 *out_luid);
+#define IDXGIFactory4_RegisterStereoStatusWindow(self, ...) ((self)->dtbl->RegisterStereoStatusWindow(self, __VA_ARGS__))
+    i32 (STDCALLP RegisterStereoStatusWindow)(IDXGIFactory4 *self, void *hwnd, u32 msg, u32 *out_cookie);
+#define IDXGIFactory4_RegisterStereoStatusEvent(self, ...) ((self)->dtbl->RegisterStereoStatusEvent(self, __VA_ARGS__))
+    i32 (STDCALLP RegisterStereoStatusEvent)(IDXGIFactory4 *self, void *event, u32 *out_cookie);
+#define IDXGIFactory4_UnregisterStereoStatus(self, ...) ((self)->dtbl->UnregisterStereoStatus(self, __VA_ARGS__))
+    void (STDCALLP UnregisterStereoStatus)(IDXGIFactory4 *self, u32 cookie);
+#define IDXGIFactory4_RegisterOcclusionStatusWindow(self, ...) ((self)->dtbl->RegisterOcclusionStatusWindow(self, __VA_ARGS__))
+    i32 (STDCALLP RegisterOcclusionStatusWindow)(IDXGIFactory4 *self, void *hwnd, u32 msg, u32 *out_cookie);
+#define IDXGIFactory4_RegisterOcclusionStatusEvent(self, ...) ((self)->dtbl->RegisterOcclusionStatusEvent(self, __VA_ARGS__))
+    i32 (STDCALLP RegisterOcclusionStatusEvent)(IDXGIFactory4 *self, void *event, u32 *out_cookie);
+#define IDXGIFactory4_UnregisterOcclusionStatus(self, ...) ((self)->dtbl->UnregisterOcclusionStatus(self, __VA_ARGS__))
+    void (STDCALLP UnregisterOcclusionStatus)(IDXGIFactory4 *self, u32 cookie);
+#define IDXGIFactory4_CreateSwapChainForComposition(self, ...) ((self)->dtbl->CreateSwapChainForComposition(self, __VA_ARGS__))
+    i32 (STDCALLP CreateSwapChainForComposition)(IDXGIFactory4 *self,
+                                                 IUnknown *device,
+                                                 const DXGI_SWAP_CHAIN_DESC1 *desc,
+                                                 IDXGIOutput *restrict_to_output,
+                                                 IDXGISwapChain1 **out_swap_chain);
+#define IDXGIFactory4_GetCreationFlags(self, ...) ((self)->dtbl->GetCreationFlags(self, __VA_ARGS__))
+    u32 (STDCALLP GetCreationFlags)(IDXGIFactory4 *self);
+    // IDXGIFactory4
+#define IDXGIFactory4_EnumAdapterByLuid(self, ...) ((self)->dtbl->EnumAdapterByLuid(self, __VA_ARGS__))
+    i32 (STDCALLP EnumAdapterByLuid)(IDXGIFactory4 *self, i64 adapter_luid, const GUID *guid, void **out_adapter);
+#define IDXGIFactory4_EnumWarpAdapter(self, ...) ((self)->dtbl->EnumWarpAdapter(self, __VA_ARGS__))
+    i32 (STDCALLP EnumWarpAdapter)(IDXGIFactory4 *self, const GUID *guid, void **out_adapter);
 } IDXGIFactory4DispatchTable;
 struct IDXGIFactory4 { const IDXGIFactory4DispatchTable *dtbl; };
-
-#define IDXGIFactory4_QueryInterface(self, ...) ((self)->dtbl->QueryInterface(self, __VA_ARGS__))
-#define IDXGIFactory4_AddRef(self, ...) ((self)->dtbl->AddRef(self, __VA_ARGS__))
-#define IDXGIFactory4_Release(self, ...) ((self)->dtbl->Release(self, __VA_ARGS__))
-#define IDXGIFactory4_SetPrivateData(self, ...) ((self)->dtbl->SetPrivateData(self, __VA_ARGS__))
-#define IDXGIFactory4_SetPrivateDataInterface(self, ...) ((self)->dtbl->SetPrivateDataInterface(self, __VA_ARGS__))
-#define IDXGIFactory4_GetPrivateData(self, ...) ((self)->dtbl->GetPrivateData(self, __VA_ARGS__))
-#define IDXGIFactory4_GetParent(self, ...) ((self)->dtbl->GetParent(self, __VA_ARGS__))
-#define IDXGIFactory4_EnumAdapters(self, ...) ((self)->dtbl->EnumAdapters(self, __VA_ARGS__))
-#define IDXGIFactory4_MakeWindowAssociation(self, ...) ((self)->dtbl->MakeWindowAssociation(self, __VA_ARGS__))
-#define IDXGIFactory4_GetWindowAssociation(self, ...) ((self)->dtbl->GetWindowAssociation(self, __VA_ARGS__))
-#define IDXGIFactory4_CreateSwapChain(self, ...) ((self)->dtbl->CreateSwapChain(self, __VA_ARGS__))
-#define IDXGIFactory4_CreateSoftwareAdapter(self, ...) ((self)->dtbl->CreateSoftwareAdapter(self, __VA_ARGS__))
-#define IDXGIFactory4_EnumAdapters1(self, ...) ((self)->dtbl->EnumAdapters1(self, __VA_ARGS__))
-#define IDXGIFactory4_IsCurrent(self, ...) ((self)->dtbl->IsCurrent(self, __VA_ARGS__))
-#define IDXGIFactory4_IsWindowedStereoEnabled(self, ...) ((self)->dtbl->IsWindowedStereoEnabled(self, __VA_ARGS__))
-#define IDXGIFactory4_CreateSwapChainForHwnd(self, ...) ((self)->dtbl->CreateSwapChainForHwnd(self, __VA_ARGS__))
-#define IDXGIFactory4_CreateSwapChainForCoreWindow(self, ...) ((self)->dtbl->CreateSwapChainForCoreWindow(self, __VA_ARGS__))
-#define IDXGIFactory4_GetSharedResourceAdapterLuid(self, ...) ((self)->dtbl->GetSharedResourceAdapterLuid(self, __VA_ARGS__))
-#define IDXGIFactory4_RegisterStereoStatusWindow(self, ...) ((self)->dtbl->RegisterStereoStatusWindow(self, __VA_ARGS__))
-#define IDXGIFactory4_RegisterStereoStatusEvent(self, ...) ((self)->dtbl->RegisterStereoStatusEvent(self, __VA_ARGS__))
-#define IDXGIFactory4_UnregisterStereoStatus(self, ...) ((self)->dtbl->UnregisterStereoStatus(self, __VA_ARGS__))
-#define IDXGIFactory4_RegisterOcclusionStatusWindow(self, ...) ((self)->dtbl->RegisterOcclusionStatusWindow(self, __VA_ARGS__))
-#define IDXGIFactory4_RegisterOcclusionStatusEvent(self, ...) ((self)->dtbl->RegisterOcclusionStatusEvent(self, __VA_ARGS__))
-#define IDXGIFactory4_UnregisterOcclusionStatus(self, ...) ((self)->dtbl->UnregisterOcclusionStatus(self, __VA_ARGS__))
-#define IDXGIFactory4_CreateSwapChainForComposition(self, ...) ((self)->dtbl->CreateSwapChainForComposition(self, __VA_ARGS__))
-#define IDXGIFactory4_GetCreationFlags(self, ...) ((self)->dtbl->GetCreationFlags(self, __VA_ARGS__))
-#define IDXGIFactory4_EnumAdapterByLuid(self, ...) ((self)->dtbl->EnumAdapterByLuid(self, __VA_ARGS__))
-#define IDXGIFactory4_EnumWarpAdapter(self, ...) ((self)->dtbl->EnumWarpAdapter(self, __VA_ARGS__))
 
 extern const GUID IID_ID3D12GraphicsCommandList;
 extern const GUID IID_ID3D12CommandQueue;
