@@ -1903,6 +1903,20 @@ STDCALLP	windows.h	/^    void (STDCALLP UpdateTileMappings)(ID3D12CommandQueue *
 STDCALLP	windows.h	/^    void *(STDCALLP GetBufferPointer)(ID3DBlob *self);$/;"	m	struct:ID3DBlobDispatchTable	typeref:typename:void * (GetBufferPointer)(ID3DBlob * self)
 STDCALLP	windows.h	/^    void *(STDCALLP GetFrameLatencyWaitableObject)(IDXGISwapChain3 *);$/;"	m	struct:IDXGISwapChain3DispatchTable	typeref:typename:void * (GetFrameLatencyWaitableObject)(IDXGISwapChain3 *)
 STDCALLP	windows.h	/^#define STDCALLP /;"	d
+STDCALLP	windows.h	/^void (STDCALLP ExitProcess)(u32 exit_code);$/;"	v	typeref:typename:void (ExitProcess)(u32 exit_code)
+STDCALLP	windows.h	/^void (STDCALLP OutputDebugString)(const char *output_string);$/;"	v	typeref:typename:void (OutputDebugString)(const char * output_string)
+STDCALLP	windows.h	/^void (STDCALLP PostQuitMessage)(i32 exit_code);$/;"	v	typeref:typename:void (PostQuitMessage)(i32 exit_code)
+STDCALLP	windows.h	/^void (STDCALLP Sleep)(u32 milliseconds);$/;"	v	typeref:typename:void (Sleep)(u32 milliseconds)
+STDCALLP	windows.h	/^void *(STDCALLP CreateEventEx)(SECURITY_ATTRIBUTES *event_attributes, const char *name, u32 flag/;"	v	typeref:typename:void * (CreateEventEx)(SECURITY_ATTRIBUTES * event_attributes,const char * name,u32 flags,u32 desired_access)
+STDCALLP	windows.h	/^void *(STDCALLP CreateFile)(const char *filename,$/;"	v	typeref:typename:void * (CreateFile)(const char * filename,u32 desired_access,u32 shared_mode,SECURITY_ATTRIBUTES * security_attributes,u32 creation_disposition,u32 flags_and_attributes,void * template_file)
+STDCALLP	windows.h	/^void *(STDCALLP CreateWindowEx)(u32 exstyle,$/;"	v	typeref:typename:void * (CreateWindowEx)(u32 exstyle,const char * class_name,const char * window_name,u32 style,i32 x,i32 y,i32 width,i32 height,void * parent,void * menu,void * instance,void * param)
+STDCALLP	windows.h	/^void *(STDCALLP GetDC)(void *hwnd);$/;"	v	typeref:typename:void * (GetDC)(void * hwnd)
+STDCALLP	windows.h	/^void *(STDCALLP GetModuleHandle)(const char *module_name);$/;"	v	typeref:typename:void * (GetModuleHandle)(const char * module_name)
+STDCALLP	windows.h	/^void *(STDCALLP GetProcessHeap)(void);$/;"	v	typeref:typename:void * (GetProcessHeap)(void)
+STDCALLP	windows.h	/^void *(STDCALLP HeapAlloc)(void *heap, u32 flags, u64 bytes);$/;"	v	typeref:typename:void * (HeapAlloc)(void * heap,u32 flags,u64 bytes)
+STDCALLP	windows.h	/^void *(STDCALLP HeapReAlloc)(void *heap, u32 flags, void *address, u64 bytes);$/;"	v	typeref:typename:void * (HeapReAlloc)(void * heap,u32 flags,void * address,u64 bytes)
+STDCALLP	windows.h	/^void *(STDCALLP LoadCursor)(void *instance, const char *cursor_name);$/;"	v	typeref:typename:void * (LoadCursor)(void * instance,const char * cursor_name)
+STDCALLP	windows.h	/^void *(STDCALLP VirtualAlloc)(void *address, u64 size, u32 allocation_type, u32 protect);$/;"	v	typeref:typename:void * (VirtualAlloc)(void * address,u64 size,u32 allocation_type,u32 protect)
 SYNCHRONIZE	windows.h	/^#define SYNCHRONIZE /;"	d
 SampleCount	windows.h	/^    u32 SampleCount;$/;"	m	struct:D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS	typeref:typename:u32
 SampleDesc	windows.h	/^    DXGI_SAMPLE_DESC SampleDesc;$/;"	m	struct:D3D12_GRAPHICS_PIPELINE_STATE_DESC	typeref:typename:DXGI_SAMPLE_DESC
@@ -2256,8 +2270,6 @@ mem_free	library.c	/^void mem_free(void *addr)$/;"	f	typeref:typename:void
 mem_realloc	library.c	/^void *mem_realloc(void *addr, size_t size)$/;"	f	typeref:typename:void *
 memset	asmlib.asm	/^memset: XOR eax, eax$/;"	l
 message	windows.h	/^    u32 message;$/;"	m	struct:MSG	typeref:typename:u32
-my_test_type	demo01.c	/^        typedef struct my_test_type {$/;"	s	function:demo_init	file:
-my_test_type_t	demo01.c	/^        } my_test_type_t;$/;"	t	function:demo_init	typeref:struct:demo_init::my_test_type	file:
 nLength	windows.h	/^    u32 nLength;$/;"	m	struct:SECURITY_ATTRIBUTES	typeref:typename:u32
 non_shader_descriptors	renderer.c	/^    } non_shader_descriptors;$/;"	m	struct:priv_renderer	typeref:struct:priv_renderer::__anon816587ed0208	file:
 num_allocated	renderer.c	/^        u32 num_allocated;$/;"	m	struct:priv_renderer::__anon816587ed0108	typeref:typename:u32	file:
@@ -2332,11 +2344,9 @@ v	math.h	/^        f32 v[4];$/;"	m	union:f32vec4::__anon0d3df6e5030a	typeref:typ
 vertex_buffer	demo01.c	/^    ID3D12Resource *vertex_buffer;$/;"	m	struct:demo	typeref:typename:ID3D12Resource *	file:
 w	math.h	/^        struct { f32 x, y, z, w; };$/;"	m	struct:f32vec4::__anon0d3df6e5030a::__anon0d3df6e50408	typeref:typename:f32
 wParam	windows.h	/^    u64 wParam;$/;"	m	struct:MSG	typeref:typename:u64
-x	demo01.c	/^            u32 x;$/;"	m	struct:demo_init::my_test_type	typeref:typename:u32	file:
 x	math.h	/^        struct { f32 x, y, z, w; };$/;"	m	struct:f32vec4::__anon0d3df6e5030a::__anon0d3df6e50408	typeref:typename:f32
 x	math.h	/^        struct { f32 x, y, z; };$/;"	m	struct:f32vec3::__anon0d3df6e5010a::__anon0d3df6e50208	typeref:typename:f32
 x	windows.h	/^    i32 x;$/;"	m	struct:POINT	typeref:typename:i32
-y	demo01.c	/^            u32 y;$/;"	m	struct:demo_init::my_test_type	typeref:typename:u32	file:
 y	math.h	/^        struct { f32 x, y, z, w; };$/;"	m	struct:f32vec4::__anon0d3df6e5030a::__anon0d3df6e50408	typeref:typename:f32
 y	math.h	/^        struct { f32 x, y, z; };$/;"	m	struct:f32vec3::__anon0d3df6e5010a::__anon0d3df6e50208	typeref:typename:f32
 y	windows.h	/^    i32 y;$/;"	m	struct:POINT	typeref:typename:i32

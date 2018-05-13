@@ -83,45 +83,66 @@ typedef struct RECT {
     i32 bottom;
 } RECT;
 
-extern void (__stdcall *OutputDebugString)(const char *);
-extern i32 (__stdcall *QueryPerformanceCounter)(i64 *);
-extern i32 (__stdcall *QueryPerformanceFrequency)(i64 *);
-extern void *(__stdcall *VirtualAlloc)(void *, u64, u32, u32);
-extern i32 (__stdcall *VirtualFree)(void *, u64, u32);
-extern void (__stdcall *ExitProcess)(u32);
-extern void *(__stdcall *CreateFile)(const char *, u32, u32, SECURITY_ATTRIBUTES *, u32, u32, void *);
-extern i32 (__stdcall *ReadFile)(void *, void *, u32, u32 *, void *);
-extern u32 (__stdcall *GetFileSize)(void *, u32 *);
-extern i32 (__stdcall *CloseHandle)(void *);
-extern void *(__stdcall *GetModuleHandle)(const char *);
-extern void (__stdcall *Sleep)(u32);
-extern void *(__stdcall *HeapAlloc)(void *, u32, u64);
-extern i32 (__stdcall *HeapFree)(void *, u32, void *);
-extern void *(__stdcall *HeapReAlloc)(void *, u32, void *, u64);
-extern void *(__stdcall *GetProcessHeap)(void);
-extern void *(__stdcall *CreateEventEx)(SECURITY_ATTRIBUTES *, const char *, u32, u32);
-extern u32 (__stdcall *WaitForSingleObject)(void *, u32);
+void (STDCALLP OutputDebugString)(const char *output_string);
+i32 (STDCALLP QueryPerformanceCounter)(i64 *out_performance_count);
+i32 (STDCALLP QueryPerformanceFrequency)(i64 *out_frequency);
+void *(STDCALLP VirtualAlloc)(void *address, u64 size, u32 allocation_type, u32 protect);
+i32 (STDCALLP VirtualFree)(void *address, u64 size, u32 free_type);
+void (STDCALLP ExitProcess)(u32 exit_code);
+void *(STDCALLP CreateFile)(const char *filename,
+                            u32 desired_access,
+                            u32 shared_mode,
+                            SECURITY_ATTRIBUTES *security_attributes,
+                            u32 creation_disposition,
+                            u32 flags_and_attributes,
+                            void *template_file);
+i32 (STDCALLP ReadFile)(void *handle,
+                        void *out_buffer,
+                        u32 number_of_bytes_to_read,
+                        u32 *out_number_of_bytes_read,
+                        void *overlapped);
+u32 (STDCALLP GetFileSize)(void *handle, u32 *out_file_size_high);
+i32 (STDCALLP CloseHandle)(void *handle);
+void *(STDCALLP GetModuleHandle)(const char *module_name);
+void (STDCALLP Sleep)(u32 milliseconds);
+void *(STDCALLP HeapAlloc)(void *heap, u32 flags, u64 bytes);
+i32 (STDCALLP HeapFree)(void *heap, u32 flags, void *address);
+void *(STDCALLP HeapReAlloc)(void *heap, u32 flags, void *address, u64 bytes);
+void *(STDCALLP GetProcessHeap)(void);
+void *(STDCALLP CreateEventEx)(SECURITY_ATTRIBUTES *event_attributes, const char *name, u32 flags, u32 desired_access);
+u32 (STDCALLP WaitForSingleObject)(void *handle, u32 milliseconds);
 
-extern i32 (__stdcall *PeekMessage)(MSG *, void *, u32, u32, u32);
-extern i64 (__stdcall *DispatchMessage)(const MSG *);
-extern void (__stdcall *PostQuitMessage)(i32);
-extern i64 (__stdcall *DefWindowProc)(void *, u32, u64, i64);
-extern void *(__stdcall *LoadCursor)(void *, const char *);
-extern i16 (__stdcall *RegisterClass)(const WNDCLASS *);
-extern void *(__stdcall *CreateWindowEx)(u32, const char *, const char *, u32, i32, i32, i32, i32, void *, void *, void *, void *);
-extern i32 (__stdcall *AdjustWindowRect)(RECT *, u32, i32);
-extern i32 (__cdecl *wsprintf)(char *, const char *, ...);
-extern i32 (__stdcall *SetWindowText)(void *, const char *);
-extern i32 (__stdcall *SetProcessDPIAware)(void);
-extern void *(__stdcall *GetDC)(void *);
-extern i32 (__stdcall *MessageBox)(void *, const char *, const char *, u32);
-extern i32 (__stdcall *GetClientRect)(void *, RECT *);
+i32 (STDCALLP PeekMessage)(MSG *out_msg, void *hwnd, u32 msg_filter_min, u32 msg_filter_max, u32 remove_msg);
+i64 (STDCALLP DispatchMessage)(const MSG *msg);
+void (STDCALLP PostQuitMessage)(i32 exit_code);
+i64 (STDCALLP DefWindowProc)(void *hwnd, u32 msg, u64 wparam, i64 lparam);
+void *(STDCALLP LoadCursor)(void *instance, const char *cursor_name);
+i16 (STDCALLP RegisterClass)(const WNDCLASS *winclass);
+void *(STDCALLP CreateWindowEx)(u32 exstyle,
+                                const char *class_name,
+                                const char *window_name,
+                                u32 style,
+                                i32 x,
+                                i32 y,
+                                i32 width,
+                                i32 height,
+                                void *parent,
+                                void *menu,
+                                void *instance,
+                                void *param);
+i32 (STDCALLP AdjustWindowRect)(RECT *out_rect, u32 style, i32 menu);
+i32 (__cdecl *wsprintf)(char *out_string, const char *format, ...);
+i32 (STDCALLP SetWindowText)(void *hwnd, const char *string);
+i32 (STDCALLP SetProcessDPIAware)(void);
+void *(STDCALLP GetDC)(void *hwnd);
+i32 (STDCALLP MessageBox)(void *hwnd, const char *text, const char *caption, u32 type);
+i32 (STDCALLP GetClientRect)(void *hwnd, RECT *out_rect);
 
-extern i32 (__stdcall *CreateDXGIFactory1)(const GUID *, void **);
+i32 (STDCALLP CreateDXGIFactory1)(const GUID *guid, void **out_object);
 
 typedef struct IUnknown IUnknown;
-extern i32 (__stdcall *D3D12CreateDevice)(IUnknown *, D3D_FEATURE_LEVEL, const GUID *, void **);
-extern i32 (__stdcall *D3D12GetDebugInterface)(const GUID *, void **);
+i32 (STDCALLP D3D12CreateDevice)(IUnknown *adapter, D3D_FEATURE_LEVEL min_feature_level, const GUID *guid, void **out_object);
+i32 (STDCALLP D3D12GetDebugInterface)(const GUID *guid, void **out_object);
 
 #define D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES 0xffffffff
 
