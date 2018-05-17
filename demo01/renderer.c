@@ -177,6 +177,9 @@ void gr_shutdown(renderer_t *rend)
     COMRELEASE(rend->cmdalloc[1]);
     COMRELEASE(prend->rtv_heap);
     COMRELEASE(prend->dsv_heap);
+    COMRELEASE(prend->shader_descriptors[0].heap);
+    COMRELEASE(prend->shader_descriptors[1].heap);
+    COMRELEASE(prend->non_shader_descriptors.heap);
     COMRELEASE(rend->depth_buffer);
     for (i32 i = 0; i < 4; ++i)
         COMRELEASE(rend->color_buffers[i]);
