@@ -187,7 +187,7 @@ D3D12_CONSERVATIVE_RASTERIZATION_TIER_3	windows.h	/^    D3D12_CONSERVATIVE_RASTE
 D3D12_CONSERVATIVE_RASTERIZATION_TIER_NOT_SUPPORTED	windows.h	/^    D3D12_CONSERVATIVE_RASTERIZATION_TIER_NOT_SUPPORTED = 0,$/;"	e	enum:D3D12_CONSERVATIVE_RASTERIZATION_TIER
 D3D12_CONSTANT_BUFFER_VIEW_DESC	windows.h	/^typedef struct D3D12_CONSTANT_BUFFER_VIEW_DESC {$/;"	s
 D3D12_CONSTANT_BUFFER_VIEW_DESC	windows.h	/^} D3D12_CONSTANT_BUFFER_VIEW_DESC;$/;"	t	typeref:struct:D3D12_CONSTANT_BUFFER_VIEW_DESC
-D3D12_CPU_DESCRIPTOR_HANDLE	types.h	/^typedef struct D3D12_CPU_DESCRIPTOR_HANDLE {$/;"	s
+D3D12_CPU_DESCRIPTOR_HANDLE	types.h	/^typedef struct D3D12_CPU_DESCRIPTOR_HANDLE$/;"	s
 D3D12_CPU_DESCRIPTOR_HANDLE	types.h	/^} D3D12_CPU_DESCRIPTOR_HANDLE;$/;"	t	typeref:struct:D3D12_CPU_DESCRIPTOR_HANDLE
 D3D12_CPU_PAGE_PROPERTY	windows.h	/^typedef enum D3D12_CPU_PAGE_PROPERTY$/;"	g
 D3D12_CPU_PAGE_PROPERTY	windows.h	/^} D3D12_CPU_PAGE_PROPERTY;$/;"	t	typeref:enum:D3D12_CPU_PAGE_PROPERTY
@@ -399,7 +399,7 @@ D3D12_FORMAT_SUPPORT2_UAV_ATOMIC_SIGNED_MIN_OR_MAX	windows.h	/^    D3D12_FORMAT_
 D3D12_FORMAT_SUPPORT2_UAV_ATOMIC_UNSIGNED_MIN_OR_MAX	windows.h	/^    D3D12_FORMAT_SUPPORT2_UAV_ATOMIC_UNSIGNED_MIN_OR_MAX = 0x20,$/;"	e	enum:D3D12_FORMAT_SUPPORT2
 D3D12_FORMAT_SUPPORT2_UAV_TYPED_LOAD	windows.h	/^    D3D12_FORMAT_SUPPORT2_UAV_TYPED_LOAD = 0x40,$/;"	e	enum:D3D12_FORMAT_SUPPORT2
 D3D12_FORMAT_SUPPORT2_UAV_TYPED_STORE	windows.h	/^    D3D12_FORMAT_SUPPORT2_UAV_TYPED_STORE = 0x80,$/;"	e	enum:D3D12_FORMAT_SUPPORT2
-D3D12_GPU_DESCRIPTOR_HANDLE	types.h	/^typedef struct D3D12_GPU_DESCRIPTOR_HANDLE {$/;"	s
+D3D12_GPU_DESCRIPTOR_HANDLE	types.h	/^typedef struct D3D12_GPU_DESCRIPTOR_HANDLE$/;"	s
 D3D12_GPU_DESCRIPTOR_HANDLE	types.h	/^} D3D12_GPU_DESCRIPTOR_HANDLE;$/;"	t	typeref:struct:D3D12_GPU_DESCRIPTOR_HANDLE
 D3D12_GPU_VIRTUAL_ADDRESS	windows.h	/^typedef u64 D3D12_GPU_VIRTUAL_ADDRESS;$/;"	t	typeref:typename:u64
 D3D12_GRAPHICS_PIPELINE_STATE_DESC	windows.h	/^typedef struct D3D12_GRAPHICS_PIPELINE_STATE_DESC$/;"	s
@@ -2111,7 +2111,7 @@ __anon0d3df6e50608	math.h	/^        struct { f32vec4 r0, r1, r2, r3; };$/;"	s	un
 __anon0d3df6e5070a	math.h	/^    union {$/;"	u	function:f32_abs
 __anon816587ed0108	renderer.c	/^    struct {$/;"	s	struct:priv_renderer	file:
 __anon816587ed0208	renderer.c	/^    struct {$/;"	s	struct:priv_renderer	file:
-__anon866fb6100108	library.h	/^typedef struct {$/;"	s
+__anon866fb6100108	library.h	/^{$/;"	s
 _fltused	demo01.c	/^i32 _fltused;$/;"	v	typeref:typename:i32
 array_add	library.h	/^#define array_add(/;"	d
 array_capacity	library.h	/^#define array_capacity(/;"	d
@@ -2194,7 +2194,7 @@ f32_sin_fast	math.h	/^inline f32 f32_sin_fast(f32 x)$/;"	f	typeref:typename:f32
 f32_sincos	math.h	/^inline void f32_sincos(f32 *osin, f32 *ocos, f32 x)$/;"	f	typeref:typename:void
 f32_sincos_fast	math.h	/^inline void f32_sincos_fast(f32 *osin, f32 *ocos, f32 x)$/;"	f	typeref:typename:void
 f32_sqrt	math.h	/^__forceinline f32 f32_sqrt(f32 x)$/;"	f	typeref:typename:f32
-f32mat4	math.h	/^typedef struct f32mat4 {$/;"	s
+f32mat4	math.h	/^typedef struct f32mat4$/;"	s
 f32mat4	math.h	/^} f32mat4;$/;"	t	typeref:struct:f32mat4
 f32mat4_fovperspective	math.h	/^inline f32mat4 *f32mat4_fovperspective(f32mat4 *out, f32 fovy, f32 aspect, f32 n, f32 f)$/;"	f	typeref:typename:f32mat4 *
 f32mat4_identity	math.h	/^inline f32mat4 *f32mat4_identity(f32mat4 *out)$/;"	f	typeref:typename:f32mat4 *
@@ -2203,7 +2203,7 @@ f32mat4_mul	math.h	/^inline f32mat4 *f32mat4_mul(f32mat4 *out, const f32mat4 *m0
 f32mat4_rotation_ay	math.h	/^inline f32mat4 *f32mat4_rotation_ay(f32mat4 *out, f32 radians)$/;"	f	typeref:typename:f32mat4 *
 f32mat4_translation	math.h	/^inline f32mat4 *f32mat4_translation(f32mat4 *out, f32 x, f32 y, f32 z)$/;"	f	typeref:typename:f32mat4 *
 f32mat4_transpose	math.h	/^inline f32mat4 *f32mat4_transpose(f32mat4 *out, const f32mat4 *m)$/;"	f	typeref:typename:f32mat4 *
-f32vec3	math.h	/^typedef struct f32vec3 {$/;"	s
+f32vec3	math.h	/^typedef struct f32vec3$/;"	s
 f32vec3	math.h	/^} f32vec3;$/;"	t	typeref:struct:f32vec3
 f32vec3_add	math.h	/^inline f32vec3 *f32vec3_add(f32vec3 *out, const f32vec3 *a, const f32vec3 *b)$/;"	f	typeref:typename:f32vec3 *
 f32vec3_cross	math.h	/^inline f32vec3 *f32vec3_cross(f32vec3 *out, const f32vec3 *a, const f32vec3 *b)$/;"	f	typeref:typename:f32vec3 *
@@ -2213,7 +2213,7 @@ f32vec3_neg	math.h	/^inline f32vec3 *f32vec3_neg(f32vec3 *out, const f32vec3 *a)
 f32vec3_normalize	math.h	/^inline f32vec3 *f32vec3_normalize(f32vec3 *out, const f32vec3 *a)$/;"	f	typeref:typename:f32vec3 *
 f32vec3_set	math.h	/^inline f32vec3 *f32vec3_set(f32vec3 *out, f32 x, f32 y, f32 z)$/;"	f	typeref:typename:f32vec3 *
 f32vec3_sub	math.h	/^inline f32vec3 *f32vec3_sub(f32vec3 *out, const f32vec3 *a, const f32vec3 *b)$/;"	f	typeref:typename:f32vec3 *
-f32vec4	math.h	/^typedef struct f32vec4 {$/;"	s
+f32vec4	math.h	/^typedef struct f32vec4$/;"	s
 f32vec4	math.h	/^} f32vec4;$/;"	t	typeref:struct:f32vec4
 f32vec4_set	math.h	/^inline f32vec4 *f32vec4_set(f32vec4 *out, f32 x, f32 y, f32 z, f32 w)$/;"	f	typeref:typename:f32vec4 *
 f64	types.h	/^typedef double f64;$/;"	t	typeref:typename:double

@@ -8,21 +8,24 @@
 #define k_1pi_div_2 1.570796327f
 #define k_1pi_div_4 0.785398163f
 
-typedef struct f32vec3 {
+typedef struct f32vec3
+{
     union {
         struct { f32 x, y, z; };
         f32 v[3];
     };
 } f32vec3;
 
-typedef struct f32vec4 {
+typedef struct f32vec4
+{
     union {
         struct { f32 x, y, z, w; };
         f32 v[4];
     };
 } f32vec4;
 
-typedef struct f32mat4 {
+typedef struct f32mat4
+{
     union {
         struct { f32vec4 r0, r1, r2, r3; };
         f32vec4 r[4];

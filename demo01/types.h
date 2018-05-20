@@ -27,11 +27,13 @@ typedef double f64;
 #define short __INVALID__
 #define long __INVALID__
 
-typedef struct D3D12_CPU_DESCRIPTOR_HANDLE {
+typedef struct D3D12_CPU_DESCRIPTOR_HANDLE
+{
     u64 ptr;
 } D3D12_CPU_DESCRIPTOR_HANDLE;
 
-typedef struct D3D12_GPU_DESCRIPTOR_HANDLE {
+typedef struct D3D12_GPU_DESCRIPTOR_HANDLE
+{
     u64 ptr;
 } D3D12_GPU_DESCRIPTOR_HANDLE;
 

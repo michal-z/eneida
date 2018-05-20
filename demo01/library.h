@@ -1,7 +1,8 @@
 #pragma once
 #include "types.h"
 
-typedef struct {
+typedef struct
+{
     u32 size;
     u32 capacity;
 } array_header_t;
