@@ -177,13 +177,13 @@ void start(void)
     void *dxgi_dll = LoadLibraryA("dxgi.dll");
     CreateDXGIFactory1 = GetProcAddress(dxgi_dll, "CreateDXGIFactory1");
 
-    SetProcessDPIAware();
+    SetProcessDPIAware()
 
     // init window
     void *window = create_window(k_demo_name, k_win_width, k_win_height);
 
-    // init demo
-    demo_t *demo = demo_init(window);
+    // init experiment
+    experiment_dispatch_t dispatch = experiment01_init(window);
 
     for (;;) {
         MSG message = { 0 };
@@ -196,11 +196,11 @@ void start(void)
             f32 frame_delta_time;
             update_frame_time(window, k_demo_name, &frame_time, &frame_delta_time);
 
-            demo_update(demo, frame_time, frame_delta_time);
-            demo_draw(demo);
+            dispatch.update(dispatch.experiment, frame_time, frame_delta_time);
+            dispatch.draw(dispatch.experiment);
         }
     }
 
-    demo_shutdown(demo);
+    dispatch.shutdown(dispatch.experiment);
     ExitProcess(0);
 }

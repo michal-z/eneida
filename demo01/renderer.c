@@ -2,10 +2,11 @@
 #include "windows.h"
 
 
-#define MAX_NUM_SHADER_DESCRIPTORS 1024
-#define MAX_NUM_NON_SHADER_DESCRIPTORS 1024
+#define k_max_num_shader_descriptors 1024
+#define k_max_num_non_shader_descriptors 1024
 
-typedef struct priv_renderer {
+typedef struct priv_renderer
+{
     ID3D12Fence *frame_fence;
     void *frame_fence_event;
     IDXGIFactory4 *dxgi_factory;
@@ -136,7 +137,7 @@ renderer_t *gr_init(void *window)
     // shader visible descriptor heaps
     for (u32 i = 0; i < 2; ++i) {
         D3D12_DESCRIPTOR_HEAP_DESC heap_desc = {
-            .NumDescriptors = MAX_NUM_SHADER_DESCRIPTORS,
+            .NumDescriptors = k_max_num_shader_descriptors,
             .Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
             .Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE
         };
@@ -150,7 +151,7 @@ renderer_t *gr_init(void *window)
     }
     /* shader non-visible descriptor heap */ {
         D3D12_DESCRIPTOR_HEAP_DESC heap_desc = {
-            .NumDescriptors = MAX_NUM_NON_SHADER_DESCRIPTORS,
+            .NumDescriptors = k_max_num_non_shader_descriptors,
             .Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV
         };
         VHR(ID3D12Device_CreateDescriptorHeap(rend->d3d, &heap_desc, &IID_ID3D12DescriptorHeap,
@@ -227,7 +228,7 @@ void gr_alloc_non_shader_descriptors(renderer_t *rend, u32 num, D3D12_CPU_DESCRI
     assert(rend && rend->priv && out_first);
     priv_renderer_t *prend = rend->priv;
 
-    assert((prend->non_shader_descriptors.num_allocated + num) < MAX_NUM_NON_SHADER_DESCRIPTORS);
+    assert((prend->non_shader_descriptors.num_allocated + num) < k_max_num_non_shader_descriptors);
 
     out_first->ptr = prend->non_shader_descriptors.cpu_start.ptr +
         prend->non_shader_descriptors.num_allocated * rend->descriptor_size;
@@ -243,7 +244,7 @@ void gr_alloc_shader_descriptors(renderer_t *rend, u32 num, D3D12_CPU_DESCRIPTOR
 
     u32 frame = rend->frame_index;
 
-    assert((prend->shader_descriptors[frame].num_allocated + num) < MAX_NUM_SHADER_DESCRIPTORS);
+    assert((prend->shader_descriptors[frame].num_allocated + num) < k_max_num_shader_descriptors);
 
     out_first_cpu->ptr = prend->shader_descriptors[frame].cpu_start.ptr +
         prend->shader_descriptors[frame].num_allocated * rend->descriptor_size;

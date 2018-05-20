@@ -2,17 +2,20 @@
     "RootFlags(ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT), " \
     "CBV(b0, visibility = SHADER_VISIBILITY_VERTEX)"
 
-struct ps_data {
+struct ps_data
+{
     float4 position : SV_Position;
 };
 
 #if defined VS_TRIANGLE
 
-struct vs_data {
+struct vs_data
+{
     float3 position : POSITION;
 };
 
-struct cb_data {
+struct cb_data
+{
     float4x4 world2proj;
 };
 ConstantBuffer<cb_data> s_cb : register(b0);

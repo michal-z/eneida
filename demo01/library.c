@@ -2,9 +2,9 @@
 #include "windows.h"
 
 
-void *lib_load_file(const char *filename, u32 *ofilesize)
+void *lib_load_file(const char *filename, u32 *out_file_size)
 {
-    assert(ofilesize);
+    assert(out_file_size);
     void *handle = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
     assert(handle != (void *)-1);
     u32 size = GetFileSize(handle, NULL);
@@ -13,7 +13,7 @@ void *lib_load_file(const char *filename, u32 *ofilesize)
     ReadFile(handle, content, size, &bytes_read, NULL);
     CloseHandle(handle);
     assert(bytes_read == size);
-    *ofilesize = size;
+    *out_file_size = size;
     return content;
 }
 
