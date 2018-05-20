@@ -3,8 +3,8 @@
 #include "windows.h"
 
 
-extern void *__stdcall LoadLibraryA(const char *);
-extern void *__stdcall GetProcAddress(void *, const char *);
+void * STDCALL LoadLibraryA(const char *module_name);
+void * STDCALL GetProcAddress(void *module, const char *proc);
 
 const GUID IID_ID3D12Debug = { 0x344488b7,0x6846,0x474b,0xb9,0x89,0xf0,0x27,0x44,0x82,0x45,0xe0 };
 const GUID IID_IDXGISwapChain = { 0x310d36a0,0xd2e7,0x4c0a,0xaa,0x04,0x6a,0x9d,0x23,0xb8,0x88,0x6a };
@@ -22,44 +22,65 @@ const GUID IID_ID3D12PipelineState = { 0x765a30f3,0xf624,0x4c6f,0xa8,0x28,0xac,0
 
 i32 _fltused;
 
-void (__stdcall *OutputDebugString)(const char *);
-i32 (__stdcall *QueryPerformanceCounter)(i64 *);
-i32 (__stdcall *QueryPerformanceFrequency)(i64 *);
-void *(__stdcall *VirtualAlloc)(void *, u64, u32, u32);
-i32 (__stdcall *VirtualFree)(void *, u64, u32);
-void (__stdcall *ExitProcess)(u32);
-void *(__stdcall *CreateFile)(const char *, u32, u32, SECURITY_ATTRIBUTES *, u32, u32, void *);
-i32 (__stdcall *ReadFile)(void *, void *, u32, u32 *, void *);
-u32 (__stdcall *GetFileSize)(void *, u32 *);
-i32 (__stdcall *CloseHandle)(void *);
-void *(__stdcall *GetModuleHandle)(const char *);
-void (__stdcall *Sleep)(u32);
-void *(__stdcall *HeapAlloc)(void *, u32, u64);
-i32 (__stdcall *HeapFree)(void *, u32, void *);
-void *(__stdcall *HeapReAlloc)(void *, u32, void *, u64);
-void *(__stdcall *GetProcessHeap)(void);
-void *(__stdcall *CreateEventEx)(SECURITY_ATTRIBUTES *, const char *, u32, u32);
-u32 (__stdcall *WaitForSingleObject)(void *, u32);
+void (STDCALLP OutputDebugString)(const char *output_string);
+i32 (STDCALLP QueryPerformanceCounter)(i64 *out_performance_count);
+i32 (STDCALLP QueryPerformanceFrequency)(i64 *out_frequency);
+void *(STDCALLP VirtualAlloc)(void *address, u64 size, u32 allocation_type, u32 protect);
+i32 (STDCALLP VirtualFree)(void *address, u64 size, u32 free_type);
+void (STDCALLP ExitProcess)(u32 exit_code);
+void *(STDCALLP CreateFile)(const char *filename,
+                            u32 desired_access,
+                            u32 shared_mode,
+                            SECURITY_ATTRIBUTES *security_attributes,
+                            u32 creation_disposition,
+                            u32 flags_and_attributes,
+                            void *template_file);
+i32 (STDCALLP ReadFile)(void *handle,
+                        void *out_buffer,
+                        u32 number_of_bytes_to_read,
+                        u32 *out_number_of_bytes_read,
+                        void *overlapped);
+u32 (STDCALLP GetFileSize)(void *handle, u32 *out_file_size_high);
+i32 (STDCALLP CloseHandle)(void *handle);
+void *(STDCALLP GetModuleHandle)(const char *module_name);
+void (STDCALLP Sleep)(u32 milliseconds);
+void *(STDCALLP HeapAlloc)(void *heap, u32 flags, u64 bytes);
+i32 (STDCALLP HeapFree)(void *heap, u32 flags, void *address);
+void *(STDCALLP HeapReAlloc)(void *heap, u32 flags, void *address, u64 bytes);
+void *(STDCALLP GetProcessHeap)(void);
+void *(STDCALLP CreateEventEx)(SECURITY_ATTRIBUTES *event_attributes, const char *name, u32 flags, u32 desired_access);
+u32 (STDCALLP WaitForSingleObject)(void *handle, u32 milliseconds);
 
-i32 (__stdcall *PeekMessage)(MSG *, void *, u32, u32, u32);
-i64 (__stdcall *DispatchMessage)(const MSG *);
-void (__stdcall *PostQuitMessage)(i32);
-i64 (__stdcall *DefWindowProc)(void *, u32, u64, i64);
-void *(__stdcall *LoadCursor)(void *, const char *);
-i16 (__stdcall *RegisterClass)(const WNDCLASS *);
-void *(__stdcall *CreateWindowEx)(u32, const char *, const char *, u32, i32, i32, i32, i32, void *, void *, void *, void *);
-i32 (__stdcall *AdjustWindowRect)(RECT *, u32, i32);
-i32 (__cdecl *wsprintf)(char *, const char *, ...);
-i32 (__stdcall *SetWindowText)(void *, const char *);
-i32 (__stdcall *SetProcessDPIAware)(void);
-void *(__stdcall *GetDC)(void *);
-i32 (__stdcall *MessageBox)(void *, const char *, const char *, u32);
-i32 (__stdcall *GetClientRect)(void *, RECT *);
+i32 (STDCALLP PeekMessage)(MSG *out_msg, void *hwnd, u32 msg_filter_min, u32 msg_filter_max, u32 remove_msg);
+i64 (STDCALLP DispatchMessage)(const MSG *msg);
+void (STDCALLP PostQuitMessage)(i32 exit_code);
+i64 (STDCALLP DefWindowProc)(void *hwnd, u32 msg, u64 wparam, i64 lparam);
+void *(STDCALLP LoadCursor)(void *instance, const char *cursor_name);
+i16 (STDCALLP RegisterClass)(const WNDCLASS *winclass);
+void *(STDCALLP CreateWindowEx)(u32 exstyle,
+                                const char *class_name,
+                                const char *window_name,
+                                u32 style,
+                                i32 x,
+                                i32 y,
+                                i32 width,
+                                i32 height,
+                                void *parent,
+                                void *menu,
+                                void *instance,
+                                void *param);
+i32 (STDCALLP AdjustWindowRect)(RECT *out_rect, u32 style, i32 menu);
+i32 (__cdecl *wsprintf)(char *out_string, const char *format, ...);
+i32 (STDCALLP SetWindowText)(void *hwnd, const char *string);
+i32 (STDCALLP SetProcessDPIAware)(void);
+void *(STDCALLP GetDC)(void *hwnd);
+i32 (STDCALLP MessageBox)(void *hwnd, const char *text, const char *caption, u32 type);
+i32 (STDCALLP GetClientRect)(void *hwnd, RECT *out_rect);
 
-i32 (__stdcall *CreateDXGIFactory1)(const GUID *, void **);
+i32 (STDCALLP CreateDXGIFactory1)(const GUID *guid, void **out_object);
 
-i32 (__stdcall *D3D12CreateDevice)(IUnknown *, D3D_FEATURE_LEVEL, const GUID *, void **);
-i32 (__stdcall *D3D12GetDebugInterface)(const GUID *, void **);
+i32 (STDCALLP D3D12CreateDevice)(IUnknown *adapter, D3D_FEATURE_LEVEL min_feature_level, const GUID *guid, void **out_object);
+i32 (STDCALLP D3D12GetDebugInterface)(const GUID *guid, void **out_object);
 
 static void update_frame_time(void *window, const char *name, f64 *time, f32 *delta_time)
 {
@@ -88,7 +109,7 @@ static void update_frame_time(void *window, const char *name, f64 *time, f32 *de
     frame_count++;
 }
 
-static i64 __stdcall process_window_message(void *window, u32 message, u64 wparam, i64 lparam)
+static i64 STDCALL process_window_message(void *window, u32 message, u64 wparam, i64 lparam)
 {
     switch (message) {
     case WM_DESTROY:
@@ -168,7 +189,8 @@ void start(void)
 
     void *d3d12_dll = LoadLibraryA("d3d12.dll");
     if (!d3d12_dll) {
-        MessageBox(NULL, "Program requires Windows 10 machine with DirectX 12 support (D3D_FEATURE_LEVEL_11_1 or better).", "Error", 0);
+        MessageBox(NULL, "Program requires Windows 10 machine with DirectX 12 support (D3D_FEATURE_LEVEL_11_1 or better).",
+                   "Error", 0);
         ExitProcess(1);
     }
     D3D12CreateDevice = GetProcAddress(d3d12_dll, "D3D12CreateDevice");

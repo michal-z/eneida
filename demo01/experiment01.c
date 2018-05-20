@@ -120,16 +120,16 @@ experiment_dispatch_t experiment01_init(void *window)
     ID3D12Device *d3d = exp->renderer->d3d;
 
     /* pso */ {
-        extern u8 vs_triangle[], ps_triangle[];
-        extern u32 vs_triangle_size, ps_triangle_size;
+        extern u8 vs_e01_triangle[], ps_e01_triangle[];
+        extern u32 vs_e01_triangle_size, ps_e01_triangle_size;
 
         D3D12_INPUT_ELEMENT_DESC input_layout_desc[] = {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         };
         D3D12_GRAPHICS_PIPELINE_STATE_DESC pso_desc = {
             .InputLayout = { input_layout_desc, 1 },
-            .VS = { vs_triangle, vs_triangle_size },
-            .PS = { ps_triangle, ps_triangle_size },
+            .VS = { vs_e01_triangle, vs_e01_triangle_size },
+            .PS = { ps_e01_triangle, ps_e01_triangle_size },
             .RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME,
             .RasterizerState.CullMode = D3D12_CULL_MODE_NONE,
             .RasterizerState.AntialiasedLineEnable = 1,
@@ -141,7 +141,7 @@ experiment_dispatch_t experiment01_init(void *window)
             .SampleDesc.Count = 1,
         };
         VHR(ID3D12Device_CreateGraphicsPipelineState(d3d, &pso_desc, &IID_ID3D12PipelineState, &exp->pso));
-        VHR(ID3D12Device_CreateRootSignature(d3d, 0, vs_triangle, vs_triangle_size,
+        VHR(ID3D12Device_CreateRootSignature(d3d, 0, vs_e01_triangle, vs_e01_triangle_size,
                                              &IID_ID3D12RootSignature, &exp->root_sig));
     }
     /* vertex buffer */ {

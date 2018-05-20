@@ -28,5 +28,5 @@ sqrtf:  SQRTSS xmm0, xmm0
 
 section '.data' data readable writeable
 
-defshader vs_triangle
-defshader ps_triangle
+defshader vs_e01_triangle
+defshader ps_e01_triangle

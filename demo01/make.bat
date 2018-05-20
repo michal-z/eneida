@@ -10,8 +10,8 @@ set ASM=..\compiler\fasm.exe
 
 if exist demo01.exe del demo01.exe
 
-%HLSL% /D VS_TRIANGLE /E vs_triangle /Fo vs_triangle.cso /T vs_5_1 triangle.hlsl & if errorlevel 1 goto :end
-%HLSL% /D PS_TRIANGLE /E ps_triangle /Fo ps_triangle.cso /T ps_5_1 triangle.hlsl & if errorlevel 1 goto :end
+%HLSL% /D VS_TRIANGLE /E vs_e01_triangle /Fo vs_e01_triangle.cso /T vs_5_1 experiment01.hlsl & if errorlevel 1 goto :end
+%HLSL% /D PS_TRIANGLE /E ps_e01_triangle /Fo ps_e01_triangle.cso /T ps_5_1 experiment01.hlsl & if errorlevel 1 goto :end
 
 %ASM% asmlib.asm & if errorlevel 1 goto :end
 
