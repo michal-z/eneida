@@ -1,7 +1,8 @@
 #pragma once
 #include "types.h"
 
-typedef struct renderer {
+typedef struct renderer
+{
     ID3D12Device *d3d;
     ID3D12CommandQueue *cmdqueue;
     ID3D12CommandAllocator *cmdalloc[2];

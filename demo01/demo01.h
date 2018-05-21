@@ -5,12 +5,12 @@
 #define k_win_width 1280
 #define k_win_height 720
 
-typedef struct experiment_dispatch
+typedef struct demo_module
 {
-    void *experiment;
-    void (*update)(void *experiment, f64 frame_time, f32 frame_delta_time);
-    void (*draw)(void *experiment);
-    void (*shutdown)(void *experiment);
-} experiment_dispatch_t;
+    void *data;
+    void (*update)(void *data, f64 frame_time, f32 frame_delta_time);
+    void (*draw)(void *data);
+    void (*shutdown)(void *data);
+} demo_module_t;
 
-experiment_dispatch_t experiment01_init(void *window);
+demo_module_t module_init_e01(void *window);

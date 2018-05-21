@@ -110,7 +110,7 @@ static void shutdown(experiment_t *exp)
     gr_shutdown(exp->renderer);
 }
 
-experiment_dispatch_t experiment01_init(void *window)
+demo_module_t module_init_e01(void *window)
 {
     static experiment_t experiment_storage;
 
@@ -167,11 +167,11 @@ experiment_dispatch_t experiment01_init(void *window)
         VHR(ID3D12Resource_Map(exp->constant_buffer, 0, &range, &exp->constant_buffer_cpu_addr));
     }
 
-    experiment_dispatch_t dispatch = {
-        .experiment = &experiment_storage,
+    demo_module_t module = {
+        .data = &experiment_storage,
         .update = update,
         .draw = draw,
         .shutdown = shutdown
     };
-    return dispatch;
+    return module;
 }

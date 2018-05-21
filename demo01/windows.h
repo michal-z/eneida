@@ -1368,25 +1368,29 @@ typedef enum D3D12_SHADER_COMPONENT_MAPPING
 #define D3D12_DECODE_SHADER_4_COMPONENT_MAPPING(ComponentToExtract,Mapping) ((D3D12_SHADER_COMPONENT_MAPPING)(Mapping>>(3*ComponentToExtract)&0x7))
 #define D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0,1,2,3)
 
-typedef enum D3D12_BUFFER_SRV_FLAGS {
+typedef enum D3D12_BUFFER_SRV_FLAGS
+{
     D3D12_BUFFER_SRV_FLAG_NONE = 0,
     D3D12_BUFFER_SRV_FLAG_RAW = 0x1
 } D3D12_BUFFER_SRV_FLAGS;
 
-typedef struct D3D12_BUFFER_SRV {
+typedef struct D3D12_BUFFER_SRV
+{
     u64 FirstElement;
     u32 NumElements;
     u32 StructureByteStride;
     D3D12_BUFFER_SRV_FLAGS Flags;
 } D3D12_BUFFER_SRV;
 
-typedef struct D3D12_TEX1D_SRV {
+typedef struct D3D12_TEX1D_SRV
+{
     u32 MostDetailedMip;
     u32 MipLevels;
     f32 ResourceMinLODClamp;
 } D3D12_TEX1D_SRV;
 
-typedef struct D3D12_TEX1D_ARRAY_SRV {
+typedef struct D3D12_TEX1D_ARRAY_SRV
+{
     u32 MostDetailedMip;
     u32 MipLevels;
     u32 FirstArraySlice;
@@ -1394,14 +1398,16 @@ typedef struct D3D12_TEX1D_ARRAY_SRV {
     f32 ResourceMinLODClamp;
 } D3D12_TEX1D_ARRAY_SRV;
 
-typedef struct D3D12_TEX2D_SRV {
+typedef struct D3D12_TEX2D_SRV
+{
     u32 MostDetailedMip;
     u32 MipLevels;
     u32 PlaneSlice;
     f32 ResourceMinLODClamp;
 } D3D12_TEX2D_SRV;
 
-typedef struct D3D12_TEX2D_ARRAY_SRV {
+typedef struct D3D12_TEX2D_ARRAY_SRV
+{
     u32 MostDetailedMip;
     u32 MipLevels;
     u32 FirstArraySlice;
@@ -1410,19 +1416,22 @@ typedef struct D3D12_TEX2D_ARRAY_SRV {
     f32 ResourceMinLODClamp;
 } D3D12_TEX2D_ARRAY_SRV;
 
-typedef struct D3D12_TEX3D_SRV {
+typedef struct D3D12_TEX3D_SRV
+{
     u32 MostDetailedMip;
     u32 MipLevels;
     f32 ResourceMinLODClamp;
 } D3D12_TEX3D_SRV;
 
-typedef struct D3D12_TEXCUBE_SRV {
+typedef struct D3D12_TEXCUBE_SRV
+{
     u32 MostDetailedMip;
     u32 MipLevels;
     f32 ResourceMinLODClamp;
 } D3D12_TEXCUBE_SRV;
 
-typedef struct D3D12_TEXCUBE_ARRAY_SRV {
+typedef struct D3D12_TEXCUBE_ARRAY_SRV
+{
     u32 MostDetailedMip;
     u32 MipLevels;
     u32 First2DArrayFace;
@@ -1430,16 +1439,19 @@ typedef struct D3D12_TEXCUBE_ARRAY_SRV {
     f32 ResourceMinLODClamp;
 } D3D12_TEXCUBE_ARRAY_SRV;
 
-typedef struct D3D12_TEX2DMS_SRV {
+typedef struct D3D12_TEX2DMS_SRV
+{
     u32 UnusedField_NothingToDefine;
 } D3D12_TEX2DMS_SRV;
 
-typedef struct D3D12_TEX2DMS_ARRAY_SRV {
+typedef struct D3D12_TEX2DMS_ARRAY_SRV
+{
     u32 FirstArraySlice;
     u32 ArraySize;
 } D3D12_TEX2DMS_ARRAY_SRV;
 
-typedef enum D3D12_SRV_DIMENSION {
+typedef enum D3D12_SRV_DIMENSION
+{
     D3D12_SRV_DIMENSION_UNKNOWN = 0,
     D3D12_SRV_DIMENSION_BUFFER = 1,
     D3D12_SRV_DIMENSION_TEXTURE1D = 2,
@@ -1453,7 +1465,8 @@ typedef enum D3D12_SRV_DIMENSION {
     D3D12_SRV_DIMENSION_TEXTURECUBEARRAY = 10
 } D3D12_SRV_DIMENSION;
 
-typedef struct D3D12_SHADER_RESOURCE_VIEW_DESC {
+typedef struct D3D12_SHADER_RESOURCE_VIEW_DESC
+{
     DXGI_FORMAT Format;
     D3D12_SRV_DIMENSION ViewDimension;
     u32 Shader4ComponentMapping;
@@ -1471,7 +1484,8 @@ typedef struct D3D12_SHADER_RESOURCE_VIEW_DESC {
     };
 } D3D12_SHADER_RESOURCE_VIEW_DESC;
 
-typedef enum D3D12_FILTER {
+typedef enum D3D12_FILTER
+{
     D3D12_FILTER_MIN_MAG_MIP_POINT = 0,
     D3D12_FILTER_MIN_MAG_POINT_MIP_LINEAR = 0x1,
     D3D12_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT = 0x4,
@@ -1510,12 +1524,14 @@ typedef enum D3D12_FILTER {
     D3D12_FILTER_MAXIMUM_ANISOTROPIC = 0x1d5
 } D3D12_FILTER;
 
-typedef enum D3D12_FILTER_TYPE {
+typedef enum D3D12_FILTER_TYPE
+{
     D3D12_FILTER_TYPE_POINT = 0,
     D3D12_FILTER_TYPE_LINEAR = 1
 } D3D12_FILTER_TYPE;
 
-typedef enum D3D12_FILTER_REDUCTION_TYPE {
+typedef enum D3D12_FILTER_REDUCTION_TYPE
+{
     D3D12_FILTER_REDUCTION_TYPE_STANDARD = 0,
     D3D12_FILTER_REDUCTION_TYPE_COMPARISON = 1,
     D3D12_FILTER_REDUCTION_TYPE_MINIMUM = 2,
@@ -1531,7 +1547,8 @@ typedef enum D3D12_FILTER_REDUCTION_TYPE {
 #define D3D12_DECODE_IS_COMPARISON_FILTER(D3D12Filter) (D3D12_DECODE_FILTER_REDUCTION(D3D12Filter)==D3D12_FILTER_REDUCTION_TYPE_COMPARISON)
 #define D3D12_DECODE_IS_ANISOTROPIC_FILTER(D3D12Filter) (((D3D12Filter)&0x40)&&(D3D12_FILTER_TYPE_LINEAR==D3D12_DECODE_MIN_FILTER(D3D12Filter))&&(D3D12_FILTER_TYPE_LINEAR==D3D12_DECODE_MAG_FILTER(D3D12Filter))&&(D3D12_FILTER_TYPE_LINEAR==D3D12_DECODE_MIP_FILTER(D3D12Filter)))
 
-typedef enum D3D12_TEXTURE_ADDRESS_MODE {
+typedef enum D3D12_TEXTURE_ADDRESS_MODE
+{
     D3D12_TEXTURE_ADDRESS_MODE_WRAP = 1,
     D3D12_TEXTURE_ADDRESS_MODE_MIRROR = 2,
     D3D12_TEXTURE_ADDRESS_MODE_CLAMP = 3,
@@ -1539,7 +1556,8 @@ typedef enum D3D12_TEXTURE_ADDRESS_MODE {
     D3D12_TEXTURE_ADDRESS_MODE_MIRROR_ONCE = 5
 } D3D12_TEXTURE_ADDRESS_MODE;
 
-typedef struct D3D12_SAMPLER_DESC {
+typedef struct D3D12_SAMPLER_DESC
+{
     D3D12_FILTER Filter;
     D3D12_TEXTURE_ADDRESS_MODE AddressU;
     D3D12_TEXTURE_ADDRESS_MODE AddressV;
@@ -1552,17 +1570,20 @@ typedef struct D3D12_SAMPLER_DESC {
     f32 MaxLOD;
 } D3D12_SAMPLER_DESC;
 
-typedef struct D3D12_CONSTANT_BUFFER_VIEW_DESC {
+typedef struct D3D12_CONSTANT_BUFFER_VIEW_DESC
+{
     D3D12_GPU_VIRTUAL_ADDRESS BufferLocation;
     u32 SizeInBytes;
 } D3D12_CONSTANT_BUFFER_VIEW_DESC;
 
-typedef enum D3D12_BUFFER_UAV_FLAGS {
+typedef enum D3D12_BUFFER_UAV_FLAGS
+{
     D3D12_BUFFER_UAV_FLAG_NONE = 0,
     D3D12_BUFFER_UAV_FLAG_RAW = 0x1
 } D3D12_BUFFER_UAV_FLAGS;
 
-typedef struct D3D12_BUFFER_UAV {
+typedef struct D3D12_BUFFER_UAV
+{
     u64 FirstElement;
     u32 NumElements;
     u32 StructureByteStride;
@@ -1570,35 +1591,41 @@ typedef struct D3D12_BUFFER_UAV {
     D3D12_BUFFER_UAV_FLAGS Flags;
 } D3D12_BUFFER_UAV;
 
-typedef struct D3D12_TEX1D_UAV {
+typedef struct D3D12_TEX1D_UAV
+{
     u32 MipSlice;
 } D3D12_TEX1D_UAV;
 
-typedef struct D3D12_TEX1D_ARRAY_UAV {
+typedef struct D3D12_TEX1D_ARRAY_UAV
+{
     u32 MipSlice;
     u32 FirstArraySlice;
     u32 ArraySize;
 } D3D12_TEX1D_ARRAY_UAV;
 
-typedef struct D3D12_TEX2D_UAV {
+typedef struct D3D12_TEX2D_UAV
+{
     u32 MipSlice;
     u32 PlaneSlice;
 } D3D12_TEX2D_UAV;
 
-typedef struct D3D12_TEX2D_ARRAY_UAV {
+typedef struct D3D12_TEX2D_ARRAY_UAV
+{
     u32 MipSlice;
     u32 FirstArraySlice;
     u32 ArraySize;
     u32 PlaneSlice;
 } D3D12_TEX2D_ARRAY_UAV;
 
-typedef struct D3D12_TEX3D_UAV {
+typedef struct D3D12_TEX3D_UAV
+{
     u32 MipSlice;
     u32 FirstWSlice;
     u32 WSize;
 } D3D12_TEX3D_UAV;
 
-typedef enum D3D12_UAV_DIMENSION {
+typedef enum D3D12_UAV_DIMENSION
+{
     D3D12_UAV_DIMENSION_UNKNOWN = 0,
     D3D12_UAV_DIMENSION_BUFFER = 1,
     D3D12_UAV_DIMENSION_TEXTURE1D = 2,
@@ -1608,7 +1635,8 @@ typedef enum D3D12_UAV_DIMENSION {
     D3D12_UAV_DIMENSION_TEXTURE3D = 8
 } D3D12_UAV_DIMENSION;
 
-typedef struct D3D12_UNORDERED_ACCESS_VIEW_DESC {
+typedef struct D3D12_UNORDERED_ACCESS_VIEW_DESC
+{
     DXGI_FORMAT Format;
     D3D12_UAV_DIMENSION ViewDimension;
     union {
@@ -1621,49 +1649,58 @@ typedef struct D3D12_UNORDERED_ACCESS_VIEW_DESC {
     };
 } D3D12_UNORDERED_ACCESS_VIEW_DESC;
 
-typedef struct D3D12_BUFFER_RTV {
+typedef struct D3D12_BUFFER_RTV
+{
     u64 FirstElement;
     u32 NumElements;
 } D3D12_BUFFER_RTV;
 
-typedef struct D3D12_TEX1D_RTV {
+typedef struct D3D12_TEX1D_RTV
+{
     u32 MipSlice;
 } D3D12_TEX1D_RTV;
 
-typedef struct D3D12_TEX1D_ARRAY_RTV {
+typedef struct D3D12_TEX1D_ARRAY_RTV
+{
     u32 MipSlice;
     u32 FirstArraySlice;
     u32 ArraySize;
 } D3D12_TEX1D_ARRAY_RTV;
 
-typedef struct D3D12_TEX2D_RTV {
+typedef struct D3D12_TEX2D_RTV
+{
     u32 MipSlice;
     u32 PlaneSlice;
 } D3D12_TEX2D_RTV;
 
-typedef struct D3D12_TEX2DMS_RTV {
+typedef struct D3D12_TEX2DMS_RTV
+{
     u32 UnusedField_NothingToDefine;
 } D3D12_TEX2DMS_RTV;
 
-typedef struct D3D12_TEX2D_ARRAY_RTV {
+typedef struct D3D12_TEX2D_ARRAY_RTV
+{
     u32 MipSlice;
     u32 FirstArraySlice;
     u32 ArraySize;
     u32 PlaneSlice;
 } D3D12_TEX2D_ARRAY_RTV;
 
-typedef struct D3D12_TEX2DMS_ARRAY_RTV {
+typedef struct D3D12_TEX2DMS_ARRAY_RTV
+{
     u32 FirstArraySlice;
     u32 ArraySize;
 } D3D12_TEX2DMS_ARRAY_RTV;
 
-typedef struct D3D12_TEX3D_RTV {
+typedef struct D3D12_TEX3D_RTV
+{
     u32 MipSlice;
     u32 FirstWSlice;
     u32 WSize;
 } D3D12_TEX3D_RTV;
 
-typedef enum D3D12_RTV_DIMENSION {
+typedef enum D3D12_RTV_DIMENSION
+{
     D3D12_RTV_DIMENSION_UNKNOWN = 0,
     D3D12_RTV_DIMENSION_BUFFER = 1,
     D3D12_RTV_DIMENSION_TEXTURE1D = 2,
@@ -1675,7 +1712,8 @@ typedef enum D3D12_RTV_DIMENSION {
     D3D12_RTV_DIMENSION_TEXTURE3D = 8
 } D3D12_RTV_DIMENSION;
 
-typedef struct D3D12_RENDER_TARGET_VIEW_DESC {
+typedef struct D3D12_RENDER_TARGET_VIEW_DESC
+{
     DXGI_FORMAT Format;
     D3D12_RTV_DIMENSION ViewDimension;
     union {
@@ -1690,42 +1728,50 @@ typedef struct D3D12_RENDER_TARGET_VIEW_DESC {
     };
 } D3D12_RENDER_TARGET_VIEW_DESC;
 
-typedef struct D3D12_TEX1D_DSV {
+typedef struct D3D12_TEX1D_DSV
+{
     u32 MipSlice;
 } D3D12_TEX1D_DSV;
 
-typedef struct D3D12_TEX1D_ARRAY_DSV {
+typedef struct D3D12_TEX1D_ARRAY_DSV
+{
     u32 MipSlice;
     u32 FirstArraySlice;
     u32 ArraySize;
 } D3D12_TEX1D_ARRAY_DSV;
 
-typedef struct D3D12_TEX2D_DSV {
+typedef struct D3D12_TEX2D_DSV
+{
     u32 MipSlice;
 } D3D12_TEX2D_DSV;
 
-typedef struct D3D12_TEX2D_ARRAY_DSV {
+typedef struct D3D12_TEX2D_ARRAY_DSV
+{
     u32 MipSlice;
     u32 FirstArraySlice;
     u32 ArraySize;
 } D3D12_TEX2D_ARRAY_DSV;
 
-typedef struct D3D12_TEX2DMS_DSV {
+typedef struct D3D12_TEX2DMS_DSV
+{
     u32 UnusedField_NothingToDefine;
 } D3D12_TEX2DMS_DSV;
 
-typedef struct D3D12_TEX2DMS_ARRAY_DSV {
+typedef struct D3D12_TEX2DMS_ARRAY_DSV
+{
     u32 FirstArraySlice;
     u32 ArraySize;
 } D3D12_TEX2DMS_ARRAY_DSV;
 
-typedef enum D3D12_DSV_FLAGS {
+typedef enum D3D12_DSV_FLAGS
+{
     D3D12_DSV_FLAG_NONE = 0,
     D3D12_DSV_FLAG_READ_ONLY_DEPTH = 0x1,
     D3D12_DSV_FLAG_READ_ONLY_STENCIL = 0x2
 } D3D12_DSV_FLAGS;
 
-typedef enum D3D12_DSV_DIMENSION {
+typedef enum D3D12_DSV_DIMENSION
+{
     D3D12_DSV_DIMENSION_UNKNOWN = 0,
     D3D12_DSV_DIMENSION_TEXTURE1D = 1,
     D3D12_DSV_DIMENSION_TEXTURE1DARRAY = 2,
@@ -1735,7 +1781,8 @@ typedef enum D3D12_DSV_DIMENSION {
     D3D12_DSV_DIMENSION_TEXTURE2DMSARRAY = 6
 } D3D12_DSV_DIMENSION;
 
-typedef struct D3D12_DEPTH_STENCIL_VIEW_DESC {
+typedef struct D3D12_DEPTH_STENCIL_VIEW_DESC
+{
     DXGI_FORMAT Format;
     D3D12_DSV_DIMENSION ViewDimension;
     D3D12_DSV_FLAGS Flags;
@@ -1749,12 +1796,14 @@ typedef struct D3D12_DEPTH_STENCIL_VIEW_DESC {
     };
 } D3D12_DEPTH_STENCIL_VIEW_DESC;
 
-typedef struct D3D12_DEPTH_STENCIL_VALUE {
+typedef struct D3D12_DEPTH_STENCIL_VALUE
+{
     f32 Depth;
     u8 Stencil;
 } D3D12_DEPTH_STENCIL_VALUE;
 
-typedef struct D3D12_CLEAR_VALUE {
+typedef struct D3D12_CLEAR_VALUE
+{
     DXGI_FORMAT Format;
     union {
         f32 Color[4];
@@ -1762,26 +1811,30 @@ typedef struct D3D12_CLEAR_VALUE {
     };
 } D3D12_CLEAR_VALUE;
 
-typedef enum D3D12_FENCE_FLAGS {
+typedef enum D3D12_FENCE_FLAGS
+{
     D3D12_FENCE_FLAG_NONE = 0,
     D3D12_FENCE_FLAG_SHARED = 0x1,
     D3D12_FENCE_FLAG_SHARED_CROSS_ADAPTER = 0x2
 } D3D12_FENCE_FLAGS;
 
-typedef struct D3D12_PACKED_MIP_INFO {
+typedef struct D3D12_PACKED_MIP_INFO
+{
     u8 NumStandardMips;
     u8 NumPackedMips;
     u32 NumTilesForPackedMips;
     u32 StartTileIndexInOverallResource;
 } D3D12_PACKED_MIP_INFO;
 
-typedef struct D3D12_SUBRESOURCE_DATA {
+typedef struct D3D12_SUBRESOURCE_DATA
+{
     const void *pData;
     i64 RowPitch;
     i64 SlicePitch;
 } D3D12_SUBRESOURCE_DATA;
 
-typedef struct D3D12_MEMCPY_DEST {
+typedef struct D3D12_MEMCPY_DEST
+{
     void *pData;
     u64 RowPitch;
     u64 SlicePitch;
@@ -2749,26 +2802,30 @@ typedef struct ID3D12DebugDispatchTable
 struct ID3D12Debug { const ID3D12DebugDispatchTable *dtbl; };
 
 
-typedef struct DXGI_RGB {
+typedef struct DXGI_RGB
+{
     f32 Red;
     f32 Green;
     f32 Blue;
 } DXGI_RGB;
 
-typedef struct DXGI_RGBA {
+typedef struct DXGI_RGBA
+{
     f32 Red;
     f32 Green;
     f32 Blue;
     f32 Alpha;
 } DXGI_RGBA;
 
-typedef struct DXGI_GAMMA_CONTROL {
+typedef struct DXGI_GAMMA_CONTROL
+{
     DXGI_RGB Scale;
     DXGI_RGB Offset;
     DXGI_RGB GammaCurve[1025];
 } DXGI_GAMMA_CONTROL;
 
-typedef struct DXGI_GAMMA_CONTROL_CAPABILITIES {
+typedef struct DXGI_GAMMA_CONTROL_CAPABILITIES
+{
     i32 ScaleAndOffsetSupported;
     f32 MaxConvertedValue;
     f32 MinConvertedValue;
@@ -2776,25 +2833,29 @@ typedef struct DXGI_GAMMA_CONTROL_CAPABILITIES {
     f32 ControlPointPositions[1025];
 } DXGI_GAMMA_CONTROL_CAPABILITIES;
 
-typedef struct DXGI_RATIONAL {
+typedef struct DXGI_RATIONAL
+{
     u32 Numerator;
     u32 Denominator;
 } DXGI_RATIONAL;
 
-typedef enum DXGI_MODE_SCANLINE_ORDER {
+typedef enum DXGI_MODE_SCANLINE_ORDER
+{
     DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED = 0,
     DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE = 1,
     DXGI_MODE_SCANLINE_ORDER_UPPER_FIELD_FIRST = 2,
     DXGI_MODE_SCANLINE_ORDER_LOWER_FIELD_FIRST = 3
 } DXGI_MODE_SCANLINE_ORDER;
 
-typedef enum DXGI_MODE_SCALING {
+typedef enum DXGI_MODE_SCALING
+{
     DXGI_MODE_SCALING_UNSPECIFIED = 0,
     DXGI_MODE_SCALING_CENTERED = 1,
     DXGI_MODE_SCALING_STRETCHED = 2
 } DXGI_MODE_SCALING;
 
-typedef enum DXGI_MODE_ROTATION {
+typedef enum DXGI_MODE_ROTATION
+{
     DXGI_MODE_ROTATION_UNSPECIFIED = 0,
     DXGI_MODE_ROTATION_IDENTITY = 1,
     DXGI_MODE_ROTATION_ROTATE90 = 2,
@@ -2802,7 +2863,8 @@ typedef enum DXGI_MODE_ROTATION {
     DXGI_MODE_ROTATION_ROTATE270 = 4
 } DXGI_MODE_ROTATION;
 
-typedef struct DXGI_MODE_DESC {
+typedef struct DXGI_MODE_DESC
+{
     u32 Width;
     u32 Height;
     DXGI_RATIONAL RefreshRate;
@@ -2811,7 +2873,8 @@ typedef struct DXGI_MODE_DESC {
     DXGI_MODE_SCALING Scaling;
 } DXGI_MODE_DESC;
 
-typedef struct DXGI_OUTPUT_DESC {
+typedef struct DXGI_OUTPUT_DESC
+{
     u16 DeviceName[32];
     D3D12_RECT DesktopCoordinates;
     i32 AttachedToDesktop;
@@ -2819,19 +2882,22 @@ typedef struct DXGI_OUTPUT_DESC {
     void *Monitor;
 } DXGI_OUTPUT_DESC;
 
-typedef struct DXGI_SURFACE_DESC {
+typedef struct DXGI_SURFACE_DESC
+{
     u32 Width;
     u32 Height;
     DXGI_FORMAT Format;
     DXGI_SAMPLE_DESC SampleDesc;
 } DXGI_SURFACE_DESC;
 
-typedef struct DXGI_MAPPED_RECT {
+typedef struct DXGI_MAPPED_RECT
+{
     i32 Pitch;
     u8 *pBits;
 } DXGI_MAPPED_RECT;
 
-typedef struct DXGI_FRAME_STATISTICS {
+typedef struct DXGI_FRAME_STATISTICS
+{
     u32 PresentCount;
     u32 PresentRefreshCount;
     u32 SyncRefreshCount;
@@ -2839,7 +2905,8 @@ typedef struct DXGI_FRAME_STATISTICS {
     i64 SyncGPUTime;
 } DXGI_FRAME_STATISTICS;
 
-typedef struct DXGI_ADAPTER_DESC {
+typedef struct DXGI_ADAPTER_DESC
+{
     u16 Description[128];
     u32 VendorId;
     u32 DeviceId;
@@ -2851,7 +2918,8 @@ typedef struct DXGI_ADAPTER_DESC {
     i64 AdapterLuid;
 } DXGI_ADAPTER_DESC;
 
-typedef struct DXGI_ADAPTER_DESC1 {
+typedef struct DXGI_ADAPTER_DESC1
+{
     u16 Description[128];
     u32 VendorId;
     u32 DeviceId;
@@ -2873,14 +2941,16 @@ typedef struct DXGI_ADAPTER_DESC1 {
 #define DXGI_USAGE_UNORDERED_ACCESS 0x00000400UL
 typedef u32 DXGI_USAGE;
 
-typedef enum DXGI_SWAP_EFFECT {
+typedef enum DXGI_SWAP_EFFECT
+{
     DXGI_SWAP_EFFECT_DISCARD = 0,
     DXGI_SWAP_EFFECT_SEQUENTIAL = 1,
     DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL = 3,
     DXGI_SWAP_EFFECT_FLIP_DISCARD = 4
 } DXGI_SWAP_EFFECT;
 
-typedef struct DXGI_SWAP_CHAIN_DESC {
+typedef struct DXGI_SWAP_CHAIN_DESC
+{
     DXGI_MODE_DESC BufferDesc;
     DXGI_SAMPLE_DESC SampleDesc;
     DXGI_USAGE BufferUsage;
@@ -2891,13 +2961,15 @@ typedef struct DXGI_SWAP_CHAIN_DESC {
     u32 Flags;
 } DXGI_SWAP_CHAIN_DESC;
 
-typedef enum DXGI_SCALING {
+typedef enum DXGI_SCALING
+{
     DXGI_SCALING_STRETCH = 0,
     DXGI_SCALING_NONE = 1,
     DXGI_SCALING_ASPECT_RATIO_STRETCH = 2
 } DXGI_SCALING;
 
-typedef enum DXGI_ALPHA_MODE {
+typedef enum DXGI_ALPHA_MODE
+{
     DXGI_ALPHA_MODE_UNSPECIFIED = 0,
     DXGI_ALPHA_MODE_PREMULTIPLIED = 1,
     DXGI_ALPHA_MODE_STRAIGHT = 2,
@@ -2905,7 +2977,8 @@ typedef enum DXGI_ALPHA_MODE {
     DXGI_ALPHA_MODE_FORCE_DWORD = 0xffffffff
 } DXGI_ALPHA_MODE;
 
-typedef struct DXGI_SWAP_CHAIN_DESC1 {
+typedef struct DXGI_SWAP_CHAIN_DESC1
+{
     u32 Width;
     u32 Height;
     DXGI_FORMAT Format;
@@ -2919,21 +2992,24 @@ typedef struct DXGI_SWAP_CHAIN_DESC1 {
     u32 Flags;
 } DXGI_SWAP_CHAIN_DESC1;
 
-typedef struct DXGI_SWAP_CHAIN_FULLSCREEN_DESC {
+typedef struct DXGI_SWAP_CHAIN_FULLSCREEN_DESC
+{
     DXGI_RATIONAL RefreshRate;
     DXGI_MODE_SCANLINE_ORDER ScanlineOrdering;
     DXGI_MODE_SCALING Scaling;
     i32 Windowed;
 } DXGI_SWAP_CHAIN_FULLSCREEN_DESC;
 
-typedef struct DXGI_PRESENT_PARAMETERS {
+typedef struct DXGI_PRESENT_PARAMETERS
+{
     u32 DirtyRectsCount;
     D3D12_RECT *pDirtyRects;
     D3D12_RECT *pScrollRect;
     POINT *pScrollOffset;
 } DXGI_PRESENT_PARAMETERS;
 
-typedef struct DXGI_MATRIX_3X2_F {
+typedef struct DXGI_MATRIX_3X2_F
+{
     f32 _11;
     f32 _12;
     f32 _21;
@@ -2942,7 +3018,8 @@ typedef struct DXGI_MATRIX_3X2_F {
     f32 _32;
 } DXGI_MATRIX_3X2_F;
 
-typedef enum DXGI_COLOR_SPACE_TYPE {
+typedef enum DXGI_COLOR_SPACE_TYPE
+{
     DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709 = 0,
     DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709 = 1,
     DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709 = 2,

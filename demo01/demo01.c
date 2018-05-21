@@ -1,4 +1,4 @@
-﻿#include "demo01.h"
+#include "demo01.h"
 #include "library.h"
 #include "windows.h"
 
@@ -204,8 +204,8 @@ void start(void)
     // init window
     void *window = create_window(k_demo_name, k_win_width, k_win_height);
 
-    // init experiment
-    experiment_dispatch_t dispatch = experiment01_init(window);
+    // init demo module
+    demo_module_t module = module_init_e01(window);
 
     for (;;) {
         MSG message = { 0 };
@@ -218,11 +218,11 @@ void start(void)
             f32 frame_delta_time;
             update_frame_time(window, k_demo_name, &frame_time, &frame_delta_time);
 
-            dispatch.update(dispatch.experiment, frame_time, frame_delta_time);
-            dispatch.draw(dispatch.experiment);
+            module.update(module.data, frame_time, frame_delta_time);
+            module.draw(module.data);
         }
     }
 
-    dispatch.shutdown(dispatch.experiment);
+    module.shutdown(module.data);
     ExitProcess(0);
 }

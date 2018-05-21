@@ -7,7 +7,7 @@ struct ps_data
     float4 position : SV_Position;
 };
 
-#if defined VS_TRIANGLE
+#if defined VS_E01_TRIANGLE
 
 struct vs_data
 {
@@ -28,7 +28,7 @@ ps_data vs_e01_triangle(vs_data input)
     return output;
 }
 
-#elif defined PS_TRIANGLE
+#elif defined PS_E01_TRIANGLE
 
 [RootSignature(root_sig)]
 float4 ps_e01_triangle(ps_data input) : SV_Target0
