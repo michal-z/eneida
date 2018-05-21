@@ -100,23 +100,8 @@ static void draw(experiment_t *exp)
     gr_present_frame(exp->renderer);
 }
 
-static void shutdown(experiment_t *exp)
+static void init(experiment_t *exp)
 {
-    gr_flush(exp->renderer);
-    COMRELEASE(exp->pso);
-    COMRELEASE(exp->root_sig);
-    COMRELEASE(exp->vertex_buffer);
-    COMRELEASE(exp->constant_buffer);
-    gr_shutdown(exp->renderer);
-}
-
-demo_module_t module_init_e01(void *window)
-{
-    static experiment_t experiment_storage;
-
-    experiment_t *exp = &experiment_storage;
-    exp->renderer = gr_init(window);
-
     ID3D12Device *d3d = exp->renderer->d3d;
 
     /* pso */ {
@@ -166,6 +151,25 @@ demo_module_t module_init_e01(void *window)
         D3D12_RANGE range = { 0 };
         VHR(ID3D12Resource_Map(exp->constant_buffer, 0, &range, &exp->constant_buffer_cpu_addr));
     }
+}
+
+static void shutdown(experiment_t *exp)
+{
+    gr_flush(exp->renderer);
+    COMRELEASE(exp->pso);
+    COMRELEASE(exp->root_sig);
+    COMRELEASE(exp->vertex_buffer);
+    COMRELEASE(exp->constant_buffer);
+    gr_shutdown(exp->renderer);
+}
+
+demo_module_t module_init_e01(void *window)
+{
+    static experiment_t experiment_storage;
+
+    experiment_storage.renderer = gr_init(window);
+
+    init(&experiment_storage);
 
     demo_module_t module = {
         .data = &experiment_storage,
