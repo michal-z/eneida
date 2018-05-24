@@ -14,3 +14,4 @@ typedef struct demo_module
 } demo_module_t;
 
 demo_module_t module_init_e01(void *window);
+demo_module_t module_init_e02(void *window);

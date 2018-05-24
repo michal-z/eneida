@@ -13,12 +13,14 @@ if exist %APPNAME%.exe del %APPNAME%.exe
 
 %HLSL% /D VS_E01_TRIANGLE /E vs_e01_triangle /Fo vs_e01_triangle.cso /T vs_5_1 experiment01.hlsl & if errorlevel 1 goto :end
 %HLSL% /D PS_E01_TRIANGLE /E ps_e01_triangle /Fo ps_e01_triangle.cso /T ps_5_1 experiment01.hlsl & if errorlevel 1 goto :end
+%HLSL% /D VS_E02_TRANSFORM /E vs_e02_transform /Fo vs_e02_transform.cso /T vs_5_1 experiment02.hlsl & if errorlevel 1 goto :end
+%HLSL% /D PS_E02_SHADE /E ps_e02_shade /Fo ps_e02_shade.cso /T ps_5_1 experiment02.hlsl & if errorlevel 1 goto :end
 
 %ASM% asmlib.asm & if errorlevel 1 goto :end
 
 %CC% /Zi /Fd%APPNAME% %CFLAGS% /MP /Gm- /nologo /GS- /Gs999999 /Gy /Gw /EHa- ^
     /WX /Wall /wd5045 /wd4820 /wd4201 /wd4221 /wd4152 /wd4204 ^
-    experiment01.c demo01.c library.c renderer.c asmlib.obj ^
+    experiment01.c experiment02.c demo01.c library.c renderer.c asmlib.obj ^
     /link ..\compiler\kernel32.lib ^
     /OPT:REF /WX /INCREMENTAL:NO %LFLAGS% /SUBSYSTEM:WINDOWS /ENTRY:start /NODEFAULTLIB /OUT:%APPNAME%.exe
 

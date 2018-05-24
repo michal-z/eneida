@@ -2136,7 +2136,9 @@ cmdlist	renderer.h	/^    ID3D12GraphicsCommandList *cmdlist;$/;"	m	struct:render
 cmdqueue	renderer.h	/^    ID3D12CommandQueue *cmdqueue;$/;"	m	struct:renderer	typeref:typename:ID3D12CommandQueue *
 color_buffers	renderer.h	/^    ID3D12Resource *color_buffers[4];$/;"	m	struct:renderer	typeref:typename:ID3D12Resource * [4]
 constant_buffer	experiment01.c	/^    ID3D12Resource *constant_buffer;$/;"	m	struct:experiment	typeref:typename:ID3D12Resource *	file:
+constant_buffer	experiment02.c	/^    ID3D12Resource *constant_buffer;$/;"	m	struct:experiment	typeref:typename:ID3D12Resource *	file:
 constant_buffer_cpu_addr	experiment01.c	/^    void *constant_buffer_cpu_addr;$/;"	m	struct:experiment	typeref:typename:void *	file:
+constant_buffer_cpu_addr	experiment02.c	/^    void *constant_buffer_cpu_addr;$/;"	m	struct:experiment	typeref:typename:void *	file:
 cpu_start	renderer.c	/^        D3D12_CPU_DESCRIPTOR_HANDLE cpu_start;$/;"	m	struct:priv_renderer::__anon816587ed0108	typeref:typename:D3D12_CPU_DESCRIPTOR_HANDLE	file:
 cpu_start	renderer.c	/^        D3D12_CPU_DESCRIPTOR_HANDLE cpu_start;$/;"	m	struct:priv_renderer::__anon816587ed0208	typeref:typename:D3D12_CPU_DESCRIPTOR_HANDLE	file:
 create_window	demo01.c	/^static void *create_window(const char *name, u32 width, u32 height)$/;"	f	typeref:typename:void *	file:
@@ -2153,6 +2155,7 @@ descriptor_size_rtv	renderer.h	/^    u32 descriptor_size_rtv;$/;"	m	struct:rende
 double	types.h	/^#define double /;"	d
 draw	demo01.h	/^    void (*draw)(void *data);$/;"	m	struct:demo_module	typeref:typename:void (*)(void * data)
 draw	experiment01.c	/^static void draw(experiment_t *exp)$/;"	f	typeref:typename:void	file:
+draw	experiment02.c	/^static void draw(experiment_t *exp)$/;"	f	typeref:typename:void	file:
 dsv_heap	renderer.c	/^    ID3D12DescriptorHeap *dsv_heap;$/;"	m	struct:priv_renderer	typeref:typename:ID3D12DescriptorHeap *	file:
 dsv_heap_start	renderer.h	/^    D3D12_CPU_DESCRIPTOR_HANDLE dsv_heap_start;$/;"	m	struct:renderer	typeref:typename:D3D12_CPU_DESCRIPTOR_HANDLE
 dtbl	windows.h	/^struct ID3D12CommandAllocator { const ID3D12CommandAllocatorDispatchTable *dtbl; };$/;"	m	struct:ID3D12CommandAllocator	typeref:typename:const ID3D12CommandAllocatorDispatchTable *
@@ -2180,7 +2183,9 @@ dtbl	windows.h	/^struct IUnknown { const IUnknownDispatchTable *dtbl; };$/;"	m	s
 dxgi_factory	renderer.c	/^    IDXGIFactory4 *dxgi_factory;$/;"	m	struct:priv_renderer	typeref:typename:IDXGIFactory4 *	file:
 end	make.bat	/^:end$/;"	l
 experiment	experiment01.c	/^typedef struct experiment$/;"	s	file:
+experiment	experiment02.c	/^typedef struct experiment$/;"	s	file:
 experiment_t	experiment01.c	/^} experiment_t;$/;"	t	typeref:struct:experiment	file:
+experiment_t	experiment02.c	/^} experiment_t;$/;"	t	typeref:struct:experiment	file:
 f	math.h	/^        f32 f;$/;"	m	union:f32_abs::__anon0d3df6e5070a	typeref:typename:f32
 f32	types.h	/^typedef float f32;$/;"	t	typeref:typename:float
 f32_abs	math.h	/^__forceinline f32 f32_abs(f32 x)$/;"	f	typeref:typename:f32
@@ -2242,6 +2247,8 @@ i16	types.h	/^typedef short i16;$/;"	t	typeref:typename:short
 i32	types.h	/^typedef int i32;$/;"	t	typeref:typename:int
 i64	types.h	/^typedef long long i64;$/;"	t	typeref:typename:long long
 i8	types.h	/^typedef char i8;$/;"	t	typeref:typename:char
+init	experiment01.c	/^static void init(experiment_t *exp)$/;"	f	typeref:typename:void	file:
+init	experiment02.c	/^static void init(experiment_t *exp)$/;"	f	typeref:typename:void	file:
 int	types.h	/^#define int /;"	d
 k_1_div_1pi	math.h	/^#define k_1_div_1pi /;"	d
 k_1_div_2pi	math.h	/^#define k_1_div_2pi /;"	d
@@ -2253,6 +2260,7 @@ k_demo_name	demo01.h	/^#define k_demo_name /;"	d
 k_max_num_non_shader_descriptors	renderer.c	/^#define k_max_num_non_shader_descriptors /;"	d	file:
 k_max_num_shader_descriptors	renderer.c	/^#define k_max_num_shader_descriptors /;"	d	file:
 k_triangle_count	experiment01.c	/^#define k_triangle_count /;"	d	file:
+k_triangle_count	experiment02.c	/^#define k_triangle_count /;"	d	file:
 k_win_height	demo01.h	/^#define k_win_height /;"	d
 k_win_width	demo01.h	/^#define k_win_width /;"	d
 lParam	windows.h	/^    i64 lParam;$/;"	m	struct:MSG	typeref:typename:i64
@@ -2272,6 +2280,7 @@ mem_realloc	library.c	/^void *mem_realloc(void *addr, size_t size)$/;"	f	typeref
 memset	asmlib.asm	/^memset: XOR eax, eax$/;"	l
 message	windows.h	/^    u32 message;$/;"	m	struct:MSG	typeref:typename:u32
 module_init_e01	experiment01.c	/^demo_module_t module_init_e01(void *window)$/;"	f	typeref:typename:demo_module_t
+module_init_e02	experiment02.c	/^demo_module_t module_init_e02(void *window)$/;"	f	typeref:typename:demo_module_t
 nLength	windows.h	/^    u32 nLength;$/;"	m	struct:SECURITY_ATTRIBUTES	typeref:typename:u32
 non_shader_descriptors	renderer.c	/^    } non_shader_descriptors;$/;"	m	struct:priv_renderer	typeref:struct:priv_renderer::__anon816587ed0208	file:
 num_allocated	renderer.c	/^        u32 num_allocated;$/;"	m	struct:priv_renderer::__anon816587ed0108	typeref:typename:u32	file:
@@ -2302,6 +2311,7 @@ priv_renderer	renderer.c	/^typedef struct priv_renderer$/;"	s	file:
 priv_renderer_t	renderer.c	/^} priv_renderer_t;$/;"	t	typeref:struct:priv_renderer	file:
 process_window_message	demo01.c	/^static i64 STDCALL process_window_message(void *window, u32 message, u64 wparam, i64 lparam)$/;"	f	typeref:typename:i64 STDCALL	file:
 pso	experiment01.c	/^    ID3D12PipelineState *pso;$/;"	m	struct:experiment	typeref:typename:ID3D12PipelineState *	file:
+pso	experiment02.c	/^    ID3D12PipelineState *pso;$/;"	m	struct:experiment	typeref:typename:ID3D12PipelineState *	file:
 pt	windows.h	/^    POINT pt;$/;"	m	struct:MSG	typeref:typename:POINT
 ptr	types.h	/^    u64 ptr;$/;"	m	struct:D3D12_CPU_DESCRIPTOR_HANDLE	typeref:typename:u64
 ptr	types.h	/^    u64 ptr;$/;"	m	struct:D3D12_GPU_DESCRIPTOR_HANDLE	typeref:typename:u64
@@ -2313,12 +2323,14 @@ r1	math.h	/^        struct { f32vec4 r0, r1, r2, r3; };$/;"	m	struct:f32mat4::__
 r2	math.h	/^        struct { f32vec4 r0, r1, r2, r3; };$/;"	m	struct:f32mat4::__anon0d3df6e5050a::__anon0d3df6e50608	typeref:typename:f32vec4
 r3	math.h	/^        struct { f32vec4 r0, r1, r2, r3; };$/;"	m	struct:f32mat4::__anon0d3df6e5050a::__anon0d3df6e50608	typeref:typename:f32vec4
 renderer	experiment01.c	/^    renderer_t *renderer;$/;"	m	struct:experiment	typeref:typename:renderer_t *	file:
+renderer	experiment02.c	/^    renderer_t *renderer;$/;"	m	struct:experiment	typeref:typename:renderer_t *	file:
 renderer	renderer.h	/^typedef struct renderer$/;"	s
 renderer_t	renderer.h	/^} renderer_t;$/;"	t	typeref:struct:renderer
 restrict	types.h	/^#define restrict /;"	d
 right	windows.h	/^    i32 right;$/;"	m	struct:RECT	typeref:typename:i32
 right	windows.h	/^    u32 right;$/;"	m	struct:D3D12_BOX	typeref:typename:u32
 root_sig	experiment01.c	/^    ID3D12RootSignature *root_sig;$/;"	m	struct:experiment	typeref:typename:ID3D12RootSignature *	file:
+root_sig	experiment02.c	/^    ID3D12RootSignature *root_sig;$/;"	m	struct:experiment	typeref:typename:ID3D12RootSignature *	file:
 rtv_heap	renderer.c	/^    ID3D12DescriptorHeap *rtv_heap;$/;"	m	struct:priv_renderer	typeref:typename:ID3D12DescriptorHeap *	file:
 rtv_heap_start	renderer.h	/^    D3D12_CPU_DESCRIPTOR_HANDLE rtv_heap_start;$/;"	m	struct:renderer	typeref:typename:D3D12_CPU_DESCRIPTOR_HANDLE
 sh	asmlib.asm	/^  sh: file `sh#'.cso'$/;"	l
@@ -2326,6 +2338,7 @@ shader_descriptors	renderer.c	/^    } shader_descriptors[2];$/;"	m	struct:priv_r
 short	types.h	/^#define short /;"	d
 shutdown	demo01.h	/^    void (*shutdown)(void *data);$/;"	m	struct:demo_module	typeref:typename:void (*)(void * data)
 shutdown	experiment01.c	/^static void shutdown(experiment_t *exp)$/;"	f	typeref:typename:void	file:
+shutdown	experiment02.c	/^static void shutdown(experiment_t *exp)$/;"	f	typeref:typename:void	file:
 size	library.h	/^    u32 size;$/;"	m	struct:__anon866fb6100108	typeref:typename:u32
 sqrtf	asmlib.asm	/^sqrtf:  SQRTSS xmm0, xmm0$/;"	l
 start	demo01.c	/^void start(void)$/;"	f	typeref:typename:void
@@ -2343,11 +2356,13 @@ u8	types.h	/^typedef unsigned char u8;$/;"	t	typeref:typename:unsigned char
 unsigned	types.h	/^#define unsigned /;"	d
 update	demo01.h	/^    void (*update)(void *data, f64 frame_time, f32 frame_delta_time);$/;"	m	struct:demo_module	typeref:typename:void (*)(void * data,f64 frame_time,f32 frame_delta_time)
 update	experiment01.c	/^static void update(experiment_t *exp, f64 frame_time, f32 frame_delta_time)$/;"	f	typeref:typename:void	file:
+update	experiment02.c	/^static void update(experiment_t *exp, f64 frame_time, f32 frame_delta_time)$/;"	f	typeref:typename:void	file:
 update_frame_time	demo01.c	/^static void update_frame_time(void *window, const char *name, f64 *time, f32 *delta_time)$/;"	f	typeref:typename:void	file:
 v	math.h	/^        f32 v[16];$/;"	m	union:f32mat4::__anon0d3df6e5050a	typeref:typename:f32[16]
 v	math.h	/^        f32 v[3];$/;"	m	union:f32vec3::__anon0d3df6e5010a	typeref:typename:f32[3]
 v	math.h	/^        f32 v[4];$/;"	m	union:f32vec4::__anon0d3df6e5030a	typeref:typename:f32[4]
 vertex_buffer	experiment01.c	/^    ID3D12Resource *vertex_buffer;$/;"	m	struct:experiment	typeref:typename:ID3D12Resource *	file:
+vertex_buffer	experiment02.c	/^    ID3D12Resource *vertex_buffer;$/;"	m	struct:experiment	typeref:typename:ID3D12Resource *	file:
 w	math.h	/^        struct { f32 x, y, z, w; };$/;"	m	struct:f32vec4::__anon0d3df6e5030a::__anon0d3df6e50408	typeref:typename:f32
 wParam	windows.h	/^    u64 wParam;$/;"	m	struct:MSG	typeref:typename:u64
 x	math.h	/^        struct { f32 x, y, z, w; };$/;"	m	struct:f32vec4::__anon0d3df6e5030a::__anon0d3df6e50408	typeref:typename:f32
