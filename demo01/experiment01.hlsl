@@ -1,39 +1,33 @@
 #define root_sig \
-    "RootFlags(ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT), " \
-    "CBV(b0, visibility = SHADER_VISIBILITY_VERTEX)"
+    "RootConstants(b0, num32BitConstants = 4)"
 
 struct ps_data
 {
     float4 position : SV_Position;
 };
 
-#if defined VS_E01_TRIANGLE
-
-struct vs_data
-{
-    float3 position : POSITION;
-};
+#if defined VS_E01_TRANSFORM
 
 struct cb_data
 {
-    float4x4 world2proj;
+    float2 position;
 };
 ConstantBuffer<cb_data> s_cb : register(b0);
 
 [RootSignature(root_sig)]
-ps_data vs_e01_triangle(vs_data input)
+ps_data vs_e01_transform()
 {
     ps_data output;
-    output.position = mul(float4(input.position, 1.0f), s_cb.world2proj);
+    output.position = float4(s_cb.position, 0.0f, 1.0f);
     return output;
 }
 
-#elif defined PS_E01_TRIANGLE
+#elif defined PS_E01_SHADE
 
 [RootSignature(root_sig)]
-float4 ps_e01_triangle(ps_data input) : SV_Target0
+float4 ps_e01_shade(ps_data input) : SV_Target0
 {
-    return float4(0.0f, 0.5f, 0.0f, 1.0f);
+    return float4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 #endif

@@ -5,39 +5,32 @@
 #include "renderer.h"
 
 
-#define k_triangle_count 8
+#define k_num_quads 128*1024
+
+typedef struct quad
+{
+    f32 position[2];
+} quad_t;
 
 typedef struct experiment
 {
     renderer_t *renderer;
     ID3D12PipelineState *pso;
     ID3D12RootSignature *root_sig;
-    ID3D12Resource *vertex_buffer;
-    ID3D12Resource *constant_buffer;
-    void *constant_buffer_cpu_addr;
+    quad_t *quads;
+    u32 rnd;
 } experiment_t;
 
 static void update(experiment_t *exp, f64 frame_time, f32 frame_delta_time)
 {
+    (void)exp;
     (void)frame_delta_time;
+    (void)frame_time;
 
-    f32mat4 m0;
-    f32mat4_rotation_ay(&m0, (f32)frame_time);
-
-    f32mat4 m1;
-    /* look at matrix */ {
-        f32vec3 eye, at, up;
-        f32mat4_look_at(&m1, f32vec3_set(&eye, 2.0f, 2.0f, -2.0f), f32vec3_set(&at, 0.0f, 0.0f, 0.0f),
-                        f32vec3_set(&up, 0.0f, 1.0f, 0.0f));
+    for (u32 i = 0; i < k_num_quads; ++i) {
+        exp->quads[i].position[0] = f32_rand_range(&exp->rnd, -0.7f, 0.7f);
+        exp->quads[i].position[1] = f32_rand_range(&exp->rnd, -0.7f, 0.7f);
     }
-
-    f32mat4 m2;
-    f32mat4_fovperspective(&m2, k_1pi_div_4, 1.777f, 0.1f, 20.0f);
-
-    f32mat4_mul(&m0, &m0, &m1);
-    f32mat4_mul(&m0, &m0, &m2);
-
-    *(f32mat4 *)exp->constant_buffer_cpu_addr = *f32mat4_transpose(&m0, &m0);
 }
 
 static void draw(experiment_t *exp)
@@ -76,19 +69,12 @@ static void draw(experiment_t *exp)
 
     ID3D12GraphicsCommandList_SetPipelineState(cmdlist, exp->pso);
     ID3D12GraphicsCommandList_SetGraphicsRootSignature(cmdlist, exp->root_sig);
+    ID3D12GraphicsCommandList_IASetPrimitiveTopology(cmdlist, D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 
-    ID3D12GraphicsCommandList_SetGraphicsRootConstantBufferView(cmdlist, 0,
-                                                                ID3D12Resource_GetGPUVirtualAddress(exp->constant_buffer));
-    ID3D12GraphicsCommandList_IASetPrimitiveTopology(cmdlist, D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
-
-    D3D12_VERTEX_BUFFER_VIEW vb_view = {
-        .BufferLocation = ID3D12Resource_GetGPUVirtualAddress(exp->vertex_buffer),
-        .SizeInBytes = k_triangle_count * 4 * sizeof(f32vec3),
-        .StrideInBytes = sizeof(f32vec3)
-    };
-    ID3D12GraphicsCommandList_IASetVertexBuffers(cmdlist, 0, 1, &vb_view);
-    for (i32 i = 0; i < k_triangle_count; ++i)
-        ID3D12GraphicsCommandList_DrawInstanced(cmdlist, 4, 1, i * 4, 0);
+    for (u32 i = 0; i < k_num_quads; ++i) {
+        ID3D12GraphicsCommandList_SetGraphicsRoot32BitConstants(cmdlist, 0, sizeof(quad_t) / 4, &exp->quads[i], 0);
+        ID3D12GraphicsCommandList_DrawInstanced(cmdlist, 1, 1, 0, 0);
+    }
 
     barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
     barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
@@ -105,52 +91,28 @@ static void init(experiment_t *exp)
     ID3D12Device *d3d = exp->renderer->d3d;
 
     /* pso */ {
-        extern u8 vs_e01_triangle[], ps_e01_triangle[];
-        extern u32 vs_e01_triangle_size, ps_e01_triangle_size;
+        extern u8 vs_e01_transform[], ps_e01_shade[];
+        extern u32 vs_e01_transform_size, ps_e01_shade_size;
 
-        D3D12_INPUT_ELEMENT_DESC input_layout_desc[] = {
-            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-        };
         D3D12_GRAPHICS_PIPELINE_STATE_DESC pso_desc = {
-            .InputLayout = { input_layout_desc, 1 },
-            .VS = { vs_e01_triangle, vs_e01_triangle_size },
-            .PS = { ps_e01_triangle, ps_e01_triangle_size },
-            .RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME,
+            .VS = { vs_e01_transform, vs_e01_transform_size },
+            .PS = { ps_e01_shade, ps_e01_shade_size },
+            .RasterizerState.FillMode = D3D12_FILL_MODE_SOLID,
             .RasterizerState.CullMode = D3D12_CULL_MODE_NONE,
-            .RasterizerState.AntialiasedLineEnable = 1,
             .BlendState.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL,
             .SampleMask = 0xffffffff,
-            .PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE,
+            .PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT,
             .NumRenderTargets = 1,
             .RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM,
             .SampleDesc.Count = 1,
         };
         VHR(ID3D12Device_CreateGraphicsPipelineState(d3d, &pso_desc, &IID_ID3D12PipelineState, &exp->pso));
-        VHR(ID3D12Device_CreateRootSignature(d3d, 0, vs_e01_triangle, vs_e01_triangle_size,
+        VHR(ID3D12Device_CreateRootSignature(d3d, 0, vs_e01_transform, vs_e01_transform_size,
                                              &IID_ID3D12RootSignature, &exp->root_sig));
     }
-    /* vertex buffer */ {
-        exp->vertex_buffer = d3d_create_buffer(d3d, D3D12_HEAP_TYPE_UPLOAD, k_triangle_count * 4 * sizeof(f32vec3));
 
-        D3D12_RANGE range = { 0 };
-        f32 *ptr;
-        f32 size = 0.7f;
-        VHR(ID3D12Resource_Map(exp->vertex_buffer, 0, &range, &ptr));
-        for (u32 i = 0; i < k_triangle_count; ++i) {
-            *ptr++ = -size; *ptr++ = -size; *ptr++ = 0.0f;
-            *ptr++ = size; *ptr++ = -size; *ptr++ = 0.0f;
-            *ptr++ = 0.0f; *ptr++ = size; *ptr++ = 0.0f;
-            *ptr++ = -size; *ptr++ = -size; *ptr++ = 0.0f;
-            size -= 0.1f;
-        }
-        ID3D12Resource_Unmap(exp->vertex_buffer, 0, NULL);
-    }
-    /* constant buffer */ {
-        exp->constant_buffer = d3d_create_buffer(d3d, D3D12_HEAP_TYPE_UPLOAD, sizeof(f32mat4));
-
-        D3D12_RANGE range = { 0 };
-        VHR(ID3D12Resource_Map(exp->constant_buffer, 0, &range, &exp->constant_buffer_cpu_addr));
-    }
+    exp->quads = (quad_t *)mem_alloc(k_num_quads * sizeof(quad_t));
+    exp->rnd = 0;
 }
 
 static void shutdown(experiment_t *exp)
@@ -158,8 +120,6 @@ static void shutdown(experiment_t *exp)
     gr_flush(exp->renderer);
     COMRELEASE(exp->pso);
     COMRELEASE(exp->root_sig);
-    COMRELEASE(exp->vertex_buffer);
-    COMRELEASE(exp->constant_buffer);
     gr_shutdown(exp->renderer);
 }
 
