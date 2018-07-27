@@ -470,7 +470,7 @@ Start(void)
     SetProcessDPIAware();
 
     windows_context WindowsContext = { "Demo64k" };
-    WindowsContext.Window = InitializeWindow(WindowsContext.Name, 1920, 1080);
+    WindowsContext.Window = InitializeWindow(WindowsContext.Name, 1280, 720);
 
     InitializeOpenGL(&WindowsContext);
 

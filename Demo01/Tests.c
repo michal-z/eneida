@@ -34,5 +34,5 @@ Test1_Initialize(test1_data *Data)
 static void
 Test1_Shutdown(test1_data *Data)
 {
-    (void)Data;
+    glDeleteProgram(Data->Program);
 }
