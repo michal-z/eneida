@@ -1,9 +1,9 @@
 #define NULL ((void *)0)
 
 #ifdef _DEBUG
-#define assert(expression) if (!(expression)) { __debugbreak(); }
+#define Assert(Expression) if (!(Expression)) { __debugbreak(); }
 #else
-#define assert(expression) {}
+#define Assert(Expression) {}
 #endif
 
 #define restrict __restrict
@@ -32,36 +32,35 @@ typedef i64 isize;
 static void (STDCALLP glCreateVertexArrays)(i32 N, u32 *Arrays);
 static void (STDCALLP glCreateTextures)(u32 Target, i32 N, u32 *Textures);
 static void (STDCALLP glCreateBuffers)(i32 N, u32 *Buffers);
+static void (STDCALLP glCreateProgramPipelines)(i32 N, u32 *Pipelines);
+static u32 (STDCALLP glCreateShaderProgramv)(u32 Type, i32 Count, const char *const*Strings);
 static void (STDCALLP glDeleteVertexArrays)(i32 N, const u32 *Arrays);
 static void (STDCALLP glDeleteProgram)(u32 Program);
 static void (STDCALLP glDeleteTextures)(i32 N, const u32 *Textures);
 static void (STDCALLP glDeleteBuffers)(i32 N, const u32 *Buffers);
+static void (STDCALLP glDeleteProgramPipelines)(i32 N, const u32 *Pipelines);
 static void (STDCALLP glBindVertexArray)(u32 Array);
+static void (STDCALLP glBindProgramPipeline)(u32 Pipeline);
+static void (STDCALLP glUseProgramStages)(u32 Pipeline, u32 Stages, u32 Program);
 static void (STDCALLP glDrawArrays)(u32 Mode, i32 First, i32 Count);
 static void (STDCALLP glNamedBufferStorage)(u32 Buffer, isize Size, const void *Data, u32 Flags);
 static void (STDCALLP glDispatchCompute)(u32 NumGroupsX, u32 NumGroupsY, u32 NumGroupsZ);
 static void (STDCALLP glTextureStorage2D)(u32 Texture, i32 Levels, u32 InternalFormat, i32 Width, i32 Height);
 static void (STDCALLP glTextureParameteri)(u32 Texture, u32 ParamName, i32 Param);
-/*
-PFNGLCREATEPROGRAMPIPELINESPROC glCreateProgramPipelines;
-PFNGLCREATESHADERPROGRAMVPROC glCreateShaderProgramv;
-PFNGLDELETEPROGRAMPIPELINESPROC glDeleteProgramPipelines;
-PFNGLUSEPROGRAMSTAGESPROC glUseProgramStages;
-PFNGLBINDPROGRAMPIPELINEPROC glBindProgramPipeline;
+static void (STDCALLP glBindTextureUnit)(u32 Unit, u32 Texture);
+static void (STDCALLP glBindImageTexture)(u32 Unit, u32 Texture, i32 Level, u8 Layered, i32 Layer, u32 Access, u32 Format);
+static void (STDCALLP glVertexArrayAttribBinding)(u32 Vaobj, u32 AttribIndex, u32 BindingIndex);
+static void (STDCALLP glVertexArrayAttribFormat)(u32 Vaobj, u32 AttribIndex, i32 Size, u32 Type, u8 Normalized, u32 RelativeOffset);
+static void (STDCALLP glVertexArrayVertexBuffer)(u32 Vaobj, u32 BindingIndex, u32 Buffer, isize Offset, i32 Stride);
+static void (STDCALLP glEnableVertexArrayAttrib)(u32 Vaobj, u32 Index);
+static void (STDCALLP glDisableVertexArrayAttrib)(u32 Vaobj, u32 Index);
+static u32 (STDCALLP glGetError)(void);
 
-PFNGLBINDTEXTUREUNITPROC glBindTextureUnit;
-PFNGLBINDIMAGETEXTUREPROC glBindImageTexture;
-PFNGLVERTEXARRAYATTRIBBINDINGPROC glVertexArrayAttribBinding;
-PFNGLVERTEXARRAYATTRIBFORMATPROC glVertexArrayAttribFormat;
-PFNGLVERTEXARRAYVERTEXBUFFERPROC glVertexArrayVertexBuffer;
-PFNGLENABLEVERTEXARRAYATTRIBPROC glEnableVertexArrayAttrib;
-PFNGLDISABLEVERTEXARRAYATTRIBPROC glDisableVertexArrayAttrib;
-PFNGLGETERRORPROC glGetError;
-*/
+static void *MemAllocate(usize Size);
+static void *MemReAllocate(void *Address, usize Size);
+static void MemFree(void *Address);
 
-//#include "demo01.h"
-//#include "library.h"
-//#include "windows.h"
+#include "Demo.h"
 
 #define PM_REMOVE 0x0001
 #define WM_QUIT 0x0012
@@ -260,6 +259,49 @@ memset(void *Dest, i32 Value, usize Count)
 }
 
 static void *
+MemAllocate(usize Size)
+{
+    void *Memory = HeapAlloc(GetProcessHeap(), 0, Size);
+    if (!Memory)
+    {
+        OutputDebugString("Failed to allocate memory!");
+        Assert(0);
+        ExitProcess(1);
+    }
+    return Memory;
+}
+
+static void *
+MemReAllocate(void *Address, usize Size)
+{
+    if (Address == NULL)
+        return MemAllocate(Size);
+    else
+    {
+        void *Memory = HeapReAlloc(GetProcessHeap(), 0, Address, Size);
+        if (!Memory)
+        {
+            OutputDebugString("Failed to reallocate memory!");
+            Assert(0);
+            ExitProcess(1);
+        }
+        return Memory;
+    }
+}
+
+static void
+MemFree(void *Address)
+{
+    Assert(Address);
+    if (!HeapFree(GetProcessHeap(), 0, Address))
+    {
+        OutputDebugString("Failed to free memory!");
+        Assert(0);
+        ExitProcess(1);
+    }
+}
+
+static void *
 GetFunctionOpenGL(const windows_context *Ctx, const char *FunctionName)
 {
     void *Ptr = NULL;
@@ -271,7 +313,7 @@ GetFunctionOpenGL(const windows_context *Ctx, const char *FunctionName)
     {
         Ptr = GetProcAddress(Ctx->OpenGL32Dll, FunctionName);
     }
-    assert(Ptr);
+    Assert(Ptr);
     return Ptr;
 }
 
@@ -343,7 +385,7 @@ static void
 InitializeOpenGL(windows_context *Ctx)
 {
     Ctx->DeviceContext = GetDC(Ctx->Window);
-    assert(Ctx->DeviceContext);
+    Assert(Ctx->DeviceContext);
 
     PIXELFORMATDESCRIPTOR PixelFormatDesc = {
         .nSize = sizeof(PIXELFORMATDESCRIPTOR),
@@ -378,7 +420,7 @@ InitializeOpenGL(windows_context *Ctx)
         0
     };
     Ctx->GraphicsContext = Ctx->wglCreateContextAttribsARB(Ctx->DeviceContext, NULL, Attribs);
-    assert(Ctx->GraphicsContext);
+    Assert(Ctx->GraphicsContext);
 
     Ctx->wglMakeCurrent(Ctx->DeviceContext, Ctx->GraphicsContext);
 
@@ -388,34 +430,32 @@ InitializeOpenGL(windows_context *Ctx)
         Ctx->wglSwapIntervalEXT(0);
     }
 
-    /*
-    glCreateVertexArrays = (PFNGLCREATEVERTEXARRAYSPROC)GetFunctionOpenGL(Ctx, "glCreateVertexArrays");
-    glCreateProgramPipelines = (PFNGLCREATEPROGRAMPIPELINESPROC)GetFunctionOpenGL(Ctx, "glCreateProgramPipelines");
-    glCreateShaderProgramv = (PFNGLCREATESHADERPROGRAMVPROC)GetFunctionOpenGL(Ctx, "glCreateShaderProgramv");
-    glCreateTextures = (PFNGLCREATETEXTURESPROC)GetFunctionOpenGL(Ctx, "glCreateTextures");
-    glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)GetFunctionOpenGL(Ctx, "glDeleteVertexArrays");
-    glDeleteProgramPipelines = (PFNGLDELETEPROGRAMPIPELINESPROC)GetFunctionOpenGL(Ctx, "glDeleteProgramPipelines");
-    glDeleteProgram = (PFNGLDELETEPROGRAMPROC)GetFunctionOpenGL(Ctx, "glDeleteProgram");
-    glDeleteTextures = (PFNGLDELETETEXTURESPROC)GetFunctionOpenGL(Ctx, "glDeleteTextures");
-    glUseProgramStages = (PFNGLUSEPROGRAMSTAGESPROC)GetFunctionOpenGL(Ctx, "glUseProgramStages");
-    glBindProgramPipeline = (PFNGLBINDPROGRAMPIPELINEPROC)GetFunctionOpenGL(Ctx, "glBindProgramPipeline");
-    glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)GetFunctionOpenGL(Ctx, "glBindVertexArray");
-    glDrawArrays = (PFNGLDRAWARRAYSPROC)GetFunctionOpenGL(Ctx, "glDrawArrays");
-    glDispatchCompute = (PFNGLDISPATCHCOMPUTEPROC)GetFunctionOpenGL(Ctx, "glDispatchCompute");
-    glTextureStorage2D = (PFNGLTEXTURESTORAGE2DPROC)GetFunctionOpenGL(Ctx, "glTextureStorage2D");
-    glTextureParameteri = (PFNGLTEXTUREPARAMETERIPROC)GetFunctionOpenGL(Ctx, "glTextureParameteri");
-    glBindTextureUnit = (PFNGLBINDTEXTUREUNITPROC)GetFunctionOpenGL(Ctx, "glBindTextureUnit");
-    glBindImageTexture = (PFNGLBINDIMAGETEXTUREPROC)GetFunctionOpenGL(Ctx, "glBindImageTexture");
-    glCreateBuffers = (PFNGLCREATEBUFFERSPROC)GetFunctionOpenGL(Ctx, "glCreateBuffers");
-    glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)GetFunctionOpenGL(Ctx, "glDeleteBuffers");
-    glNamedBufferStorage = (PFNGLNAMEDBUFFERSTORAGEPROC)GetFunctionOpenGL(Ctx, "glNamedBufferStorage");
-    glVertexArrayAttribBinding = (PFNGLVERTEXARRAYATTRIBBINDINGPROC)GetFunctionOpenGL(Ctx, "glVertexArrayAttribBinding");
-    glVertexArrayAttribFormat = (PFNGLVERTEXARRAYATTRIBFORMATPROC)GetFunctionOpenGL(Ctx, "glVertexArrayAttribFormat");
-    glVertexArrayVertexBuffer = (PFNGLVERTEXARRAYVERTEXBUFFERPROC)GetFunctionOpenGL(Ctx, "glVertexArrayVertexBuffer");
-    glEnableVertexArrayAttrib = (PFNGLENABLEVERTEXARRAYATTRIBPROC)GetFunctionOpenGL(Ctx, "glEnableVertexArrayAttrib");
-    glDisableVertexArrayAttrib = (PFNGLDISABLEVERTEXARRAYATTRIBPROC)GetFunctionOpenGL(Ctx, "glDisableVertexArrayAttrib");
-    glGetError = (PFNGLGETERRORPROC)GetFunctionOpenGL(Ctx, "glGetError");
-    */
+    glCreateVertexArrays = GetFunctionOpenGL(Ctx, "glCreateVertexArrays");
+    glCreateProgramPipelines = GetFunctionOpenGL(Ctx, "glCreateProgramPipelines");
+    glCreateShaderProgramv = GetFunctionOpenGL(Ctx, "glCreateShaderProgramv");
+    glCreateTextures = GetFunctionOpenGL(Ctx, "glCreateTextures");
+    glDeleteVertexArrays = GetFunctionOpenGL(Ctx, "glDeleteVertexArrays");
+    glDeleteProgramPipelines = GetFunctionOpenGL(Ctx, "glDeleteProgramPipelines");
+    glDeleteProgram = GetFunctionOpenGL(Ctx, "glDeleteProgram");
+    glDeleteTextures = GetFunctionOpenGL(Ctx, "glDeleteTextures");
+    glUseProgramStages = GetFunctionOpenGL(Ctx, "glUseProgramStages");
+    glBindProgramPipeline = GetFunctionOpenGL(Ctx, "glBindProgramPipeline");
+    glBindVertexArray = GetFunctionOpenGL(Ctx, "glBindVertexArray");
+    glDrawArrays = GetFunctionOpenGL(Ctx, "glDrawArrays");
+    glDispatchCompute = GetFunctionOpenGL(Ctx, "glDispatchCompute");
+    glTextureStorage2D = GetFunctionOpenGL(Ctx, "glTextureStorage2D");
+    glTextureParameteri = GetFunctionOpenGL(Ctx, "glTextureParameteri");
+    glBindTextureUnit = GetFunctionOpenGL(Ctx, "glBindTextureUnit");
+    glBindImageTexture = GetFunctionOpenGL(Ctx, "glBindImageTexture");
+    glCreateBuffers = GetFunctionOpenGL(Ctx, "glCreateBuffers");
+    glDeleteBuffers = GetFunctionOpenGL(Ctx, "glDeleteBuffers");
+    glNamedBufferStorage = GetFunctionOpenGL(Ctx, "glNamedBufferStorage");
+    glVertexArrayAttribBinding = GetFunctionOpenGL(Ctx, "glVertexArrayAttribBinding");
+    glVertexArrayAttribFormat = GetFunctionOpenGL(Ctx, "glVertexArrayAttribFormat");
+    glVertexArrayVertexBuffer = GetFunctionOpenGL(Ctx, "glVertexArrayVertexBuffer");
+    glEnableVertexArrayAttrib = GetFunctionOpenGL(Ctx, "glEnableVertexArrayAttrib");
+    glDisableVertexArrayAttrib = GetFunctionOpenGL(Ctx, "glDisableVertexArrayAttrib");
+    glGetError = GetFunctionOpenGL(Ctx, "glGetError");
 }
 
 static void *
@@ -428,11 +468,11 @@ InitializeWindow(const char *Name, u32 Width, u32 Height)
         .lpszClassName = Name,
     };
     if (!RegisterClass(&WinClass))
-        assert(0);
+        Assert(0);
 
     RECT Rect = { 0, 0, (i32)Width, (i32)Height };
     if (!AdjustWindowRect(&Rect, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX, 0))
-        assert(0);
+        Assert(0);
 
     void *Window = CreateWindowEx(
         0, Name, Name, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_VISIBLE,
