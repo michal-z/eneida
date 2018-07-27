@@ -1,66 +1,9 @@
-#define NULL ((void *)0)
-
-#ifdef _DEBUG
-#define Assert(Expression) if (!(Expression)) { __debugbreak(); }
-#else
-#define Assert(Expression) {}
-#endif
-
-#define restrict __restrict
-#define STDCALL __stdcall
-#define STDCALLP STDCALL *
-
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef unsigned int u32;
-typedef unsigned long long u64;
-typedef char i8;
-typedef short i16;
-typedef int i32;
-typedef long long i64;
-typedef float f32;
-typedef double f64;
-typedef u64 usize;
-typedef i64 isize;
-#define float __INVALID__
-#define double __INVALID__
-#define unsigned __INVALID__
-#define int __INVALID__
-#define short __INVALID__
-#define long __INVALID__
-
-static void (STDCALLP glCreateVertexArrays)(i32 N, u32 *Arrays);
-static void (STDCALLP glCreateTextures)(u32 Target, i32 N, u32 *Textures);
-static void (STDCALLP glCreateBuffers)(i32 N, u32 *Buffers);
-static void (STDCALLP glCreateProgramPipelines)(i32 N, u32 *Pipelines);
-static u32 (STDCALLP glCreateShaderProgramv)(u32 Type, i32 Count, const char *const*Strings);
-static void (STDCALLP glDeleteVertexArrays)(i32 N, const u32 *Arrays);
-static void (STDCALLP glDeleteProgram)(u32 Program);
-static void (STDCALLP glDeleteTextures)(i32 N, const u32 *Textures);
-static void (STDCALLP glDeleteBuffers)(i32 N, const u32 *Buffers);
-static void (STDCALLP glDeleteProgramPipelines)(i32 N, const u32 *Pipelines);
-static void (STDCALLP glBindVertexArray)(u32 Array);
-static void (STDCALLP glBindProgramPipeline)(u32 Pipeline);
-static void (STDCALLP glUseProgramStages)(u32 Pipeline, u32 Stages, u32 Program);
-static void (STDCALLP glDrawArrays)(u32 Mode, i32 First, i32 Count);
-static void (STDCALLP glNamedBufferStorage)(u32 Buffer, isize Size, const void *Data, u32 Flags);
-static void (STDCALLP glDispatchCompute)(u32 NumGroupsX, u32 NumGroupsY, u32 NumGroupsZ);
-static void (STDCALLP glTextureStorage2D)(u32 Texture, i32 Levels, u32 InternalFormat, i32 Width, i32 Height);
-static void (STDCALLP glTextureParameteri)(u32 Texture, u32 ParamName, i32 Param);
-static void (STDCALLP glBindTextureUnit)(u32 Unit, u32 Texture);
-static void (STDCALLP glBindImageTexture)(u32 Unit, u32 Texture, i32 Level, u8 Layered, i32 Layer, u32 Access, u32 Format);
-static void (STDCALLP glVertexArrayAttribBinding)(u32 Vaobj, u32 AttribIndex, u32 BindingIndex);
-static void (STDCALLP glVertexArrayAttribFormat)(u32 Vaobj, u32 AttribIndex, i32 Size, u32 Type, u8 Normalized, u32 RelativeOffset);
-static void (STDCALLP glVertexArrayVertexBuffer)(u32 Vaobj, u32 BindingIndex, u32 Buffer, isize Offset, i32 Stride);
-static void (STDCALLP glEnableVertexArrayAttrib)(u32 Vaobj, u32 Index);
-static void (STDCALLP glDisableVertexArrayAttrib)(u32 Vaobj, u32 Index);
-static u32 (STDCALLP glGetError)(void);
-
-static void *MemAllocate(usize Size);
-static void *MemReAllocate(void *Address, usize Size);
-static void MemFree(void *Address);
-
 #include "Demo.h"
+#include "Tests.c"
+
+static void (__stdcall *glCreateVertexArrays)(i32 N, u32 *Arrays);
+static void (__stdcall *glDeleteVertexArrays)(i32 N, const u32 *Arrays);
+static void (__stdcall *glBindVertexArray)(u32 Array);
 
 #define PM_REMOVE 0x0001
 #define WM_QUIT 0x0012
@@ -158,72 +101,70 @@ typedef struct PIXELFORMATDESCRIPTOR
     u32 dwDamageMask;
 } PIXELFORMATDESCRIPTOR;
 
-extern void *STDCALL LoadLibraryA(const char *ModuleName);
-extern void *STDCALL GetProcAddress(void *Module, const char *ProcName);
+extern void *__stdcall LoadLibraryA(const char *ModuleName);
+extern void *__stdcall GetProcAddress(void *Module, const char *ProcName);
 
-void *memset(void *Dest, i32 Value, usize Count);
-#pragma intrinsic(memset)
 
 i32 _fltused;
 
-static void (STDCALLP OutputDebugString)(const char *OutputString);
-static i32 (STDCALLP QueryPerformanceCounter)(i64 *PerformanceCounter);
-static i32 (STDCALLP QueryPerformanceFrequency)(i64 *Frequency);
-static void *(STDCALLP VirtualAlloc)(void *Address, u64 Size, u32 AllocationType, u32 Protect);
-static i32 (STDCALLP VirtualFree)(void *Address, u64 Size, u32 FreeType);
-static void (STDCALLP ExitProcess)(u32 ExitCode);
-static void *(STDCALLP CreateFile)(const char *FileName,
-                                   u32 DesiredAccess,
-                                   u32 SharedMode,
-                                   SECURITY_ATTRIBUTES *SecurityAttributes,
-                                   u32 CreationDisposition,
-                                   u32 FlagsAndAttributes,
-                                   void *TemplateFile);
-static i32 (STDCALLP ReadFile)(void *Handle,
-                               void *Buffer,
-                               u32 NumberOfBytesToRead,
-                               u32 *NumberOfBytesRead,
-                               void *Overlapped);
-static u32 (STDCALLP GetFileSize)(void *Handle, u32 *FileSizeHigh);
-static i32 (STDCALLP CloseHandle)(void *Handle);
-static void *(STDCALLP GetModuleHandle)(const char *ModuleName);
-static void (STDCALLP Sleep)(u32 MilliSeconds);
-static void *(STDCALLP HeapAlloc)(void *Heap, u32 Flags, u64 Bytes);
-static i32 (STDCALLP HeapFree)(void *Heap, u32 Flags, void *Address);
-static void *(STDCALLP HeapReAlloc)(void *Heap, u32 Flags, void *Address, u64 Bytes);
-static void *(STDCALLP GetProcessHeap)(void);
-static void *(STDCALLP CreateEventEx)(SECURITY_ATTRIBUTES *EventAttributes, const char *Name, u32 Flags, u32 DesiredAccess);
-static u32 (STDCALLP WaitForSingleObject)(void *Handle, u32 MilliSeconds);
+static void (__stdcall *OutputDebugString)(const char *OutputString);
+static i32 (__stdcall *QueryPerformanceCounter)(i64 *PerformanceCounter);
+static i32 (__stdcall *QueryPerformanceFrequency)(i64 *Frequency);
+static void *(__stdcall *VirtualAlloc)(void *Address, u64 Size, u32 AllocationType, u32 Protect);
+static i32 (__stdcall *VirtualFree)(void *Address, u64 Size, u32 FreeType);
+static void (__stdcall *ExitProcess)(u32 ExitCode);
+static void *(__stdcall *CreateFile)(const char *FileName,
+                                     u32 DesiredAccess,
+                                     u32 SharedMode,
+                                     SECURITY_ATTRIBUTES *SecurityAttributes,
+                                     u32 CreationDisposition,
+                                     u32 FlagsAndAttributes,
+                                     void *TemplateFile);
+static i32 (__stdcall *ReadFile)(void *Handle,
+                                 void *Buffer,
+                                 u32 NumberOfBytesToRead,
+                                 u32 *NumberOfBytesRead,
+                                 void *Overlapped);
+static u32 (__stdcall *GetFileSize)(void *Handle, u32 *FileSizeHigh);
+static i32 (__stdcall *CloseHandle)(void *Handle);
+static void *(__stdcall *GetModuleHandle)(const char *ModuleName);
+static void (__stdcall *Sleep)(u32 MilliSeconds);
+static void *(__stdcall *HeapAlloc)(void *Heap, u32 Flags, u64 Bytes);
+static i32 (__stdcall *HeapFree)(void *Heap, u32 Flags, void *Address);
+static void *(__stdcall *HeapReAlloc)(void *Heap, u32 Flags, void *Address, u64 Bytes);
+static void *(__stdcall *GetProcessHeap)(void);
+static void *(__stdcall *CreateEventEx)(SECURITY_ATTRIBUTES *EventAttributes, const char *Name, u32 Flags, u32 DesiredAccess);
+static u32 (__stdcall *WaitForSingleObject)(void *Handle, u32 MilliSeconds);
 
-static i32 (STDCALLP PeekMessage)(MSG *Msg, void *Hwnd, u32 MsgFilterMin, u32 MsgFilterMax, u32 RemoveMsg);
-static i64 (STDCALLP DispatchMessage)(const MSG *Msg);
-static void (STDCALLP PostQuitMessage)(i32 ExitCode);
-static i64 (STDCALLP DefWindowProc)(void *Hwnd, u32 Msg, u64 WParam, i64 LParam);
-static void *(STDCALLP LoadCursor)(void *Instance, const char *CursorName);
-static i16 (STDCALLP RegisterClass)(const WNDCLASS *WinClass);
-static void *(STDCALLP CreateWindowEx)(u32 ExStyle,
-                                       const char *ClassName,
-                                       const char *WindowName,
-                                       u32 Style,
-                                       i32 X,
-                                       i32 Y,
-                                       i32 Width,
-                                       i32 Height,
-                                       void *Parent,
-                                       void *Menu,
-                                       void *Instance,
-                                       void *Param);
-static i32 (STDCALLP AdjustWindowRect)(RECT *Rect, u32 Style, i32 Menu);
+static i32 (__stdcall *PeekMessage)(MSG *Msg, void *Hwnd, u32 MsgFilterMin, u32 MsgFilterMax, u32 RemoveMsg);
+static i64 (__stdcall *DispatchMessage)(const MSG *Msg);
+static void (__stdcall *PostQuitMessage)(i32 ExitCode);
+static i64 (__stdcall *DefWindowProc)(void *Hwnd, u32 Msg, u64 WParam, i64 LParam);
+static void *(__stdcall *LoadCursor)(void *Instance, const char *CursorName);
+static i16 (__stdcall *RegisterClass)(const WNDCLASS *WinClass);
+static void *(__stdcall *CreateWindowEx)(u32 ExStyle,
+                                         const char *ClassName,
+                                         const char *WindowName,
+                                         u32 Style,
+                                         i32 X,
+                                         i32 Y,
+                                         i32 Width,
+                                         i32 Height,
+                                         void *Parent,
+                                         void *Menu,
+                                         void *Instance,
+                                         void *Param);
+static i32 (__stdcall *AdjustWindowRect)(RECT *Rect, u32 Style, i32 Menu);
 static i32 (__cdecl *wsprintf)(char *String, const char *Format, ...);
-static i32 (STDCALLP SetWindowText)(void *Hwnd, const char *String);
-static i32 (STDCALLP SetProcessDPIAware)(void);
-static void *(STDCALLP GetDC)(void *Hwnd);
-static i32 (STDCALLP MessageBox)(void *Hwnd, const char *Text, const char *Caption, u32 Type);
-static i32 (STDCALLP GetClientRect)(void *Hwnd, RECT *Rect);
+static i32 (__stdcall *SetWindowText)(void *Hwnd, const char *String);
+static i32 (__stdcall *SetProcessDPIAware)(void);
+static void *(__stdcall *GetDC)(void *Hwnd);
+static i32 (__stdcall *MessageBox)(void *Hwnd, const char *Text, const char *Caption, u32 Type);
+static i32 (__stdcall *GetClientRect)(void *Hwnd, RECT *Rect);
 
-static i32 (STDCALLP SwapBuffers)(void *DeviceContext);
-static i32 (STDCALLP SetPixelFormat)(void *DeviceContext, i32 PixelFormat, const PIXELFORMATDESCRIPTOR *PixelFormatDesc);
-static i32 (STDCALLP ChoosePixelFormat)(void *DeviceContext, const PIXELFORMATDESCRIPTOR *PixelFormatDesc);
+static i32 (__stdcall *SwapBuffers)(void *DeviceContext);
+static i32 (__stdcall *SetPixelFormat)(void *DeviceContext, i32 PixelFormat, const PIXELFORMATDESCRIPTOR *PixelFormatDesc);
+static i32 (__stdcall *ChoosePixelFormat)(void *DeviceContext, const PIXELFORMATDESCRIPTOR *PixelFormatDesc);
 
 #define WGL_CONTEXT_MAJOR_VERSION_ARB           0x2091
 #define WGL_CONTEXT_MINOR_VERSION_ARB           0x2092
@@ -242,12 +183,12 @@ typedef struct windows_context
     void *OpenGL32Dll;
     void *DeviceContext;
     void *GraphicsContext;
-    void *(STDCALLP wglCreateContext)(void *DeviceContext);
-    i32 (STDCALLP wglDeleteContext)(void *GraphicsContext);
-    void *(STDCALLP wglGetProcAddress)(const char *ProcName);
-    i32 (STDCALLP wglMakeCurrent)(void *DeviceContext, void *GraphicsContext);
-    void *(STDCALLP wglCreateContextAttribsARB)(void *DeviceContext, void *GraphicsContext, const i32 *Attribs);
-    i32 (STDCALLP wglSwapIntervalEXT)(i32 Interval);
+    void *(__stdcall *wglCreateContext)(void *DeviceContext);
+    i32 (__stdcall *wglDeleteContext)(void *GraphicsContext);
+    void *(__stdcall *wglGetProcAddress)(const char *ProcName);
+    i32 (__stdcall *wglMakeCurrent)(void *DeviceContext, void *GraphicsContext);
+    void *(__stdcall *wglCreateContextAttribsARB)(void *DeviceContext, void *GraphicsContext, const i32 *Attribs);
+    i32 (__stdcall *wglSwapIntervalEXT)(i32 Interval);
 } windows_context;
 
 #pragma function(memset)
@@ -362,7 +303,7 @@ UpdateFrameStats(void *Window, const char *Name, f64 *Time, f32 *DeltaTime)
     FrameCount++;
 }
 
-static i64 STDCALL
+static i64 __stdcall
 ProcessWindowMessage(void *Window, u32 Message, u64 WParam, i64 LParam)
 {
     switch (Message)
@@ -431,15 +372,10 @@ InitializeOpenGL(windows_context *Ctx)
     }
 
     glCreateVertexArrays = GetFunctionOpenGL(Ctx, "glCreateVertexArrays");
-    glCreateProgramPipelines = GetFunctionOpenGL(Ctx, "glCreateProgramPipelines");
-    glCreateShaderProgramv = GetFunctionOpenGL(Ctx, "glCreateShaderProgramv");
     glCreateTextures = GetFunctionOpenGL(Ctx, "glCreateTextures");
     glDeleteVertexArrays = GetFunctionOpenGL(Ctx, "glDeleteVertexArrays");
-    glDeleteProgramPipelines = GetFunctionOpenGL(Ctx, "glDeleteProgramPipelines");
     glDeleteProgram = GetFunctionOpenGL(Ctx, "glDeleteProgram");
     glDeleteTextures = GetFunctionOpenGL(Ctx, "glDeleteTextures");
-    glUseProgramStages = GetFunctionOpenGL(Ctx, "glUseProgramStages");
-    glBindProgramPipeline = GetFunctionOpenGL(Ctx, "glBindProgramPipeline");
     glBindVertexArray = GetFunctionOpenGL(Ctx, "glBindVertexArray");
     glDrawArrays = GetFunctionOpenGL(Ctx, "glDrawArrays");
     glDispatchCompute = GetFunctionOpenGL(Ctx, "glDispatchCompute");
@@ -450,12 +386,16 @@ InitializeOpenGL(windows_context *Ctx)
     glCreateBuffers = GetFunctionOpenGL(Ctx, "glCreateBuffers");
     glDeleteBuffers = GetFunctionOpenGL(Ctx, "glDeleteBuffers");
     glNamedBufferStorage = GetFunctionOpenGL(Ctx, "glNamedBufferStorage");
-    glVertexArrayAttribBinding = GetFunctionOpenGL(Ctx, "glVertexArrayAttribBinding");
-    glVertexArrayAttribFormat = GetFunctionOpenGL(Ctx, "glVertexArrayAttribFormat");
-    glVertexArrayVertexBuffer = GetFunctionOpenGL(Ctx, "glVertexArrayVertexBuffer");
-    glEnableVertexArrayAttrib = GetFunctionOpenGL(Ctx, "glEnableVertexArrayAttrib");
-    glDisableVertexArrayAttrib = GetFunctionOpenGL(Ctx, "glDisableVertexArrayAttrib");
     glGetError = GetFunctionOpenGL(Ctx, "glGetError");
+    glShaderSource = GetFunctionOpenGL(Ctx, "glShaderSource");
+    glUseProgram = GetFunctionOpenGL(Ctx, "glUseProgram");
+    glCreateProgram = GetFunctionOpenGL(Ctx, "glCreateProgram");
+    glCreateShader = GetFunctionOpenGL(Ctx, "glCreateShader");
+    glCompileShader = GetFunctionOpenGL(Ctx, "glCompileShader");
+    glAttachShader = GetFunctionOpenGL(Ctx, "glAttachShader");
+    glDeleteShader = GetFunctionOpenGL(Ctx, "glDeleteShader");
+    glDetachShader = GetFunctionOpenGL(Ctx, "glDetachShader");
+    glLinkProgram = GetFunctionOpenGL(Ctx, "glLinkProgram");
 }
 
 static void *
@@ -534,6 +474,13 @@ Start(void)
 
     InitializeOpenGL(&WindowsContext);
 
+    u32 DefaultVao;
+    glCreateVertexArrays(1, &DefaultVao);
+    glBindVertexArray(DefaultVao);
+
+    test1_data Test;
+    Test1_Initialize(&Test);
+
     for (;;)
     {
         MSG Message = { 0 };
@@ -549,14 +496,20 @@ Start(void)
             f32 FrameDeltaTime;
             UpdateFrameStats(WindowsContext.Window, WindowsContext.Name, &FrameTime, &FrameDeltaTime);
 
-            //demo_update(frame_time, frame_delta_time);
-            //demo_draw();
+            Test1_Update(&Test);
+
+            if (glGetError() != 0)
+            {
+                ExitProcess(1);
+            }
 
             SwapBuffers(WindowsContext.DeviceContext);
         }
     }
 
-    //demo_shutdown();
+    Test1_Shutdown(&Test);
+
+    glDeleteVertexArrays(1, &DefaultVao);
 
     WindowsContext.wglMakeCurrent(NULL, NULL);
     WindowsContext.wglDeleteContext(WindowsContext.GraphicsContext);
