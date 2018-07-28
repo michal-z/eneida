@@ -62,6 +62,11 @@ ArrayGrow(void *Array, u32 ItemSize)
 #define GL_FRAGMENT_SHADER                0x8B30
 #define GL_VERTEX_SHADER                  0x8B31
 #define GL_TRIANGLES                      0x0004
+#define GL_TEXTURE_BUFFER                 0x8C2A
+#define GL_ELEMENT_ARRAY_BUFFER           0x8893
+#define GL_RGBA32F                        0x8814
+#define GL_RGB32F                         0x8815
+#define GL_RG32F                          0x8230
 
 static void (__stdcall *glCreateTextures)(u32 Target, i32 N, u32 *Textures);
 static void (__stdcall *glCreateBuffers)(i32 N, u32 *Buffers);
@@ -75,6 +80,10 @@ static void (__stdcall *glTextureStorage2D)(u32 Texture, i32 Levels, u32 Interna
 static void (__stdcall *glTextureParameteri)(u32 Texture, u32 ParamName, i32 Param);
 static void (__stdcall *glBindTextureUnit)(u32 Unit, u32 Texture);
 static void (__stdcall *glBindImageTexture)(u32 Unit, u32 Texture, i32 Level, u8 Layered, i32 Layer, u32 Access, u32 Format);
+static void (__stdcall *glBindBuffer)(u32 Target, u32 Buffer);
+static void (__stdcall *glTextureBuffer)(u32 Texture, u32 InternalFormat, u32 Buffer);
+static void (__stdcall *glTextureBufferRange)(u32 Texture, u32 InternalFormat, u32 Buffer, isize Offset, isize Size);
+static void (__stdcall *glBindTextures)(u32 First, i32 Count, const u32 *Textures);
 static u32 (__stdcall *glGetError)(void);
 static void (__stdcall *glShaderSource)(u32 Shader, i32 Count, const char *const*String, const i32 *Length);
 static void (__stdcall *glUseProgram)(u32 Program);

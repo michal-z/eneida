@@ -386,6 +386,10 @@ InitializeOpenGL(windows_context *Ctx)
     glCreateBuffers = GetFunctionOpenGL(Ctx, "glCreateBuffers");
     glDeleteBuffers = GetFunctionOpenGL(Ctx, "glDeleteBuffers");
     glNamedBufferStorage = GetFunctionOpenGL(Ctx, "glNamedBufferStorage");
+    glBindBuffer = GetFunctionOpenGL(Ctx, "glBindBuffer");
+    glTextureBuffer = GetFunctionOpenGL(Ctx, "glTextureBuffer");
+    glTextureBufferRange = GetFunctionOpenGL(Ctx, "glTextureBufferRange");
+    glBindTextures = GetFunctionOpenGL(Ctx, "glBindTextures");
     glGetError = GetFunctionOpenGL(Ctx, "glGetError");
     glShaderSource = GetFunctionOpenGL(Ctx, "glShaderSource");
     glUseProgram = GetFunctionOpenGL(Ctx, "glUseProgram");
@@ -478,7 +482,7 @@ Start(void)
     glCreateVertexArrays(1, &DefaultVao);
     glBindVertexArray(DefaultVao);
 
-    test1_data Test;
+    test1_data Test = { 0 };
     Test1_Initialize(&Test);
 
     for (;;)
