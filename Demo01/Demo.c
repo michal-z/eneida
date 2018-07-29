@@ -200,7 +200,7 @@ memset(void *Dest, i32 Value, usize Count)
 }
 
 static void *
-MemAllocate(usize Size)
+malloc(usize Size)
 {
     void *Memory = HeapAlloc(GetProcessHeap(), 0, Size);
     if (!Memory)
@@ -213,10 +213,10 @@ MemAllocate(usize Size)
 }
 
 static void *
-MemReAllocate(void *Address, usize Size)
+realloc(void *Address, usize Size)
 {
     if (Address == NULL)
-        return MemAllocate(Size);
+        return malloc(Size);
     else
     {
         void *Memory = HeapReAlloc(GetProcessHeap(), 0, Address, Size);
@@ -231,7 +231,7 @@ MemReAllocate(void *Address, usize Size)
 }
 
 static void
-MemFree(void *Address)
+free(void *Address)
 {
     Assert(Address);
     if (!HeapFree(GetProcessHeap(), 0, Address))
@@ -294,6 +294,7 @@ UpdateFrameStats(void *Window, const char *Name, f64 *Time, f32 *DeltaTime)
     {
         f64 FramesPerSecond = FrameCount / (*Time - HeaderRefreshTime);
         f64 MicroSeconds = (1.0 / FramesPerSecond) * 1000000.0;
+        MicroSeconds = (f64)F32Sqrt((f32)MicroSeconds);
         char Header[256];
         wsprintf(Header, "[%d fps  %d us] %s", (i32)FramesPerSecond, (i32)MicroSeconds, Name);
         SetWindowText(Window, Header);

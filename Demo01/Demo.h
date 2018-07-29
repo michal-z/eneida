@@ -28,9 +28,9 @@ typedef struct array_header
     u32 Capacity;
 } array_header;
 
-static void *MemAllocate(usize Size);
-static void *MemReAllocate(void *Address, usize Size);
-static void MemFree(void *Address);
+static void *malloc(usize Size);
+static void *realloc(void *Address, usize Size);
+static void free(void *Address);
 
 void *memset(void *Dest, i32 Value, usize Count);
 #pragma intrinsic(memset)
@@ -41,7 +41,7 @@ void *memset(void *Dest, i32 Value, usize Count);
 #define ArraySize(A) ((A) ? ArrayHeader(A)->Size : 0)
 #define ArrayCapacity(A) ((A) ? ArrayHeader(A)->Capacity : 0)
 #define ArrayIsFull(A) (ArraySize(A) == ArrayCapacity(A) ? 1 : 0)
-#define ArrayFree(A) ((A) ? (MemFree(ArrayHeader(A)), 0) : 0)
+#define ArrayFree(A) ((A) ? (free(ArrayHeader(A)), 0) : 0)
 
 #define ArrayAdd(A, Item) \
     (ArrayIsFull(A) ? A = ArrayGrow((A), sizeof(*(A))) : 0), \
@@ -53,11 +53,13 @@ ArrayGrow(void *Array, u32 ItemSize)
     u32 Size = ArraySize(Array);
     u32 Capacity = Size ? Size * 2 : 1;
     Array = Array ? ArrayHeader(Array) : NULL;
-    array_header *Ha = (array_header *)MemReAllocate(Array, Capacity * ItemSize + sizeof(array_header));
+    array_header *Ha = (array_header *)realloc(Array, Capacity * ItemSize + sizeof(array_header));
     Ha->Size = Size;
     Ha->Capacity = Capacity;
     return (void *)(Ha + 1);
 }
+
+#include "Math.h"
 
 #define GL_FRAGMENT_SHADER                0x8B30
 #define GL_VERTEX_SHADER                  0x8B31
@@ -96,7 +98,7 @@ static void (__stdcall *glDetachShader)(u32 Program, u32 Shader);
 static void (__stdcall *glLinkProgram)(u32 Program);
 
 inline u32
-BuildProgram(const char *VertexShaderSource, const char *FragmentShaderSource)
+BuildGpuProgram(const char *VertexShaderSource, const char *FragmentShaderSource)
 {
     u32 VertexShader = glCreateShader(GL_VERTEX_SHADER);
     u32 FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);

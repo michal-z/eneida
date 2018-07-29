@@ -31,7 +31,7 @@ Test1_Update(test1_data *Data)
 static void
 Test1_Initialize(test1_data *Data)
 {
-    Data->Program = BuildProgram(Test1_Vs, Test1_Fs);
+    Data->Program = BuildGpuProgram(Test1_Vs, Test1_Fs);
 
     f32 BufferData[] = { -0.7f, -0.7f, 0.7f, -0.7f, 0.0f, 0.7f };
     glCreateBuffers(1, &Data->VertexBuffer);
