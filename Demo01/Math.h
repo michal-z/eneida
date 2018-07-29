@@ -197,3 +197,55 @@ F32SinCosFast(f32 X, f32 *Sin, f32 *Cos)
     *Sin = (((-0.00018524670f * Y2 + 0.0083139502f) * Y2 - 0.16665852f) * Y2 + 1.0f) * Y;
     *Cos = Sign * (((-0.0012712436f * Y2 + 0.041493919f) * Y2 - 0.49992746f) * Y2 + 1.0f);
 }
+
+inline f32vec3 *
+F32Vec3Set(f32vec3 *Out, f32 X, f32 Y, f32 Z)
+{
+    Out->X = X;
+    Out->Y = Y;
+    Out->Z = Z;
+    return Out;
+}
+
+inline f32vec3 *
+F32Vec3Add(f32vec3 *Out, const f32vec3 *A, const f32vec3 *B)
+{
+    Out->X = A->X + B->X;
+    Out->Y = A->Y + B->Y;
+    Out->Z = A->Z + B->Z;
+    return Out;
+}
+
+inline f32vec3 *
+F32Vec3Subtract(f32vec3 *Out, const f32vec3 *A, const f32vec3 *B)
+{
+    Out->X = A->X - B->X;
+    Out->Y = A->Y - B->Y;
+    Out->Z = A->Z - B->Z;
+    return Out;
+}
+
+inline f32
+F32Vec3Dot(const f32vec3 *A, const f32vec3 *B)
+{
+    return A->X * B->X + A->Y * B->Y + A->Z * B->Z;
+}
+
+inline f32vec3 *
+F32Vec3Cross(f32vec3 *Out, const f32vec3 *A, const f32vec3 *B)
+{
+    f32 X = A->Y * B->Z - A->Z * B->Y;
+    f32 Y = A->Z * B->X - A->X * B->Z;
+    f32 Z = A->X * B->Y - A->Y * B->X;
+    return F32Vec3Set(Out, X, Y, Z);
+}
+
+inline f32vec4 *
+F32Vec4Set(f32vec4 *Out, f32 X, f32 Y, f32 Z, f32 W)
+{
+    Out->X = X;
+    Out->Y = Y;
+    Out->Z = Z;
+    Out->W = W;
+    return Out;
+}
