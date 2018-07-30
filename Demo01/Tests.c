@@ -1,7 +1,7 @@
 typedef struct test1_data
 {
     u32 Program;
-    u32 VertexBuffer;
+    u32 GeometryBuffer;
     u32 TextureBuffer;
 } test1_data;
 
@@ -24,8 +24,9 @@ static void
 Test1_Update(test1_data *Data)
 {
     glUseProgram(Data->Program);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Data->GeometryBuffer);
     glBindTextures(0, 1, &Data->TextureBuffer);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, (const void *)24);
 }
 
 static void
@@ -33,12 +34,18 @@ Test1_Initialize(test1_data *Data)
 {
     Data->Program = BuildGpuProgram(Test1_Vs, Test1_Fs);
 
-    f32 BufferData[] = { -0.7f, -0.7f, 0.7f, -0.7f, 0.0f, 0.7f };
-    glCreateBuffers(1, &Data->VertexBuffer);
-    glNamedBufferStorage(Data->VertexBuffer, sizeof(BufferData), BufferData, 0);
+    struct {
+        f32 VertexData[6];
+        u16 IndexData[6];
+    } GeometryData = {
+        { -0.7f, -0.7f, 0.7f, -0.7f, 0.0f, 0.7f },
+        { 0, 1, 2, 3, 4, 5 }
+    };
+    glCreateBuffers(1, &Data->GeometryBuffer);
+    glNamedBufferStorage(Data->GeometryBuffer, sizeof(GeometryData), &GeometryData, 0);
 
     glCreateTextures(GL_TEXTURE_BUFFER, 1, &Data->TextureBuffer);
-    glTextureBuffer(Data->TextureBuffer, GL_RG32F, Data->VertexBuffer);
+    glTextureBufferRange(Data->TextureBuffer, GL_RG32F, Data->GeometryBuffer, 0, 24);
 }
 
 static void
@@ -46,5 +53,5 @@ Test1_Shutdown(test1_data *Data)
 {
     glDeleteProgram(Data->Program);
     glDeleteTextures(1, &Data->TextureBuffer);
-    glDeleteBuffers(1, &Data->VertexBuffer);
+    glDeleteBuffers(1, &Data->GeometryBuffer);
 }

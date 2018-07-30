@@ -69,6 +69,8 @@ ArrayGrow(void *Array, u32 ItemSize)
 #define GL_RGBA32F                        0x8814
 #define GL_RGB32F                         0x8815
 #define GL_RG32F                          0x8230
+#define GL_UNSIGNED_SHORT                 0x1403
+#define GL_UNSIGNED_INT                   0x1405
 
 static void (__stdcall *glCreateTextures)(u32 Target, i32 N, u32 *Textures);
 static void (__stdcall *glCreateBuffers)(i32 N, u32 *Buffers);
@@ -76,6 +78,7 @@ static void (__stdcall *glDeleteProgram)(u32 Program);
 static void (__stdcall *glDeleteTextures)(i32 N, const u32 *Textures);
 static void (__stdcall *glDeleteBuffers)(i32 N, const u32 *Buffers);
 static void (__stdcall *glDrawArrays)(u32 Mode, i32 First, i32 Count);
+static void (__stdcall *glDrawElements)(u32 Mode, i32 Count, u32 Type, const void *Indices);
 static void (__stdcall *glNamedBufferStorage)(u32 Buffer, isize Size, const void *Data, u32 Flags);
 static void (__stdcall *glDispatchCompute)(u32 NumGroupsX, u32 NumGroupsY, u32 NumGroupsZ);
 static void (__stdcall *glTextureStorage2D)(u32 Texture, i32 Levels, u32 InternalFormat, i32 Width, i32 Height);

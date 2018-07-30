@@ -378,6 +378,7 @@ InitializeOpenGL(windows_context *Ctx)
     glDeleteTextures = GetFunctionOpenGL(Ctx, "glDeleteTextures");
     glBindVertexArray = GetFunctionOpenGL(Ctx, "glBindVertexArray");
     glDrawArrays = GetFunctionOpenGL(Ctx, "glDrawArrays");
+    glDrawElements = GetFunctionOpenGL(Ctx, "glDrawElements");
     glDispatchCompute = GetFunctionOpenGL(Ctx, "glDispatchCompute");
     glTextureStorage2D = GetFunctionOpenGL(Ctx, "glTextureStorage2D");
     glTextureParameteri = GetFunctionOpenGL(Ctx, "glTextureParameteri");
