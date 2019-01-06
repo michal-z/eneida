@@ -6,7 +6,7 @@ set CFLAGS=/Od /D_DEBUG
 set CC=..\compiler\cl.exe
 set HLSL=..\compiler\fxc.exe /Ges /O3 /WX /nologo /Qstrip_reflect /Qstrip_debug /Qstrip_priv
 set ASM=..\compiler\fasm.exe
-set APPNAME=demo01
+set APPNAME=test01
 
 if exist %APPNAME%.exe del %APPNAME%.exe
 
@@ -17,7 +17,7 @@ if exist %APPNAME%.exe del %APPNAME%.exe
 
 %CC% %CFLAGS% /Gm- /nologo /GS- /Gs999999 /Gy /Gw /EHa- ^
     /WX /Wall /Bt /wd4710 /wd4711 /wd5045 /wd4820 /wd4201 /wd4221 /wd4152 /wd4204 ^
-    demo01.c ^
+    %APPNAME%.c ^
     /link ..\compiler\kernel32.lib ^
     /OPT:REF /INCREMENTAL:NO /SUBSYSTEM:WINDOWS /ENTRY:Start /NODEFAULTLIB /OUT:%APPNAME%.exe
 
