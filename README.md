@@ -11,3 +11,4 @@
 * No external headers or libs are required (not even system or libc headers).
 * Only external functions used are <b>LoadLibrary</b> and <b>GetProcAddress</b>. Everything else is loaded at runtime.
 * #include is not allowed to optimze build times. Everything must be declared in the source code.
+* Each program must consist of single C and single HLSL file.
