@@ -831,50 +831,26 @@ static void DxInit(void *window)
     _Dx.frameFenceEvent = CreateEventEx(NULL, NULL, 0, EVENT_ALL_ACCESS);
 }
 //-------------------------------------------------------------------------------------------------
-// Main module
+// Library
 //-------------------------------------------------------------------------------------------------
-static void Draw(void)
+/*
+static void *LibLoadFile(const char *filename, u32 *out_file_size)
 {
-    ID3D12CommandAllocator *cmdAlloc = Dx.cmdAlloc[Dx.frameIndex];
-    cmdAlloc->vt->Reset(cmdAlloc);
-
-    D3D12_VIEWPORT viewport = { 0.0f, 0.0f, (F32)G.viewportWidth, (F32)G.viewportHeight, 0.0f, 1.0f };
-    D3D12_RECT scissor = { 0, 0, G.viewportWidth, G.viewportHeight };
-    ID3D12GraphicsCommandList *cmdList = Dx.cmdList;
-    cmdList->vt->Reset(cmdList, cmdAlloc, NULL);
-    cmdList->vt->RSSetViewports(cmdList, 1, &viewport);
-    cmdList->vt->RSSetScissorRects(cmdList, 1, &scissor);
-
-    ID3D12Resource *backBuffer;
-    D3D12_CPU_DESCRIPTOR_HANDLE backBufferDescriptor;
-    DxGetBackBuffer(&backBuffer, &backBufferDescriptor);
-    D3D12_RESOURCE_BARRIER barrier = {
-        .Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION,
-        .Transition.pResource = backBuffer,
-        .Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT,
-        .Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET };
-    cmdList->vt->ResourceBarrier(cmdList, 1, &barrier);
-
-    F32 clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
-    cmdList->vt->OMSetRenderTargets(cmdList, 1, &backBufferDescriptor, FALSE, &Dx.depthBufferDescriptor);
-    cmdList->vt->ClearRenderTargetView(cmdList, backBufferDescriptor, clearColor, 0, NULL);
-    cmdList->vt->ClearDepthStencilView(cmdList, Dx.depthBufferDescriptor, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, NULL);
-
-    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-    cmdList->vt->ResourceBarrier(cmdList, 1, &barrier);
-
-    cmdList->vt->Close(cmdList);
-
-    Dx.cmdQueue->vt->ExecuteCommandLists(Dx.cmdQueue, 1, (ID3D12CommandList **)&cmdList);
+    assert(out_file_size);
+    void *handle = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
+    assert(handle != (void *)-1);
+    u32 size = GetFileSize(handle, NULL);
+    char *content = (char *)mem_alloc(size);
+    u32 bytes_read;
+    ReadFile(handle, content, size, &bytes_read, NULL);
+    CloseHandle(handle);
+    assert(bytes_read == size);
+    *out_file_size = size;
+    return content;
 }
+*/
 
-static void Init(void)
-{
-    Dx.cmdList->vt->Close(Dx.cmdList);
-}
-
-static F64 GetTime(void)
+static F64 LibGetTime(void)
 {
     static S64 frequency, startCounter;
     if (frequency == 0) {
@@ -886,18 +862,18 @@ static F64 GetTime(void)
     return (counter - startCounter) / (F64)frequency;
 }
 
-static void UpdateFrameTime(void *window, const char *name, F64 *timeOut, F32 *deltaTimeOut)
+static void LibUpdateFrameStats(void *window, const char *name, F64 *timeOut, F32 *deltaTimeOut)
 {
     static F64 prevTime;
     static F64 prevHeaderUpdateTime;
     static U32 frameCount;
 
     if (prevTime == 0.0) {
-        prevTime = GetTime();
+        prevTime = LibGetTime();
         prevHeaderUpdateTime = prevTime;
     }
 
-    *timeOut = GetTime();
+    *timeOut = LibGetTime();
     *deltaTimeOut = (F32)(*timeOut - prevTime);
     prevTime = *timeOut;
 
@@ -913,7 +889,7 @@ static void UpdateFrameTime(void *window, const char *name, F64 *timeOut, F32 *d
     frameCount++;
 }
 
-static S64 __stdcall ProcessWindowMessage(void *window, U32 message, U64 wparam, S64 lparam)
+static S64 __stdcall _LibProcessWindowMessage(void *window, U32 message, U64 wparam, S64 lparam)
 {
     switch (message) {
         case WM_DESTROY:
@@ -929,10 +905,10 @@ static S64 __stdcall ProcessWindowMessage(void *window, U32 message, U64 wparam,
     return DefWindowProc(window, message, wparam, lparam);
 }
 
-static void *CreateWindow(const char *name, U32 width, U32 height)
+static void *LibCreateWindow(const char *name, U32 width, U32 height)
 {
     WNDCLASS winclass = {
-        .lpfnWndProc = ProcessWindowMessage,
+        .lpfnWndProc = _LibProcessWindowMessage,
         .hInstance = GetModuleHandle(NULL),
         .hCursor = LoadCursor(NULL, IDC_ARROW),
         .lpszClassName = name,
@@ -944,21 +920,16 @@ static void *CreateWindow(const char *name, U32 width, U32 height)
     if (!AdjustWindowRect(&rect, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX, 0))
         assert(0);
 
-    void *window = CreateWindowEx(
-        0, name, name, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_VISIBLE,
-        CW_USEDEFAULT, CW_USEDEFAULT,
-        rect.right - rect.left, rect.bottom - rect.top,
-        NULL, NULL, NULL, 0);
+    void *window = CreateWindowEx(0, name, name, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_VISIBLE,
+                                  CW_USEDEFAULT, CW_USEDEFAULT,
+                                  rect.right - rect.left, rect.bottom - rect.top,
+                                  NULL, NULL, NULL, 0);
     assert(window);
     return window;
 }
 
-void Start(void)
+static void LibLoadFunctions(void)
 {
-    G.viewportWidth = 1920;
-    G.viewportHeight = 1080;
-    G.demoName = "demo01";
-
     void *kernel32 = LoadLibraryA("kernel32.dll");
     OutputDebugString = GetProcAddress(kernel32, "OutputDebugStringA");
     GetModuleHandle = GetProcAddress(kernel32, "GetModuleHandleA");
@@ -1005,10 +976,61 @@ void Start(void)
 
     void *dxgi = LoadLibraryA("dxgi.dll");
     CreateDXGIFactory1 = GetProcAddress(dxgi, "CreateDXGIFactory1");
+}
+//-------------------------------------------------------------------------------------------------
+// Main module
+//-------------------------------------------------------------------------------------------------
+static void Draw(void)
+{
+    ID3D12CommandAllocator *cmdAlloc = Dx.cmdAlloc[Dx.frameIndex];
+    cmdAlloc->vt->Reset(cmdAlloc);
 
+    D3D12_VIEWPORT viewport = { 0.0f, 0.0f, (F32)G.viewportWidth, (F32)G.viewportHeight, 0.0f, 1.0f };
+    D3D12_RECT scissor = { 0, 0, G.viewportWidth, G.viewportHeight };
+    ID3D12GraphicsCommandList *cmdList = Dx.cmdList;
+    cmdList->vt->Reset(cmdList, cmdAlloc, NULL);
+    cmdList->vt->RSSetViewports(cmdList, 1, &viewport);
+    cmdList->vt->RSSetScissorRects(cmdList, 1, &scissor);
+
+    ID3D12Resource *backBuffer;
+    D3D12_CPU_DESCRIPTOR_HANDLE backBufferDescriptor;
+    DxGetBackBuffer(&backBuffer, &backBufferDescriptor);
+    D3D12_RESOURCE_BARRIER barrier = {
+        .Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION,
+        .Transition.pResource = backBuffer,
+        .Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT,
+        .Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET };
+    cmdList->vt->ResourceBarrier(cmdList, 1, &barrier);
+
+    F32 clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+    cmdList->vt->OMSetRenderTargets(cmdList, 1, &backBufferDescriptor, FALSE, &Dx.depthBufferDescriptor);
+    cmdList->vt->ClearRenderTargetView(cmdList, backBufferDescriptor, clearColor, 0, NULL);
+    cmdList->vt->ClearDepthStencilView(cmdList, Dx.depthBufferDescriptor, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, NULL);
+
+    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+    cmdList->vt->ResourceBarrier(cmdList, 1, &barrier);
+
+    cmdList->vt->Close(cmdList);
+
+    Dx.cmdQueue->vt->ExecuteCommandLists(Dx.cmdQueue, 1, (ID3D12CommandList **)&cmdList);
+}
+
+static void Init(void)
+{
+    Dx.cmdList->vt->Close(Dx.cmdList);
+}
+
+void Start(void)
+{
+    G.viewportWidth = 1920;
+    G.viewportHeight = 1080;
+    G.demoName = "test01";
+
+    LibLoadFunctions();
     SetProcessDPIAware();
 
-    void *window = CreateWindow(G.demoName, G.viewportWidth, G.viewportHeight);
+    void *window = LibCreateWindow(G.demoName, G.viewportWidth, G.viewportHeight);
     DxInit(window);
     Init();
 
@@ -1021,7 +1043,7 @@ void Start(void)
         } else {
             F64 frameTime;
             F32 frameDeltaTime;
-            UpdateFrameTime(window, G.demoName, &frameTime, &frameDeltaTime);
+            LibUpdateFrameStats(window, G.demoName, &frameTime, &frameDeltaTime);
             Draw();
             DxPresent();
         }
