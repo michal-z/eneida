@@ -596,8 +596,8 @@ typedef struct _DxDescriptorHeap {
 } _DxDescriptorHeap;
 
 typedef struct _DxGpuMemoryHeap {
-    ID3D12Resource* heap;
-    U8* cpuStart;
+    ID3D12Resource *heap;
+    U8 *cpuStart;
     D3D12_GPU_VIRTUAL_ADDRESS gpuStart;
     U32 size;
     U32 capacity;
