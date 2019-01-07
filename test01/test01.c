@@ -833,6 +833,43 @@ static void DxInit(void *window)
 //-------------------------------------------------------------------------------------------------
 // Library
 //-------------------------------------------------------------------------------------------------
+static void *LibMalloc(U64 size)
+{
+    assert(size > 0);
+    void *mem = HeapAlloc(GetProcessHeap(), 0, size);
+    if (!mem) {
+        OutputDebugString("Failed to allocate memory!");
+        assert(0);
+        ExitProcess(1);
+    }
+    return mem;
+}
+
+static void *LibRealloc(void *addr, U64 size)
+{
+    assert(size > 0);
+    if (addr == NULL) {
+        return LibMalloc(size);
+    } else {
+        void *mem = HeapReAlloc(GetProcessHeap(), 0, addr, size);
+        if (!mem) {
+            OutputDebugString("Failed to reallocate memory!");
+            assert(0);
+            ExitProcess(1);
+        }
+        return mem;
+    }
+}
+
+static void LibFree(void *addr)
+{
+    assert(addr);
+    if (!HeapFree(GetProcessHeap(), 0, addr)) {
+        OutputDebugString("Failed to free memory!");
+        assert(0);
+        ExitProcess(1);
+    }
+}
 /*
 static void *LibLoadFile(const char *filename, u32 *out_file_size)
 {
