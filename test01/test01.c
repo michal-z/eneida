@@ -23,6 +23,8 @@ typedef double F64;
 #define VHR(r) if ((r) < 0) { assert(0); }
 #define SAFE_RELEASE(o) if ((o)) { IUnknown_Release((o)); (o) = NULL; }
 
+#define TRUE 1
+#define FALSE 0
 #define PM_REMOVE 0x0001
 #define WM_QUIT 0x0012
 #define WM_DESTROY 0x0002
@@ -462,7 +464,7 @@ typedef struct ID3D12GraphicsCommandListVt {
     void (__stdcall *IASetPrimitiveTopology)(ID3D12GraphicsCommandList *, D3D12_PRIMITIVE_TOPOLOGY);
     void (__stdcall *RSSetViewports)(ID3D12GraphicsCommandList *, U32, const D3D12_VIEWPORT *);
     void (__stdcall *RSSetScissorRects)(ID3D12GraphicsCommandList *, U32, const D3D12_RECT *);
-    void (__stdcall *OMSetBlendFactor)(ID3D12GraphicsCommandList *, const F32 blend_factor[4]);
+    void (__stdcall *OMSetBlendFactor)(ID3D12GraphicsCommandList *, const F32 [4]);
     void (__stdcall *OMSetStencilRef)(ID3D12GraphicsCommandList *, U32);
     void (__stdcall *SetPipelineState)(ID3D12GraphicsCommandList *, ID3D12PipelineState *);
     void (__stdcall *ResourceBarrier)(ID3D12GraphicsCommandList *, U32, const D3D12_RESOURCE_BARRIER *);
@@ -487,9 +489,9 @@ typedef struct ID3D12GraphicsCommandListVt {
     void (__stdcall *SOSetTargets)(ID3D12GraphicsCommandList *, U32, U32, const D3D12_STREAM_OUTPUT_BUFFER_VIEW *);
     void (__stdcall *OMSetRenderTargets)(ID3D12GraphicsCommandList *, U32, const D3D12_CPU_DESCRIPTOR_HANDLE *, S32, const D3D12_CPU_DESCRIPTOR_HANDLE *);
     void (__stdcall *ClearDepthStencilView)(ID3D12GraphicsCommandList *, D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_CLEAR_FLAGS, F32, U8, U32, const D3D12_RECT *);
-    void (__stdcall *ClearRenderTargetView)(ID3D12GraphicsCommandList *, D3D12_CPU_DESCRIPTOR_HANDLE, const F32 color_rgba[4], U32, const D3D12_RECT *);
-    void (__stdcall *ClearUnorderedAccessViewUint)(ID3D12GraphicsCommandList *, D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_CPU_DESCRIPTOR_HANDLE, ID3D12Resource *, const U32 values[4], U32, const D3D12_RECT *);
-    void (__stdcall *ClearUnorderedAccessViewFloat)(ID3D12GraphicsCommandList *, D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_CPU_DESCRIPTOR_HANDLE, ID3D12Resource *, const F32 values[4], U32, const D3D12_RECT *);
+    void (__stdcall *ClearRenderTargetView)(ID3D12GraphicsCommandList *, D3D12_CPU_DESCRIPTOR_HANDLE, const F32 [4], U32, const D3D12_RECT *);
+    void (__stdcall *ClearUnorderedAccessViewUint)(ID3D12GraphicsCommandList *, D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_CPU_DESCRIPTOR_HANDLE, ID3D12Resource *, const U32 [4], U32, const D3D12_RECT *);
+    void (__stdcall *ClearUnorderedAccessViewFloat)(ID3D12GraphicsCommandList *, D3D12_GPU_DESCRIPTOR_HANDLE, D3D12_CPU_DESCRIPTOR_HANDLE, ID3D12Resource *, const F32 [4], U32, const D3D12_RECT *);
     void (__stdcall *DiscardResource)(ID3D12GraphicsCommandList *, ID3D12Resource *, const D3D12_DISCARD_REGION *);
     void (__stdcall *BeginQuery)(ID3D12GraphicsCommandList *, ID3D12QueryHeap *, D3D12_QUERY_TYPE, U32);
     void (__stdcall *EndQuery)(ID3D12GraphicsCommandList *, ID3D12QueryHeap *, D3D12_QUERY_TYPE, U32);
@@ -710,7 +712,7 @@ static void DxInit(void *window)
         .OutputWindow = window,
         .SampleDesc.Count = 1,
         .SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL,
-        .Windowed = 1 };
+        .Windowed = TRUE };
     IUnknown *swapchain;
     VHR(factory->vt->CreateSwapChain(factory, (IUnknown *)Dx.cmdQueue, &swapchainDesc, (IDXGISwapChain **)&swapchain));
     VHR(swapchain->vt->QueryInterface(swapchain, &IID_IDXGISwapChain3, &_Dx.swapchain));
@@ -824,7 +826,6 @@ static void DxInit(void *window)
         D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = { .Format = format, .ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D };
         Dx.device->vt->CreateDepthStencilView(Dx.device, Dx.depthBuffer, &dsvDesc, Dx.depthBufferDescriptor);
     }
-
     VHR(Dx.device->vt->CreateCommandList(Dx.device, 0, D3D12_COMMAND_LIST_TYPE_DIRECT, Dx.cmdAlloc[0], NULL, &IID_ID3D12GraphicsCommandList, &Dx.cmdList));
     VHR(Dx.device->vt->CreateFence(Dx.device, 0, D3D12_FENCE_FLAG_NONE, &IID_ID3D12Fence, &_Dx.frameFence));
     _Dx.frameFenceEvent = CreateEventEx(NULL, NULL, 0, EVENT_ALL_ACCESS);
@@ -843,6 +844,26 @@ static void Draw(void)
     cmdList->vt->Reset(cmdList, cmdAlloc, NULL);
     cmdList->vt->RSSetViewports(cmdList, 1, &viewport);
     cmdList->vt->RSSetScissorRects(cmdList, 1, &scissor);
+
+    ID3D12Resource *backBuffer;
+    D3D12_CPU_DESCRIPTOR_HANDLE backBufferDescriptor;
+    DxGetBackBuffer(&backBuffer, &backBufferDescriptor);
+    D3D12_RESOURCE_BARRIER barrier = {
+        .Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION,
+        .Transition.pResource = backBuffer,
+        .Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT,
+        .Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET };
+    cmdList->vt->ResourceBarrier(cmdList, 1, &barrier);
+
+    F32 clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+    cmdList->vt->OMSetRenderTargets(cmdList, 1, &backBufferDescriptor, FALSE, &Dx.depthBufferDescriptor);
+    cmdList->vt->ClearRenderTargetView(cmdList, backBufferDescriptor, clearColor, 0, NULL);
+    cmdList->vt->ClearDepthStencilView(cmdList, Dx.depthBufferDescriptor, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, NULL);
+
+    barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+    cmdList->vt->ResourceBarrier(cmdList, 1, &barrier);
+
     cmdList->vt->Close(cmdList);
 
     Dx.cmdQueue->vt->ExecuteCommandLists(Dx.cmdQueue, 1, (ID3D12CommandList **)&cmdList);
