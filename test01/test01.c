@@ -1,3 +1,6 @@
+//-------------------------------------------------------------------------------------------------
+// Winapi and core stuff
+//-------------------------------------------------------------------------------------------------
 #define NULL ((void *)0)
 #ifdef _DEBUG
 #define assert(expression) if (!(expression)) { __debugbreak(); }
@@ -18,7 +21,7 @@ typedef float F32;
 typedef double F64;
 
 #define VHR(r) if ((r) < 0) { assert(0); }
-#define COMRELEASE(o) if ((o)) { IUnknown_Release((o)); (o) = NULL; }
+#define SAFE_RELEASE(o) if ((o)) { IUnknown_Release((o)); (o) = NULL; }
 
 #define PM_REMOVE 0x0001
 #define WM_QUIT 0x0012
@@ -569,7 +572,7 @@ struct {
     const char* demoName;
 } G;
 //-------------------------------------------------------------------------------------------------
-// DirectX12 Subsystem
+// Direct3D 12 Subsystem
 //-------------------------------------------------------------------------------------------------
 struct {
     ID3D12Device *device;
@@ -666,6 +669,19 @@ static void DxWaitForGpu(void)
     Dx.cmdQueue->vt->Signal(Dx.cmdQueue, _Dx.frameFence, ++_Dx.frameCount);
     _Dx.frameFence->vt->SetEventOnCompletion(_Dx.frameFence, _Dx.frameCount, _Dx.frameFenceEvent);
     WaitForSingleObject(_Dx.frameFenceEvent, INFINITE);
+}
+
+static inline void DxGetBackBuffer(ID3D12Resource **resourceOut, D3D12_CPU_DESCRIPTOR_HANDLE *descriptorOut)
+{
+    assert(resourceOut && descriptorOut);
+    *resourceOut = _Dx.swapbuffers[_Dx.backBufferIndex];
+    *descriptorOut = _Dx.rtvHeap.cpuStart;
+    descriptorOut->ptr += _Dx.backBufferIndex * Dx.descriptorSizeRtv;
+}
+
+static inline void DxSetDescriptorHeap(void)
+{
+    Dx.cmdList->vt->SetDescriptorHeaps(Dx.cmdList, 1, &_Dx.cbvSrvUavGpuHeaps[Dx.frameIndex].heap);
 }
 
 static void DxInit(void *window)
@@ -813,6 +829,29 @@ static void DxInit(void *window)
     VHR(Dx.device->vt->CreateFence(Dx.device, 0, D3D12_FENCE_FLAG_NONE, &IID_ID3D12Fence, &_Dx.frameFence));
     _Dx.frameFenceEvent = CreateEventEx(NULL, NULL, 0, EVENT_ALL_ACCESS);
 }
+//-------------------------------------------------------------------------------------------------
+// Main module
+//-------------------------------------------------------------------------------------------------
+static void Draw(void)
+{
+    ID3D12CommandAllocator *cmdAlloc = Dx.cmdAlloc[Dx.frameIndex];
+    cmdAlloc->vt->Reset(cmdAlloc);
+
+    D3D12_VIEWPORT viewport = { 0.0f, 0.0f, (F32)G.viewportWidth, (F32)G.viewportHeight, 0.0f, 1.0f };
+    D3D12_RECT scissor = { 0, 0, G.viewportWidth, G.viewportHeight };
+    ID3D12GraphicsCommandList *cmdList = Dx.cmdList;
+    cmdList->vt->Reset(cmdList, cmdAlloc, NULL);
+    cmdList->vt->RSSetViewports(cmdList, 1, &viewport);
+    cmdList->vt->RSSetScissorRects(cmdList, 1, &scissor);
+    cmdList->vt->Close(cmdList);
+
+    Dx.cmdQueue->vt->ExecuteCommandLists(Dx.cmdQueue, 1, (ID3D12CommandList **)&cmdList);
+}
+
+static void Init(void)
+{
+    Dx.cmdList->vt->Close(Dx.cmdList);
+}
 
 static F64 GetTime(void)
 {
@@ -948,10 +987,9 @@ void Start(void)
 
     SetProcessDPIAware();
 
-    // init window
     void *window = CreateWindow(G.demoName, G.viewportWidth, G.viewportHeight);
-
     DxInit(window);
+    Init();
 
     for (;;) {
         MSG message = { 0 };
@@ -963,6 +1001,7 @@ void Start(void)
             F64 frameTime;
             F32 frameDeltaTime;
             UpdateFrameTime(window, G.demoName, &frameTime, &frameDeltaTime);
+            Draw();
             DxPresent();
         }
     }

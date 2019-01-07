@@ -1,6 +1,7 @@
 @echo off
 
 set CFLAGS=/Od /D_DEBUG
+::set CFLAGS=/Od /Zi /D_DEBUG
 ::set CFLAGS=/O2 /fp:fast
 
 set CC=..\compiler\cl.exe
