@@ -1,4 +1,6 @@
 @echo off
+setlocal enableextensions
+setlocal enabledelayedexpansion
 
 set CFLAGS=/Od /D_DEBUG
 ::set CFLAGS=/Od /Zi /D_DEBUG
@@ -8,9 +10,15 @@ set CC=..\compiler\cl.exe
 set HLSLC=..\compiler\dxc.exe /Ges /O3 /WX /nologo
 
 set NAME=test01
+set SHADER_BEGIN=0
+set SHADER_END=0
  
-%HLSLC% /D VS_01 /E VertexMain /Fo data\01.vs.cso /T vs_6_0 %NAME%.hlsl & if ERRORLEVEL 1 goto :end
-%HLSLC% /D PS_01 /E PixelMain /Fo data\01.ps.cso /T ps_6_0 %NAME%.hlsl & if ERRORLEVEL 1 goto :end
+for /L %%G in (%SHADER_BEGIN%,1,%SHADER_END%) do (
+    if exist data\%%G.vs.cso del data\%%G.vs.cso
+    if exist data\%%G.ps.cso del data\%%G.ps.cso
+    %HLSLC% /D VS_%%G /E VertexMain /Fo data\%%G.vs.cso /T vs_6_0 %NAME%.hlsl & if !ERRORLEVEL! neq 0 (goto :end)
+    %HLSLC% /D PS_%%G /E PixelMain /Fo data\%%G.ps.cso /T ps_6_0 %NAME%.hlsl & if !ERRORLEVEL! neq 0 (goto :end)
+)
 
 if exist %NAME%.exe del %NAME%.exe
 
@@ -19,6 +27,6 @@ if exist %NAME%.exe del %NAME%.exe
 
 if exist *.obj del *.obj
 
-:end
-
 if "%1" == "run" if exist %NAME%.exe (.\%NAME%.exe)
+
+:end

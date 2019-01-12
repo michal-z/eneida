@@ -1,11 +1,11 @@
 //-------------------------------------------------------------------------------------------------
-#if defined(VS_01) || defined(PS_01)
+#if defined(VS_0) || defined(PS_0)
 //-------------------------------------------------------------------------------------------------
 
 #define Rsi \
     "RootFlags(ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT)"
 
-#if defined(VS_01)
+#if defined(VS_0)
 
 [RootSignature(Rsi)]
 float4 VertexMain(uint vertexIndex : SV_VertexID) : SV_Position
@@ -14,7 +14,7 @@ float4 VertexMain(uint vertexIndex : SV_VertexID) : SV_Position
     return float4(vertices[vertexIndex], 0.0f, 1.0f);
 }
 
-#elif defined(PS_01)
+#elif defined(PS_0)
 
 [RootSignature(Rsi)]
 float4 PixelMain(float4 position : SV_Position) : SV_Target0

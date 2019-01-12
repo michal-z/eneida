@@ -567,11 +567,355 @@ static const GUID IID_ID3D12CommandAllocator = { 0x6102dee4,0xaf59,0x4b09,0xb9,0
 static const GUID IID_ID3D12Fence = { 0x0a753dcf,0xc4d8,0x4b91,0xad,0xf6,0xbe,0x5a,0x60,0xd9,0x5a,0x76 };
 static const GUID IID_ID3D12PipelineState = { 0x765a30f3,0xf624,0x4c6f,0xa8,0x28,0xac,0xe9,0x48,0x62,0x24,0x45 };
 //-------------------------------------------------------------------------------------------------
+// Math
+//-------------------------------------------------------------------------------------------------
+#define KPi 3.141592654f
+#define K2Pi 6.283185307f
+#define K1DivPi 0.318309886f
+#define K1Div2Pi 0.159154943f
+#define KPiDiv2 1.570796327f
+#define KPiDiv4 0.785398163f
+
+typedef union __declspec(intrin_type) __declspec(align(16)) __m128 {
+    float               m128_f32[4];
+    unsigned __int64    m128_u64[2];
+    __int8              m128_i8[16];
+    __int16             m128_i16[8];
+    __int32             m128_i32[4];
+    __int64             m128_i64[2];
+    unsigned __int8     m128_u8[16];
+    unsigned __int16    m128_u16[8];
+    unsigned __int32    m128_u32[4];
+} __m128;
+
+extern __m128 _mm_sqrt_ss(__m128 _A);
+extern __m128 _mm_load_ss(float const*_A);
+extern void _mm_store_ss(float *_V, __m128 _A);
+
+typedef struct F32x3 {
+    union {
+        struct { F32 x, y, z; };
+        F32 v[3];
+    };
+} F32x3;
+
+typedef struct F32x4 {
+    union {
+        struct { F32 x, y, z, w; };
+        F32 v[4];
+    };
+} F32x4;
+
+typedef struct F32x16 {
+    union {
+        struct { F32x4 r0, r1, r2, r3; };
+        F32x4 r[4];
+        F32 m[4][4];
+        F32 v[16];
+    };
+} F32x16;
+
+static inline U32 U32Rand(U32 *state)
+{
+    assert(state);
+    *state = *state * 1103515245 + 12345;
+    return (*state >> 16) & 0x7fff;
+}
+
+static inline F32 F32Rand(U32 *state)
+{
+    U32 result = (127 << 23) | (U32Rand(state) << 8);
+    return *(F32 *)&result - 1.0f;
+}
+
+static inline F32 F32RandRange(U32 *state, F32 begin, F32 end)
+{
+    assert(begin < end);
+    return begin + (end - begin) * F32Rand(state);
+}
+
+static __forceinline F32 F32Sqrt(F32 x)
+{
+    __m128 xv = _mm_load_ss(&x);
+    xv = _mm_sqrt_ss(xv);
+    _mm_store_ss(&x, xv);
+    return x;
+}
+
+static __forceinline F32 _F32PreSin(F32 x)
+{
+    F32 quotient = K1Div2Pi * x;
+    quotient = x >= 0.0f ? (F32)((S32)(quotient + 0.5f)) : (F32)((S32)(quotient - 0.5f));
+    F32 y = x - K2Pi * quotient;
+    if (y > KPiDiv2) {
+        y = KPi - y;
+    } else if (y < -KPiDiv2) {
+        y = -KPi - y;
+    }
+    return y;
+}
+
+static __forceinline F32 _F32PreCos(F32 x, F32 *sign)
+{
+    assert(sign);
+    F32 quotient = K1Div2Pi * x;
+    quotient = x >= 0.0f ? (F32)((S32)(quotient + 0.5f)) : (F32)((S32)(quotient - 0.5f));
+    F32 y = x - K2Pi * quotient;
+    if (y > KPiDiv2) {
+        y = KPi - y;
+        *sign = -1.0f;
+    } else if (y < -KPiDiv2) {
+        y = -KPi - y;
+        *sign = -1.0f;
+    } else {
+        *sign = 1.0f;
+    }
+    return y;
+}
+
+static F32 F32Sin(F32 x)
+{
+    F32 y = _F32PreSin(x);
+    F32 y2 = y * y;
+    return (((((-2.3889859e-08f * y2 + 2.7525562e-06f) * y2 - 0.00019840874f) * y2 + 0.0083333310f) * y2 - 0.16666667f) * y2 + 1.0f) * y;
+}
+
+static F32 F32SinFast(F32 x)
+{
+    F32 y = _F32PreSin(x);
+    F32 y2 = y * y;
+    return (((-0.00018524670f * y2 + 0.0083139502f) * y2 - 0.16665852f) * y2 + 1.0f) * y;
+}
+
+static F32 F32Cos(F32 x)
+{
+    F32 sign;
+    F32 y = _F32PreCos(x, &sign);
+    F32 y2 = y * y;
+    return sign * (((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f);
+}
+
+static F32 F32CosFast(F32 x)
+{
+    F32 sign;
+    F32 y = _F32PreCos(x, &sign);
+    F32 y2 = y * y;
+    return sign * (((-0.0012712436f * y2 + 0.041493919f) * y2 - 0.49992746f) * y2 + 1.0f);
+}
+
+static void F32SinCos(F32 x, F32 *sin, F32 *cos)
+{
+    assert(sin && cos);
+    F32 sign;
+    F32 y = _F32PreCos(x, &sign);
+    F32 y2 = y * y;
+    *sin = (((((-2.3889859e-08f * y2 + 2.7525562e-06f) * y2 - 0.00019840874f) * y2 + 0.0083333310f) * y2 - 0.16666667f) * y2 + 1.0f) * y;
+    *cos = sign * (((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f);
+}
+
+static void F32SinCosFast(F32 x, F32 *sin, F32 *cos)
+{
+    assert(sin && cos);
+    F32 sign;
+    F32 y = _F32PreCos(x, &sign);
+    F32 y2 = y * y;
+    *sin = (((-0.00018524670f * y2 + 0.0083139502f) * y2 - 0.16665852f) * y2 + 1.0f) * y;
+    *cos = sign * (((-0.0012712436f * y2 + 0.041493919f) * y2 - 0.49992746f) * y2 + 1.0f);
+}
+
+static inline F32x3 *F32x3Add(F32x3 *out, const F32x3 *a, const F32x3 *b)
+{
+    out->x = a->x + b->x; out->y = a->y + b->y; out->z = a->z + b->z; return out;
+}
+//-------------------------------------------------------------------------------------------------
+// Library
+//-------------------------------------------------------------------------------------------------
+static void *LibMalloc(U64 size)
+{
+    assert(size > 0);
+    void *mem = HeapAlloc(GetProcessHeap(), 0, size);
+    if (!mem) {
+        OutputDebugString("Failed to allocate memory!");
+        assert(0);
+        ExitProcess(1);
+    }
+    return mem;
+}
+
+static void *LibRealloc(void *addr, U64 size)
+{
+    assert(size > 0);
+    if (addr == NULL) {
+        return LibMalloc(size);
+    } else {
+        void *mem = HeapReAlloc(GetProcessHeap(), 0, addr, size);
+        if (!mem) {
+            OutputDebugString("Failed to reallocate memory!");
+            assert(0);
+            ExitProcess(1);
+        }
+        return mem;
+    }
+}
+
+static void LibFree(void *addr)
+{
+    assert(addr);
+    if (!HeapFree(GetProcessHeap(), 0, addr)) {
+        OutputDebugString("Failed to free memory!");
+        assert(0);
+        ExitProcess(1);
+    }
+}
+
+static void *LibLoadFile(const char *filename, U32 *fileSizeOut)
+{
+    assert(filename && fileSizeOut);
+    void *handle = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
+    assert(handle != (void *)-1);
+    U32 size = GetFileSize(handle, NULL);
+    char *content = (char *)LibMalloc(size);
+    U32 bytesRead;
+    ReadFile(handle, content, size, &bytesRead, NULL);
+    CloseHandle(handle);
+    assert(bytesRead == size);
+    *fileSizeOut = size;
+    return content;
+}
+
+static F64 LibGetTime(void)
+{
+    static S64 frequency, startCounter;
+    if (frequency == 0) {
+        QueryPerformanceCounter(&startCounter);
+        QueryPerformanceFrequency(&frequency);
+    }
+    S64 counter;
+    QueryPerformanceCounter(&counter);
+    return (counter - startCounter) / (F64)frequency;
+}
+
+static void LibUpdateFrameStats(void *window, const char *name, F64 *timeOut, F32 *deltaTimeOut)
+{
+    static F64 prevTime;
+    static F64 prevHeaderUpdateTime;
+    static U32 frameCount;
+
+    if (prevTime == 0.0) {
+        prevTime = LibGetTime();
+        prevHeaderUpdateTime = prevTime;
+    }
+
+    *timeOut = LibGetTime();
+    *deltaTimeOut = (F32)(*timeOut - prevTime);
+    prevTime = *timeOut;
+
+    if ((*timeOut - prevHeaderUpdateTime) >= 1.0) {
+        F64 fps = frameCount / (*timeOut - prevHeaderUpdateTime);
+        F64 us = (1.0 / fps) * 1000000.0;
+        char text[256];
+        wsprintf(text, "[%d fps  %d us] %s", (S32)fps, (S32)us, name);
+        SetWindowText(window, text);
+        prevHeaderUpdateTime = *timeOut;
+        frameCount = 0;
+    }
+    frameCount++;
+}
+
+static S64 __stdcall _LibProcessWindowMessage(void *window, U32 message, U64 wparam, S64 lparam)
+{
+    switch (message) {
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            return 0;
+        case WM_KEYDOWN:
+            if (wparam == VK_ESCAPE) {
+                PostQuitMessage(0);
+                return 0;
+            }
+            break;
+    }
+    return DefWindowProc(window, message, wparam, lparam);
+}
+
+static void *LibCreateWindow(const char *name, U32 width, U32 height)
+{
+    WNDCLASS winclass = {
+        .lpfnWndProc = _LibProcessWindowMessage,
+        .hInstance = GetModuleHandle(NULL),
+        .hCursor = LoadCursor(NULL, IDC_ARROW),
+        .lpszClassName = name,
+    };
+    if (!RegisterClass(&winclass))
+        assert(0);
+
+    RECT rect = { 0, 0, (S32)width, (S32)height };
+    if (!AdjustWindowRect(&rect, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX, 0))
+        assert(0);
+
+    void *window = CreateWindowEx(0, name, name, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_VISIBLE,
+                                  CW_USEDEFAULT, CW_USEDEFAULT,
+                                  rect.right - rect.left, rect.bottom - rect.top,
+                                  NULL, NULL, NULL, 0);
+    assert(window);
+    return window;
+}
+
+static void LibLoadFunctions(void)
+{
+    void *kernel32 = LoadLibraryA("kernel32.dll");
+    OutputDebugString = GetProcAddress(kernel32, "OutputDebugStringA");
+    GetModuleHandle = GetProcAddress(kernel32, "GetModuleHandleA");
+    QueryPerformanceCounter = GetProcAddress(kernel32, "QueryPerformanceCounter");
+    QueryPerformanceFrequency = GetProcAddress(kernel32, "QueryPerformanceFrequency");
+    VirtualAlloc = GetProcAddress(kernel32, "VirtualAlloc");
+    VirtualFree = GetProcAddress(kernel32, "VirtualFree");
+    ExitProcess = GetProcAddress(kernel32, "ExitProcess");
+    CreateFile = GetProcAddress(kernel32, "CreateFileA");
+    ReadFile = GetProcAddress(kernel32, "ReadFile");
+    GetFileSize = GetProcAddress(kernel32, "GetFileSize");
+    CloseHandle = GetProcAddress(kernel32, "CloseHandle");
+    Sleep = GetProcAddress(kernel32, "Sleep");
+    HeapAlloc = GetProcAddress(kernel32, "HeapAlloc");
+    HeapFree = GetProcAddress(kernel32, "HeapFree");
+    HeapReAlloc = GetProcAddress(kernel32, "HeapReAlloc");
+    GetProcessHeap = GetProcAddress(kernel32, "GetProcessHeap");
+    CreateEventEx = GetProcAddress(kernel32, "CreateEventExA");
+    WaitForSingleObject = GetProcAddress(kernel32, "WaitForSingleObject");
+
+    void *user32 = LoadLibraryA("user32.dll");
+    PeekMessage = GetProcAddress(user32, "PeekMessageA");
+    DispatchMessage = GetProcAddress(user32, "DispatchMessageA");
+    PostQuitMessage = GetProcAddress(user32, "PostQuitMessage");
+    DefWindowProc = GetProcAddress(user32, "DefWindowProcA");
+    LoadCursor = GetProcAddress(user32, "LoadCursorA");
+    RegisterClass = GetProcAddress(user32, "RegisterClassA");
+    CreateWindowEx = GetProcAddress(user32, "CreateWindowExA");
+    AdjustWindowRect = GetProcAddress(user32, "AdjustWindowRect");
+    wsprintf = GetProcAddress(user32, "wsprintfA");
+    SetWindowText = GetProcAddress(user32, "SetWindowTextA");
+    SetProcessDPIAware = GetProcAddress(user32, "SetProcessDPIAware");
+    GetDC = GetProcAddress(user32, "GetDC");
+    MessageBox = GetProcAddress(user32, "MessageBoxA");
+    GetClientRect = GetProcAddress(user32, "GetClientRect");
+
+    void *d3d12 = LoadLibraryA("d3d12.dll");
+    if (!d3d12) {
+        MessageBox(NULL, "Program requires Windows 10 machine with DirectX 12 support (D3D_FEATURE_LEVEL_11_1 or better).", "Error", 0);
+        ExitProcess(1);
+    }
+    D3D12CreateDevice = GetProcAddress(d3d12, "D3D12CreateDevice");
+    D3D12GetDebugInterface = GetProcAddress(d3d12, "D3D12GetDebugInterface");
+
+    void *dxgi = LoadLibraryA("dxgi.dll");
+    CreateDXGIFactory1 = GetProcAddress(dxgi, "CreateDXGIFactory1");
+}
+//-------------------------------------------------------------------------------------------------
 // Global data
 //-------------------------------------------------------------------------------------------------
 struct {
     U32 viewportWidth, viewportHeight;
-    const char* demoName;
+    const char *demoName;
 } G;
 //-------------------------------------------------------------------------------------------------
 // Direct3D 12 Subsystem
@@ -588,7 +932,7 @@ struct {
 } Dx;
 
 typedef struct _DxDescriptorHeap {
-    ID3D12DescriptorHeap* heap;
+    ID3D12DescriptorHeap *heap;
     D3D12_CPU_DESCRIPTOR_HANDLE cpuStart;
     D3D12_GPU_DESCRIPTOR_HANDLE gpuStart;
     U32 size;
@@ -829,190 +1173,6 @@ static void DxInit(void *window)
     VHR(Dx.device->vt->CreateCommandList(Dx.device, 0, D3D12_COMMAND_LIST_TYPE_DIRECT, Dx.cmdAlloc[0], NULL, &IID_ID3D12GraphicsCommandList, &Dx.cmdList));
     VHR(Dx.device->vt->CreateFence(Dx.device, 0, D3D12_FENCE_FLAG_NONE, &IID_ID3D12Fence, &_Dx.frameFence));
     _Dx.frameFenceEvent = CreateEventEx(NULL, NULL, 0, EVENT_ALL_ACCESS);
-}
-//-------------------------------------------------------------------------------------------------
-// Library
-//-------------------------------------------------------------------------------------------------
-static void *LibMalloc(U64 size)
-{
-    assert(size > 0);
-    void *mem = HeapAlloc(GetProcessHeap(), 0, size);
-    if (!mem) {
-        OutputDebugString("Failed to allocate memory!");
-        assert(0);
-        ExitProcess(1);
-    }
-    return mem;
-}
-
-static void *LibRealloc(void *addr, U64 size)
-{
-    assert(size > 0);
-    if (addr == NULL) {
-        return LibMalloc(size);
-    } else {
-        void *mem = HeapReAlloc(GetProcessHeap(), 0, addr, size);
-        if (!mem) {
-            OutputDebugString("Failed to reallocate memory!");
-            assert(0);
-            ExitProcess(1);
-        }
-        return mem;
-    }
-}
-
-static void LibFree(void *addr)
-{
-    assert(addr);
-    if (!HeapFree(GetProcessHeap(), 0, addr)) {
-        OutputDebugString("Failed to free memory!");
-        assert(0);
-        ExitProcess(1);
-    }
-}
-/*
-static void *LibLoadFile(const char *filename, u32 *out_file_size)
-{
-    assert(out_file_size);
-    void *handle = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
-    assert(handle != (void *)-1);
-    u32 size = GetFileSize(handle, NULL);
-    char *content = (char *)mem_alloc(size);
-    u32 bytes_read;
-    ReadFile(handle, content, size, &bytes_read, NULL);
-    CloseHandle(handle);
-    assert(bytes_read == size);
-    *out_file_size = size;
-    return content;
-}
-*/
-
-static F64 LibGetTime(void)
-{
-    static S64 frequency, startCounter;
-    if (frequency == 0) {
-        QueryPerformanceCounter(&startCounter);
-        QueryPerformanceFrequency(&frequency);
-    }
-    S64 counter;
-    QueryPerformanceCounter(&counter);
-    return (counter - startCounter) / (F64)frequency;
-}
-
-static void LibUpdateFrameStats(void *window, const char *name, F64 *timeOut, F32 *deltaTimeOut)
-{
-    static F64 prevTime;
-    static F64 prevHeaderUpdateTime;
-    static U32 frameCount;
-
-    if (prevTime == 0.0) {
-        prevTime = LibGetTime();
-        prevHeaderUpdateTime = prevTime;
-    }
-
-    *timeOut = LibGetTime();
-    *deltaTimeOut = (F32)(*timeOut - prevTime);
-    prevTime = *timeOut;
-
-    if ((*timeOut - prevHeaderUpdateTime) >= 1.0) {
-        F64 fps = frameCount / (*timeOut - prevHeaderUpdateTime);
-        F64 us = (1.0 / fps) * 1000000.0;
-        char text[256];
-        wsprintf(text, "[%d fps  %d us] %s", (S32)fps, (S32)us, name);
-        SetWindowText(window, text);
-        prevHeaderUpdateTime = *timeOut;
-        frameCount = 0;
-    }
-    frameCount++;
-}
-
-static S64 __stdcall _LibProcessWindowMessage(void *window, U32 message, U64 wparam, S64 lparam)
-{
-    switch (message) {
-        case WM_DESTROY:
-            PostQuitMessage(0);
-            return 0;
-        case WM_KEYDOWN:
-            if (wparam == VK_ESCAPE) {
-                PostQuitMessage(0);
-                return 0;
-            }
-            break;
-    }
-    return DefWindowProc(window, message, wparam, lparam);
-}
-
-static void *LibCreateWindow(const char *name, U32 width, U32 height)
-{
-    WNDCLASS winclass = {
-        .lpfnWndProc = _LibProcessWindowMessage,
-        .hInstance = GetModuleHandle(NULL),
-        .hCursor = LoadCursor(NULL, IDC_ARROW),
-        .lpszClassName = name,
-    };
-    if (!RegisterClass(&winclass))
-        assert(0);
-
-    RECT rect = { 0, 0, (S32)width, (S32)height };
-    if (!AdjustWindowRect(&rect, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX, 0))
-        assert(0);
-
-    void *window = CreateWindowEx(0, name, name, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_VISIBLE,
-                                  CW_USEDEFAULT, CW_USEDEFAULT,
-                                  rect.right - rect.left, rect.bottom - rect.top,
-                                  NULL, NULL, NULL, 0);
-    assert(window);
-    return window;
-}
-
-static void LibLoadFunctions(void)
-{
-    void *kernel32 = LoadLibraryA("kernel32.dll");
-    OutputDebugString = GetProcAddress(kernel32, "OutputDebugStringA");
-    GetModuleHandle = GetProcAddress(kernel32, "GetModuleHandleA");
-    QueryPerformanceCounter = GetProcAddress(kernel32, "QueryPerformanceCounter");
-    QueryPerformanceFrequency = GetProcAddress(kernel32, "QueryPerformanceFrequency");
-    VirtualAlloc = GetProcAddress(kernel32, "VirtualAlloc");
-    VirtualFree = GetProcAddress(kernel32, "VirtualFree");
-    ExitProcess = GetProcAddress(kernel32, "ExitProcess");
-    CreateFile = GetProcAddress(kernel32, "CreateFileA");
-    ReadFile = GetProcAddress(kernel32, "ReadFile");
-    GetFileSize = GetProcAddress(kernel32, "GetFileSize");
-    CloseHandle = GetProcAddress(kernel32, "CloseHandle");
-    Sleep = GetProcAddress(kernel32, "Sleep");
-    HeapAlloc = GetProcAddress(kernel32, "HeapAlloc");
-    HeapFree = GetProcAddress(kernel32, "HeapFree");
-    HeapReAlloc = GetProcAddress(kernel32, "HeapReAlloc");
-    GetProcessHeap = GetProcAddress(kernel32, "GetProcessHeap");
-    CreateEventEx = GetProcAddress(kernel32, "CreateEventExA");
-    WaitForSingleObject = GetProcAddress(kernel32, "WaitForSingleObject");
-
-    void *user32 = LoadLibraryA("user32.dll");
-    PeekMessage = GetProcAddress(user32, "PeekMessageA");
-    DispatchMessage = GetProcAddress(user32, "DispatchMessageA");
-    PostQuitMessage = GetProcAddress(user32, "PostQuitMessage");
-    DefWindowProc = GetProcAddress(user32, "DefWindowProcA");
-    LoadCursor = GetProcAddress(user32, "LoadCursorA");
-    RegisterClass = GetProcAddress(user32, "RegisterClassA");
-    CreateWindowEx = GetProcAddress(user32, "CreateWindowExA");
-    AdjustWindowRect = GetProcAddress(user32, "AdjustWindowRect");
-    wsprintf = GetProcAddress(user32, "wsprintfA");
-    SetWindowText = GetProcAddress(user32, "SetWindowTextA");
-    SetProcessDPIAware = GetProcAddress(user32, "SetProcessDPIAware");
-    GetDC = GetProcAddress(user32, "GetDC");
-    MessageBox = GetProcAddress(user32, "MessageBoxA");
-    GetClientRect = GetProcAddress(user32, "GetClientRect");
-
-    void *d3d12 = LoadLibraryA("d3d12.dll");
-    if (!d3d12) {
-        MessageBox(NULL, "Program requires Windows 10 machine with DirectX 12 support (D3D_FEATURE_LEVEL_11_1 or better).", "Error", 0);
-        ExitProcess(1);
-    }
-    D3D12CreateDevice = GetProcAddress(d3d12, "D3D12CreateDevice");
-    D3D12GetDebugInterface = GetProcAddress(d3d12, "D3D12GetDebugInterface");
-
-    void *dxgi = LoadLibraryA("dxgi.dll");
-    CreateDXGIFactory1 = GetProcAddress(dxgi, "CreateDXGIFactory1");
 }
 //-------------------------------------------------------------------------------------------------
 // Main module
