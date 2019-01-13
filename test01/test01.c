@@ -106,6 +106,16 @@ static B32 (__stdcall *SetProcessDPIAware)(void);
 static void *(__stdcall *GetDC)(void *);
 static B32 (__stdcall *MessageBox)(void *, const char *, const char *, U32);
 static B32 (__stdcall *GetClientRect)(void *, RECT *);
+
+void *memset(void *dest, S32 value, U64 count);
+#pragma intrinsic(memset)
+
+#pragma function(memset)
+void *memset(void *dest, S32 value, U64 count)
+{
+    __stosb((U8 *)dest, (U8)value, count);
+    return dest;
+}
 //-------------------------------------------------------------------------------------------------
 // DXGI
 //-------------------------------------------------------------------------------------------------
@@ -911,13 +921,6 @@ static void LibLoadFunctions(void)
     CreateDXGIFactory1 = GetProcAddress(dxgi, "CreateDXGIFactory1");
 }
 //-------------------------------------------------------------------------------------------------
-// Global data
-//-------------------------------------------------------------------------------------------------
-struct {
-    U32 viewportWidth, viewportHeight;
-    const char *demoName;
-} G;
-//-------------------------------------------------------------------------------------------------
 // Direct3D 12 Subsystem
 //-------------------------------------------------------------------------------------------------
 struct {
@@ -1063,6 +1066,9 @@ static void DxInit(void *window)
     swapchain->vt->Release(swapchain);
     factory->vt->Release(factory);
 
+    RECT winrect;
+    GetClientRect(window, &winrect);
+
     for (U32 i = 0; i < 2; ++i)
         VHR(Dx.device->vt->CreateCommandAllocator(Dx.device, D3D12_COMMAND_LIST_TYPE_DIRECT, &IID_ID3D12CommandAllocator, &Dx.cmdAlloc[i]));
 
@@ -1155,8 +1161,8 @@ static void DxInit(void *window)
         D3D12_HEAP_PROPERTIES heapProps = { .Type = D3D12_HEAP_TYPE_DEFAULT, .CreationNodeMask = 1, .VisibleNodeMask = 1 };
         D3D12_RESOURCE_DESC resourceDesc = {
             .Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D,
-            .Width = G.viewportWidth,
-            .Height = G.viewportHeight,
+            .Width = winrect.right,
+            .Height = winrect.bottom,
             .DepthOrArraySize = 1,
             .MipLevels = 1,
             .Format = format,
@@ -1177,6 +1183,13 @@ static void DxInit(void *window)
 //-------------------------------------------------------------------------------------------------
 // Main module
 //-------------------------------------------------------------------------------------------------
+struct {
+    U32 viewportWidth, viewportHeight;
+    const char *demoName;
+    ID3D12PipelineState *pipelineState;
+    ID3D12RootSignature *rootSignature;
+} G;
+
 static void Draw(void)
 {
     ID3D12CommandAllocator *cmdAlloc = Dx.cmdAlloc[Dx.frameIndex];
@@ -1204,6 +1217,11 @@ static void Draw(void)
     cmdList->vt->ClearRenderTargetView(cmdList, backBufferDescriptor, clearColor, 0, NULL);
     cmdList->vt->ClearDepthStencilView(cmdList, Dx.depthBufferDescriptor, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, NULL);
 
+    cmdList->vt->SetPipelineState(cmdList, G.pipelineState);
+    cmdList->vt->SetGraphicsRootSignature(cmdList, G.rootSignature);
+    cmdList->vt->IASetPrimitiveTopology(cmdList, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    cmdList->vt->DrawInstanced(cmdList, 3, 1, 0, 0);
+
     barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
     barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
     cmdList->vt->ResourceBarrier(cmdList, 1, &barrier);
@@ -1215,6 +1233,25 @@ static void Draw(void)
 
 static void Init(void)
 {
+    /* pso */ {
+        U32 vsSize, psSize;
+        void *vsCode = LibLoadFile("data/0.vs.cso", &vsSize);
+        void *psCode = LibLoadFile("data/0.ps.cso", &psSize);
+
+        D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {
+            .VS = { vsCode, vsSize },
+            .PS = { psCode, psSize },
+            .RasterizerState.FillMode = D3D12_FILL_MODE_SOLID,
+            .RasterizerState.CullMode = D3D12_CULL_MODE_NONE,
+            .BlendState.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL,
+            .SampleMask = 0xffffffff,
+            .PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE,
+            .NumRenderTargets = 1,
+            .RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM,
+            .SampleDesc.Count = 1 };
+        VHR(Dx.device->vt->CreateGraphicsPipelineState(Dx.device, &psoDesc, &IID_ID3D12PipelineState, &G.pipelineState));
+        VHR(Dx.device->vt->CreateRootSignature(Dx.device, 0, vsCode, vsSize, &IID_ID3D12RootSignature, &G.rootSignature));
+    }
     Dx.cmdList->vt->Close(Dx.cmdList);
 }
 
@@ -1248,3 +1285,4 @@ void Start(void)
 
     ExitProcess(0);
 }
+//-------------------------------------------------------------------------------------------------
