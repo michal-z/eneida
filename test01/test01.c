@@ -625,6 +625,19 @@ typedef struct F32x16 {
     };
 } F32x16;
 
+static inline F32 F32Abs(F32 x)
+{
+    union { F32 f; U32 u; } fu;
+    fu.f = x;
+    fu.u &= 0x7fffffff;
+    return fu.f;
+}
+
+static inline B32 F32Equal(F32 a, F32 b, F32 epsilon)
+{
+    return F32Abs(a - b) <= epsilon;
+}
+
 static inline U32 U32Rand(U32 *state)
 {
     assert(state);
@@ -733,9 +746,47 @@ static void F32SinCosFast(F32 x, F32 *sin, F32 *cos)
     *cos = sign * (((-0.0012712436f * y2 + 0.041493919f) * y2 - 0.49992746f) * y2 + 1.0f);
 }
 
+static inline F32x3 *F32x3Set(F32x3 *out, F32 x, F32 y, F32 z)
+{
+    out->x = x; out->y = y; out->z = z; return out;
+}
+
 static inline F32x3 *F32x3Add(F32x3 *out, const F32x3 *a, const F32x3 *b)
 {
     out->x = a->x + b->x; out->y = a->y + b->y; out->z = a->z + b->z; return out;
+}
+
+static inline F32x3 *F32x3Sub(F32x3 *out, const F32x3 *a, const F32x3 *b)
+{
+    out->x = a->x - b->x; out->y = a->y - b->y; out->z = a->z - b->z; return out;
+}
+
+static inline F32x3 *F32x3Neg(F32x3 *out, const F32x3 *a)
+{
+    out->x = -a->x; out->y = -a->y; out->z = -a->z; return out;
+}
+
+static inline F32x4 *F32x4Set(F32x4 *out, F32 x, F32 y, F32 z, F32 w)
+{
+    out->x = x; out->y = y; out->z = z; out->w = w; return out;
+}
+
+static inline F32 F32x3Dot(const F32x3 *a, const F32x3 *b)
+{
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
+static inline F32x3 *F32x3Cross(F32x3 *out, const F32x3 *a, const F32x3 *b)
+{
+    F32 x = a->y * b->z - a->z * b->y;
+    F32 y = a->z * b->x - a->x * b->z;
+    F32 z = a->x * b->y - a->y * b->x;
+    return F32x3Set(out, x, y, z);
+}
+
+static inline F32 F32x3Length(const F32x3 *a)
+{
+    return F32Sqrt(F32x3Dot(a, a));
 }
 //-------------------------------------------------------------------------------------------------
 // Library
@@ -1251,6 +1302,8 @@ static void Init(void)
             .SampleDesc.Count = 1 };
         VHR(Dx.device->vt->CreateGraphicsPipelineState(Dx.device, &psoDesc, &IID_ID3D12PipelineState, &G.pipelineState));
         VHR(Dx.device->vt->CreateRootSignature(Dx.device, 0, vsCode, vsSize, &IID_ID3D12RootSignature, &G.rootSignature));
+        LibFree(vsCode);
+        LibFree(psCode);
     }
     Dx.cmdList->vt->Close(Dx.cmdList);
 }
