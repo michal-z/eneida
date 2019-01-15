@@ -886,15 +886,15 @@ static void LibUpdateFrameStats(void *window, const char *name, F64 *timeOut, F3
 static S64 __stdcall _LibProcessWindowMessage(void *window, U32 message, U64 wparam, S64 lparam)
 {
     switch (message) {
-        case WM_DESTROY:
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        return 0;
+    case WM_KEYDOWN:
+        if (wparam == VK_ESCAPE) {
             PostQuitMessage(0);
             return 0;
-        case WM_KEYDOWN:
-            if (wparam == VK_ESCAPE) {
-                PostQuitMessage(0);
-                return 0;
-            }
-            break;
+        }
+        break;
     }
     return DefWindowProc(window, message, wparam, lparam);
 }
@@ -1302,6 +1302,7 @@ static void Init(void)
             .SampleDesc.Count = 1 };
         VHR(Dx.device->vt->CreateGraphicsPipelineState(Dx.device, &psoDesc, &IID_ID3D12PipelineState, &G.pipelineState));
         VHR(Dx.device->vt->CreateRootSignature(Dx.device, 0, vsCode, vsSize, &IID_ID3D12RootSignature, &G.rootSignature));
+
         LibFree(vsCode);
         LibFree(psCode);
     }
