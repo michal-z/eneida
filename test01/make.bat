@@ -2,9 +2,9 @@
 setlocal enableextensions
 setlocal enabledelayedexpansion
 
-::set CFLAGS=/Od /D_DEBUG
+set CFLAGS=/Od /D_DEBUG
 ::set CFLAGS=/Od /Zi /D_DEBUG
-set CFLAGS=/O2 /fp:fast
+::set CFLAGS=/O2 /fp:fast
 
 set CC=..\compiler\cl.exe
 set HLSLC=..\compiler\dxc.exe /Ges /O3 /WX /nologo
