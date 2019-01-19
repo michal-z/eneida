@@ -594,13 +594,39 @@ typedef struct Vec3 { F32 x, y, z; } Vec3;
 typedef struct Vec4 { F32 x, y, z, w; } Vec4;
 typedef struct Mat4 { Vec4 r[4]; } Mat4;
 
-static inline F32 F32Abs(F32 x) { union { F32 f; U32 u; } fu; fu.f = x; fu.u &= 0x7fffffff; return fu.f; }
-static inline B32 F32Equal(F32 a, F32 b, F32 epsilon) { return F32Abs(a - b) <= epsilon; }
-static inline U32 U32Rand(U32 *state) { assert(state); *state = *state * 1103515245 + 12345; return (*state >> 16) & 0x7fff; }
-static inline F32 F32Rand(U32 *state) { U32 result = (127 << 23) | (U32Rand(state) << 8); return *(F32 *)&result - 1.0f; }
-static inline F32 F32RandRange(U32 *state, F32 begin, F32 end) { assert(begin < end); return begin + (end - begin) * F32Rand(state); }
-static inline F32 F32Sqrt(F32 x) { __m128 xv = _mm_load_ss(&x); xv = _mm_sqrt_ss(xv); _mm_store_ss(&x, xv); return x; }
-
+static inline F32 F32Abs(F32 x)
+{
+    union { F32 f; U32 u; } fu;
+    fu.f = x; fu.u &= 0x7fffffff;
+    return fu.f;
+}
+static inline B32 F32Equal(F32 a, F32 b, F32 epsilon)
+{
+    return F32Abs(a - b) <= epsilon;
+}
+static inline U32 U32Rand(U32 *state)
+{
+    assert(state);
+    *state = *state * 1103515245 + 12345;
+    return (*state >> 16) & 0x7fff;
+}
+static inline F32 F32Rand(U32 *state)
+{
+    U32 result = (127 << 23) | (U32Rand(state) << 8);
+    return *(F32 *)&result - 1.0f;
+}
+static inline F32 F32RandRange(U32 *state, F32 begin, F32 end)
+{
+    assert(begin < end);
+    return begin + (end - begin) * F32Rand(state);
+}
+static inline F32 F32Sqrt(F32 x)
+{
+    __m128 xv = _mm_load_ss(&x);
+    xv = _mm_sqrt_ss(xv);
+    _mm_store_ss(&x, xv);
+    return x;
+}
 static inline F32 _F32PreSin(F32 x)
 {
     F32 quotient = K1Div2Pi * x;
@@ -674,7 +700,6 @@ static void F32SinCosFast(F32 *sinOut, F32 *cosOut, F32 x)
     *sinOut = (((-0.00018524670f * y2 + 0.0083139502f) * y2 - 0.16665852f) * y2 + 1.0f) * y;
     *cosOut = sign * (((-0.0012712436f * y2 + 0.041493919f) * y2 - 0.49992746f) * y2 + 1.0f);
 }
-
 static inline Vec3 *Vec3Set(Vec3 *out, F32 x, F32 y, F32 z)
 {
     out->x = x; out->y = y; out->z = z; return out;
@@ -706,7 +731,10 @@ static inline Vec3 *Vec3Cross(Vec3 *out, const Vec3 *a, const Vec3 *b)
     F32 z = a->x * b->y - a->y * b->x;
     return Vec3Set(out, x, y, z);
 }
-static inline F32 Vec3Length(const Vec3 *a) { return F32Sqrt(Vec3Dot(a, a)); }
+static inline F32 Vec3Length(const Vec3 *a)
+{
+    return F32Sqrt(Vec3Dot(a, a));
+}
 static inline Vec3 *Vec3Normalize(Vec3 *out, const Vec3 *a)
 {
     F32 length = Vec3Length(a);
@@ -714,7 +742,6 @@ static inline Vec3 *Vec3Normalize(Vec3 *out, const Vec3 *a)
     F32 rcplen = 1.0f / length;
     return Vec3Set(out, rcplen * a->x, rcplen * a->y, rcplen * a->z);
 }
-
 static inline Mat4 *Mat4SetPerspective(Mat4 *out, F32 fovy, F32 aspect, F32 n, F32 f)
 {
     F32 sinfov, cosfov;
@@ -726,6 +753,44 @@ static inline Mat4 *Mat4SetPerspective(Mat4 *out, F32 fovy, F32 aspect, F32 n, F
     Vec4Set(&out->r[1], 0.0f, h, 0.0f, 0.0f);
     Vec4Set(&out->r[2], 0.0f, 0.0f, r, 1.0f);
     Vec4Set(&out->r[3], 0.0f, 0.0f, -r * n, 0.0f);
+    return out;
+}
+static inline Mat4 *Mat4SetIdentity(Mat4 *out)
+{
+    Vec4Set(&out->r[0], 1.0f, 0.0f, 0.0f, 0.0f);
+    Vec4Set(&out->r[1], 0.0f, 1.0f, 0.0f, 0.0f);
+    Vec4Set(&out->r[2], 0.0f, 0.0f, 1.0f, 0.0f);
+    Vec4Set(&out->r[3], 0.0f, 0.0f, 0.0f, 1.0f);
+    return out;
+}
+static inline Mat4 *Mat4SetTranslation(Mat4 *out, F32 x, F32 y, F32 z)
+{
+    Vec4Set(&out->r[0], 1.0f, 0.0f, 0.0f, 0.0f);
+    Vec4Set(&out->r[1], 0.0f, 1.0f, 0.0f, 0.0f);
+    Vec4Set(&out->r[2], 0.0f, 0.0f, 1.0f, 0.0f);
+    Vec4Set(&out->r[3], x, y, z, 1.0f);
+    return out;
+}
+static inline Mat4 *Mat4SetRotationY(Mat4 *out, F32 radians)
+{
+    F32 sinv, cosv;
+    F32SinCos(&sinv, &cosv, radians);
+    Vec4Set(&out->r[0], cosv, 0.0f, -sinv, 0.0f);
+    Vec4Set(&out->r[1], 0.0f, 1.0f, 0.0f, 0.0f);
+    Vec4Set(&out->r[2], sinv, 0.0f, cosv, 0.0f);
+    Vec4Set(&out->r[3], 0.0f, 0.0f, 0.0f, 1.0f);
+    return out;
+}
+static inline Mat4 *Mat4SetLookAt(Mat4 *out, const Vec3 *eye, const Vec3 *at, const Vec3 *up)
+{
+    Vec3 ax, ay, az;
+    Vec3Normalize(&az, Vec3Sub(&az, at, eye));
+    Vec3Normalize(&ax, Vec3Cross(&ax, up, &az));
+    Vec3Normalize(&ay, Vec3Cross(&ay, &az, &ax));
+    Vec4Set(&out->r[0], ax.x, ay.x, az.x, 0.0f);
+    Vec4Set(&out->r[1], ax.y, ay.y, az.y, 0.0f);
+    Vec4Set(&out->r[2], ax.z, ay.z, az.z, 0.0f);
+    Vec4Set(&out->r[3], -Vec3Dot(&ax, eye), -Vec3Dot(&ay, eye), -Vec3Dot(&az, eye), 1.0f);
     return out;
 }
 static inline Mat4 *Mat4Transpose(Mat4 *out, const Mat4 *a)
