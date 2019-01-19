@@ -586,78 +586,22 @@ static const GUID IID_ID3D12PipelineState = { 0x765a30f3,0xf624,0x4c6f,0xa8,0x28
 #define KPiDiv2 1.570796327f
 #define KPiDiv4 0.785398163f
 
-#define _MM_SHUFFLE(fp3,fp2,fp1,fp0) (((fp3) << 6) | ((fp2) << 4) | ((fp1) << 2) | ((fp0)))
-
+// Needed for F32Sqrt
 typedef union __declspec(intrin_type) __declspec(align(16)) __m128 { float m128_f32[4]; unsigned __int64 m128_u64[2]; __int8 m128_i8[16]; __int16 m128_i16[8]; __int32 m128_i32[4]; __int64 m128_i64[2]; unsigned __int8 m128_u8[16]; unsigned __int16 m128_u16[8]; unsigned __int32 m128_u32[4]; } __m128;
-extern __m128 _mm_sqrt_ss(__m128); extern __m128 _mm_load_ss(float const *); extern void _mm_store_ss(float *, __m128); extern __m128 _mm_add_ps(__m128, __m128); extern __m128 _mm_sub_ps(__m128, __m128); extern __m128 _mm_mul_ps(__m128, __m128); extern __m128 _mm_setzero_ps(void); extern __m128 _mm_set_ps1(float); extern __m128 _mm_set_ps(float, float, float, float); extern __m128 _mm_shuffle_ps(__m128, __m128, unsigned int);
+extern __m128 _mm_sqrt_ss(__m128); extern __m128 _mm_load_ss(float const *); extern void _mm_store_ss(float *, __m128);
 
-typedef __m128 Vec;
-typedef struct __declspec(align(16)) Mat {
-    Vec r[4];
-} Mat;
+typedef struct Vec3 { F32 x, y, z; } Vec3;
+typedef struct Vec4 { F32 x, y, z, w; } Vec4;
+typedef struct Mat4 { Vec4 r[4]; } Mat4;
 
-static inline Vec __vectorcall VAdd(Vec a, Vec b) { return _mm_add_ps(a, b); }
-static inline Vec __vectorcall VSub(Vec a, Vec b) { return _mm_sub_ps(a, b); }
-static inline Vec __vectorcall VMul(Vec a, Vec b) { return _mm_mul_ps(a, b); }
-static inline Vec __vectorcall VSetZero(void) { return _mm_setzero_ps(); }
-static inline Vec __vectorcall VSet(F32 x, F32 y, F32 z, F32 w) { return _mm_set_ps(w, z, y, x); }
-static inline Vec __vectorcall VReplicate(F32 a) { return _mm_set_ps1(a); }
-static inline Vec __vectorcall VSplatX(Vec a) { return _mm_shuffle_ps(a, a, 0x00); }
-static inline Vec __vectorcall VSplatY(Vec a) { return _mm_shuffle_ps(a, a, 0x55); }
-static inline Vec __vectorcall VSplatZ(Vec a) { return _mm_shuffle_ps(a, a, 0xaa); }
-static inline Vec __vectorcall VSplatW(Vec a) { return _mm_shuffle_ps(a, a, 0xff); }
-#define VShuffle(a, mask) _mm_shuffle_ps((a), (a), (mask))
+static inline F32 F32Abs(F32 x) { union { F32 f; U32 u; } fu; fu.f = x; fu.u &= 0x7fffffff; return fu.f; }
+static inline B32 F32Equal(F32 a, F32 b, F32 epsilon) { return F32Abs(a - b) <= epsilon; }
+static inline U32 U32Rand(U32 *state) { assert(state); *state = *state * 1103515245 + 12345; return (*state >> 16) & 0x7fff; }
+static inline F32 F32Rand(U32 *state) { U32 result = (127 << 23) | (U32Rand(state) << 8); return *(F32 *)&result - 1.0f; }
+static inline F32 F32RandRange(U32 *state, F32 begin, F32 end) { assert(begin < end); return begin + (end - begin) * F32Rand(state); }
+static inline F32 F32Sqrt(F32 x) { __m128 xv = _mm_load_ss(&x); xv = _mm_sqrt_ss(xv); _mm_store_ss(&x, xv); return x; }
 
-static inline Vec __vectorcall V3Dot(Vec a, Vec b)
-{
-    Vec ab = VMul(a, b);
-    Vec xx = VSplatX(ab);
-    Vec yy = VSplatY(ab);
-    Vec zz = VSplatZ(ab);
-    return VAdd(xx, VAdd(yy, zz));
-}
-
-static inline F32 F32Abs(F32 x)
-{
-    union { F32 f; U32 u; } fu;
-    fu.f = x;
-    fu.u &= 0x7fffffff;
-    return fu.f;
-}
-
-static inline B32 F32Equal(F32 a, F32 b, F32 epsilon)
-{
-    return F32Abs(a - b) <= epsilon;
-}
-
-static inline U32 U32Rand(U32 *state)
-{
-    assert(state);
-    *state = *state * 1103515245 + 12345;
-    return (*state >> 16) & 0x7fff;
-}
-
-static inline F32 F32Rand(U32 *state)
-{
-    U32 result = (127 << 23) | (U32Rand(state) << 8);
-    return *(F32 *)&result - 1.0f;
-}
-
-static inline F32 F32RandRange(U32 *state, F32 begin, F32 end)
-{
-    assert(begin < end);
-    return begin + (end - begin) * F32Rand(state);
-}
-
-static __forceinline F32 F32Sqrt(F32 x)
-{
-    __m128 xv = _mm_load_ss(&x);
-    xv = _mm_sqrt_ss(xv);
-    _mm_store_ss(&x, xv);
-    return x;
-}
-
-static __forceinline F32 _F32PreSin(F32 x)
+static inline F32 _F32PreSin(F32 x)
 {
     F32 quotient = K1Div2Pi * x;
     quotient = x >= 0.0f ? (F32)((S32)(quotient + 0.5f)) : (F32)((S32)(quotient - 0.5f));
@@ -669,8 +613,7 @@ static __forceinline F32 _F32PreSin(F32 x)
     }
     return y;
 }
-
-static __forceinline F32 _F32PreCos(F32 x, F32 *sign)
+static inline F32 _F32PreCos(F32 x, F32 *sign)
 {
     assert(sign);
     F32 quotient = K1Div2Pi * x;
@@ -687,21 +630,18 @@ static __forceinline F32 _F32PreCos(F32 x, F32 *sign)
     }
     return y;
 }
-
 static F32 F32Sin(F32 x)
 {
     F32 y = _F32PreSin(x);
     F32 y2 = y * y;
     return (((((-2.3889859e-08f * y2 + 2.7525562e-06f) * y2 - 0.00019840874f) * y2 + 0.0083333310f) * y2 - 0.16666667f) * y2 + 1.0f) * y;
 }
-
 static F32 F32SinFast(F32 x)
 {
     F32 y = _F32PreSin(x);
     F32 y2 = y * y;
     return (((-0.00018524670f * y2 + 0.0083139502f) * y2 - 0.16665852f) * y2 + 1.0f) * y;
 }
-
 static F32 F32Cos(F32 x)
 {
     F32 sign;
@@ -709,7 +649,6 @@ static F32 F32Cos(F32 x)
     F32 y2 = y * y;
     return sign * (((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f);
 }
-
 static F32 F32CosFast(F32 x)
 {
     F32 sign;
@@ -717,25 +656,109 @@ static F32 F32CosFast(F32 x)
     F32 y2 = y * y;
     return sign * (((-0.0012712436f * y2 + 0.041493919f) * y2 - 0.49992746f) * y2 + 1.0f);
 }
-
-static void F32SinCos(F32 x, F32 *sin, F32 *cos)
+static void F32SinCos(F32 *sinOut, F32 *cosOut, F32 x)
 {
-    assert(sin && cos);
+    assert(sinOut && cosOut);
     F32 sign;
     F32 y = _F32PreCos(x, &sign);
     F32 y2 = y * y;
-    *sin = (((((-2.3889859e-08f * y2 + 2.7525562e-06f) * y2 - 0.00019840874f) * y2 + 0.0083333310f) * y2 - 0.16666667f) * y2 + 1.0f) * y;
-    *cos = sign * (((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f);
+    *sinOut = (((((-2.3889859e-08f * y2 + 2.7525562e-06f) * y2 - 0.00019840874f) * y2 + 0.0083333310f) * y2 - 0.16666667f) * y2 + 1.0f) * y;
+    *cosOut = sign * (((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f);
+}
+static void F32SinCosFast(F32 *sinOut, F32 *cosOut, F32 x)
+{
+    assert(sinOut && cosOut);
+    F32 sign;
+    F32 y = _F32PreCos(x, &sign);
+    F32 y2 = y * y;
+    *sinOut = (((-0.00018524670f * y2 + 0.0083139502f) * y2 - 0.16665852f) * y2 + 1.0f) * y;
+    *cosOut = sign * (((-0.0012712436f * y2 + 0.041493919f) * y2 - 0.49992746f) * y2 + 1.0f);
 }
 
-static void F32SinCosFast(F32 x, F32 *sin, F32 *cos)
+static inline Vec3 *Vec3Set(Vec3 *out, F32 x, F32 y, F32 z)
 {
-    assert(sin && cos);
-    F32 sign;
-    F32 y = _F32PreCos(x, &sign);
-    F32 y2 = y * y;
-    *sin = (((-0.00018524670f * y2 + 0.0083139502f) * y2 - 0.16665852f) * y2 + 1.0f) * y;
-    *cos = sign * (((-0.0012712436f * y2 + 0.041493919f) * y2 - 0.49992746f) * y2 + 1.0f);
+    out->x = x; out->y = y; out->z = z; return out;
+}
+static inline Vec3 *Vec3Add(Vec3 *out, const Vec3 *a, const Vec3 *b)
+{
+    out->x = a->x + b->x; out->y = a->y + b->y; out->z = a->z + b->z; return out;
+}
+static inline Vec3 *Vec3Sub(Vec3 *out, const Vec3 *a, const Vec3 *b)
+{
+    out->x = a->x - b->x; out->y = a->y - b->y; out->z = a->z - b->z; return out;
+}
+static inline Vec3 *Vec3Neg(Vec3 *out, const Vec3 *a)
+{
+    out->x = -a->x; out->y = -a->y; out->z = -a->z; return out;
+}
+static inline Vec4 *Vec4Set(Vec4 *out, F32 x, F32 y, F32 z, F32 w)
+{
+    out->x = x; out->y = y; out->z = z; out->w = w; return out;
+}
+static inline F32 Vec3Dot(const Vec3 *a, const Vec3 *b)
+{
+    return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+static inline Vec3 *Vec3Cross(Vec3 *out, const Vec3 *a, const Vec3 *b)
+{
+    F32 x = a->y * b->z - a->z * b->y;
+    F32 y = a->z * b->x - a->x * b->z;
+    F32 z = a->x * b->y - a->y * b->x;
+    return Vec3Set(out, x, y, z);
+}
+static inline F32 Vec3Length(const Vec3 *a) { return F32Sqrt(Vec3Dot(a, a)); }
+static inline Vec3 *Vec3Normalize(Vec3 *out, const Vec3 *a)
+{
+    F32 length = Vec3Length(a);
+    assert(!F32Equal(length, 0.0f, 0.0001f));
+    F32 rcplen = 1.0f / length;
+    return Vec3Set(out, rcplen * a->x, rcplen * a->y, rcplen * a->z);
+}
+
+static inline Mat4 *Mat4SetPerspective(Mat4 *out, F32 fovy, F32 aspect, F32 n, F32 f)
+{
+    F32 sinfov, cosfov;
+    F32SinCos(&sinfov, &cosfov, 0.5f * fovy);
+    F32 h = cosfov / sinfov;
+    F32 w = h / aspect;
+    F32 r = f / (f - n);
+    Vec4Set(&out->r[0], w, 0.0f, 0.0f, 0.0f);
+    Vec4Set(&out->r[1], 0.0f, h, 0.0f, 0.0f);
+    Vec4Set(&out->r[2], 0.0f, 0.0f, r, 1.0f);
+    Vec4Set(&out->r[3], 0.0f, 0.0f, -r * n, 0.0f);
+    return out;
+}
+static inline Mat4 *Mat4Transpose(Mat4 *out, const Mat4 *a)
+{
+    Mat4 result;
+    result.r[0].x = a->r[0].x; result.r[1].x = a->r[0].y; result.r[2].x = a->r[0].z; result.r[3].x = a->r[0].w;
+    result.r[0].y = a->r[1].x; result.r[1].y = a->r[1].y; result.r[2].y = a->r[1].z; result.r[3].y = a->r[1].w;
+    result.r[0].z = a->r[2].x; result.r[1].z = a->r[2].y; result.r[2].z = a->r[2].z; result.r[3].z = a->r[2].w;
+    result.r[0].w = a->r[3].x; result.r[1].w = a->r[3].y; result.r[2].w = a->r[3].z; result.r[3].w = a->r[3].w;
+    *out = result;
+    return out;
+}
+static inline Mat4 *Mat4Mul(Mat4 *out, const Mat4 *a, const Mat4 *b)
+{
+    Mat4 result;
+    result.r[0].x = a->r[0].x * b->r[0].x + a->r[0].y * b->r[1].x + a->r[0].z * b->r[2].x + a->r[0].w * b->r[3].x;
+    result.r[0].y = a->r[0].x * b->r[0].y + a->r[0].y * b->r[1].y + a->r[0].z * b->r[2].y + a->r[0].w * b->r[3].y;
+    result.r[0].z = a->r[0].x * b->r[0].z + a->r[0].y * b->r[1].z + a->r[0].z * b->r[2].z + a->r[0].w * b->r[3].z;
+    result.r[0].w = a->r[0].x * b->r[0].w + a->r[0].y * b->r[1].w + a->r[0].z * b->r[2].w + a->r[0].w * b->r[3].w;
+    result.r[1].x = a->r[1].x * b->r[0].x + a->r[1].y * b->r[1].x + a->r[1].z * b->r[2].x + a->r[1].w * b->r[3].x;
+    result.r[1].y = a->r[1].x * b->r[0].y + a->r[1].y * b->r[1].y + a->r[1].z * b->r[2].y + a->r[1].w * b->r[3].y;
+    result.r[1].z = a->r[1].x * b->r[0].z + a->r[1].y * b->r[1].z + a->r[1].z * b->r[2].z + a->r[1].w * b->r[3].z;
+    result.r[1].w = a->r[1].x * b->r[0].w + a->r[1].y * b->r[1].w + a->r[1].z * b->r[2].w + a->r[1].w * b->r[3].w;
+    result.r[2].x = a->r[2].x * b->r[0].x + a->r[2].y * b->r[1].x + a->r[2].z * b->r[2].x + a->r[2].w * b->r[3].x;
+    result.r[2].y = a->r[2].x * b->r[0].y + a->r[2].y * b->r[1].y + a->r[2].z * b->r[2].y + a->r[2].w * b->r[3].y;
+    result.r[2].z = a->r[2].x * b->r[0].z + a->r[2].y * b->r[1].z + a->r[2].z * b->r[2].z + a->r[2].w * b->r[3].z;
+    result.r[2].w = a->r[2].x * b->r[0].w + a->r[2].y * b->r[1].w + a->r[2].z * b->r[2].w + a->r[2].w * b->r[3].w;
+    result.r[3].x = a->r[3].x * b->r[0].x + a->r[3].y * b->r[1].x + a->r[3].z * b->r[2].x + a->r[3].w * b->r[3].x;
+    result.r[3].y = a->r[3].x * b->r[0].y + a->r[3].y * b->r[1].y + a->r[3].z * b->r[2].y + a->r[3].w * b->r[3].y;
+    result.r[3].z = a->r[3].x * b->r[0].z + a->r[3].y * b->r[1].z + a->r[3].z * b->r[2].z + a->r[3].w * b->r[3].z;
+    result.r[3].w = a->r[3].x * b->r[0].w + a->r[3].y * b->r[1].w + a->r[3].z * b->r[2].w + a->r[3].w * b->r[3].w;
+    *out = result;
+    return out;
 }
 //-------------------------------------------------------------------------------------------------
 // Library
@@ -1270,11 +1293,6 @@ void Start(void)
     void *window = LibCreateWindow(G.demoName, G.viewportWidth, G.viewportHeight);
     DxInit(window);
     Init();
-
-    Vec a = VSetZero();
-    Vec b = VSetZero();
-    Vec c = VAdd(a, b);
-    (void)c;
 
     for (;;) {
         MSG message = { 0 };
