@@ -1083,6 +1083,47 @@ static void DxAllocateDescriptors(D3D12_DESCRIPTOR_HEAP_TYPE type, U32 count, D3
     heap->size += count;
 }
 
+static void DxAllocateGpuDescriptors(U32 count, D3D12_CPU_DESCRIPTOR_HANDLE *firstCpuOut, D3D12_GPU_DESCRIPTOR_HANDLE *firstGpuOut)
+{
+    assert(firstCpuOut && firstGpuOut);
+    U32 descriptorSize;
+    _DxDescriptorHeap *heap = _DxGetDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE, &descriptorSize);
+    assert((heap->size + count) < heap->capacity);
+    firstCpuOut->ptr = heap->cpuStart.ptr + heap->size * descriptorSize;
+    firstGpuOut->ptr = heap->gpuStart.ptr + heap->size * descriptorSize;
+    heap->size += count;
+}
+
+static void *DxAllocateUploadMemory(U32 size, D3D12_GPU_VIRTUAL_ADDRESS *gpuAddrOut, ID3D12Resource **bufferOut, U64 *offsetOut)
+{
+    assert(size > 0);
+    if (size & 0xff) // always align to 256 bytes
+        size = (size + 255) & ~0xff;
+    _DxGpuMemoryHeap *heap = &_Dx.uploadMemoryHeaps[Dx.frameIndex];
+    assert((heap->size + size) < heap->capacity);
+    void *cpuAddr = heap->cpuStart + heap->size;
+    if (gpuAddrOut) {
+        *gpuAddrOut = heap->gpuStart + heap->size;
+    }
+    if (bufferOut) {
+        *bufferOut = heap->heap;
+    }
+    if (offsetOut) {
+        *offsetOut = heap->size;
+    }
+    heap->size += size;
+    return cpuAddr;
+}
+
+static D3D12_GPU_DESCRIPTOR_HANDLE DxCopyDescriptorsToGpu(U32 count, D3D12_CPU_DESCRIPTOR_HANDLE source)
+{
+    D3D12_CPU_DESCRIPTOR_HANDLE destinationCpu;
+    D3D12_GPU_DESCRIPTOR_HANDLE destinationGpu;
+    DxAllocateGpuDescriptors(count, &destinationCpu, &destinationGpu);
+    Dx.device->vt->CopyDescriptorsSimple(Dx.device, count, destinationCpu, source, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+    return destinationGpu;
+}
+
 static void DxPresent(void)
 {
     _Dx.swapchain->vt->Present(_Dx.swapchain, 0, 0);
@@ -1276,6 +1317,7 @@ struct {
     const char *demoName;
     ID3D12PipelineState *pipelineState;
     ID3D12RootSignature *rootSignature;
+    ID3D12Resource *vertexBuffer;
 } G;
 
 static void Draw(void)
@@ -1308,6 +1350,13 @@ static void Draw(void)
     cmdList->vt->SetPipelineState(cmdList, G.pipelineState);
     cmdList->vt->SetGraphicsRootSignature(cmdList, G.rootSignature);
     cmdList->vt->IASetPrimitiveTopology(cmdList, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    D3D12_VERTEX_BUFFER_VIEW vbView = {
+        .BufferLocation = G.vertexBuffer->vt->GetGPUVirtualAddress(G.vertexBuffer),
+        .SizeInBytes = 3 * sizeof(Vec3),
+        .StrideInBytes = sizeof(Vec3)
+    };
+    cmdList->vt->IASetVertexBuffers(cmdList, 0, 1, &vbView);
+ 
     cmdList->vt->DrawInstanced(cmdList, 3, 1, 0, 0);
 
     barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -1326,7 +1375,11 @@ static void Init(void)
         void *vsCode = LibLoadFile("data/0.vs.cso", &vsSize);
         void *psCode = LibLoadFile("data/0.ps.cso", &psSize);
 
+        D3D12_INPUT_ELEMENT_DESC inputLayoutDesc[] = {
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+        };
         D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {
+            .InputLayout = { inputLayoutDesc, 1 },
             .VS = { vsCode, vsSize },
             .PS = { psCode, psSize },
             .RasterizerState.FillMode = D3D12_FILL_MODE_SOLID,
@@ -1339,11 +1392,33 @@ static void Init(void)
             .SampleDesc.Count = 1 };
         VHR(Dx.device->vt->CreateGraphicsPipelineState(Dx.device, &psoDesc, &IID_ID3D12PipelineState, &G.pipelineState));
         VHR(Dx.device->vt->CreateRootSignature(Dx.device, 0, vsCode, vsSize, &IID_ID3D12RootSignature, &G.rootSignature));
-
         LibFree(vsCode);
         LibFree(psCode);
     }
+    /* vertex buffer */ {
+        D3D12_HEAP_PROPERTIES heapProps = { .Type = D3D12_HEAP_TYPE_DEFAULT, .CreationNodeMask = 1, .VisibleNodeMask = 1 };
+        D3D12_RESOURCE_DESC resourceDesc = {
+            .Dimension = D3D12_RESOURCE_DIMENSION_BUFFER,
+            .Width = 64 * 1024,
+            .Height = 1,
+            .DepthOrArraySize = 1,
+            .MipLevels = 1,
+            .SampleDesc.Count = 1,
+            .Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR };
+        VHR(Dx.device->vt->CreateCommittedResource(Dx.device, &heapProps, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_COPY_DEST, NULL, &IID_ID3D12Resource, &G.vertexBuffer));
+
+        ID3D12Resource *srcBuffer;
+        U64 srcOffset;
+        Vec3 *ptr = DxAllocateUploadMemory(64, NULL, &srcBuffer, &srcOffset);
+        Vec3Set(ptr++, -0.7f, -0.7f, 0.0f);
+        Vec3Set(ptr++, 0.0f, 0.7f, 0.0f);
+        Vec3Set(ptr++, 0.7f, -0.7f, 0.0f);
+
+        Dx.cmdList->vt->CopyBufferRegion(Dx.cmdList, G.vertexBuffer, 0, srcBuffer, srcOffset, 36);
+    }
     Dx.cmdList->vt->Close(Dx.cmdList);
+    Dx.cmdQueue->vt->ExecuteCommandLists(Dx.cmdQueue, 1, (ID3D12CommandList **)&Dx.cmdList);
+    DxWaitForGpu();
 }
 
 void Start(void)
