@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{54D728F2-8AAD-41C1-B4D5-42C831AACC22}</ProjectGuid>
+    <RootNamespace>vsh</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>eneida_vsh</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IntDir>$(Platform)\$(Configuration)\vsh\</IntDir>
+    <OutDir>$(SolutionDir)..\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(Platform)\$(Configuration)\vsh\</IntDir>
+    <OutDir>$(SolutionDir)..\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <FxCompile>
+      <EntryPointName>main_vs</EntryPointName>
+      <ShaderModel>6.0</ShaderModel>
+      <ObjectFileOutput>$(OutDir)data\shaders\%(Filename).vs.cso</ObjectFileOutput>
+      <ShaderType>Vertex</ShaderType>
+      <AdditionalOptions>/Ges %(AdditionalOptions)</AdditionalOptions>
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <FxCompile>
+      <EntryPointName>main_vs</EntryPointName>
+      <ShaderModel>6.0</ShaderModel>
+      <ObjectFileOutput>$(OutDir)data\shaders\%(Filename).vs.cso</ObjectFileOutput>
+      <ShaderType>Vertex</ShaderType>
+      <AdditionalOptions>/Ges %(AdditionalOptions)</AdditionalOptions>
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <FxCompile Include="..\src\shaders\test.hlsl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

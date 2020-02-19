@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{7fa9c078-e133-442e-bdd0-fe559bc08a27}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\cgltf.h" />
+    <ClInclude Include="..\src\mz_direct3d12.h" />
+    <ClInclude Include="..\src\mz_libc.h" />
+    <ClInclude Include="..\src\mz_library.h" />
+    <ClInclude Include="..\src\stb_ds.h" />
+    <ClInclude Include="..\src\stb_image.h" />
+    <ClInclude Include="..\src\mz_types.h" />
+    <ClInclude Include="..\src\mz_windows.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\cgltf.c" />
+    <ClCompile Include="..\src\mz_direct3d12.c" />
+    <ClCompile Include="..\src\mz_library.c" />
+    <ClCompile Include="..\src\main.c" />
+    <ClCompile Include="..\src\stb_ds.c" />
+    <ClCompile Include="..\src\stb_image.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\src\shaders\generate_mipmaps.hlsl">
+      <Filter>shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
