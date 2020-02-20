@@ -59,7 +59,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <FxCompile Include="..\src\shaders\test.hlsl" />
+    <FxCompile Include="..\src\hlsl\test.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

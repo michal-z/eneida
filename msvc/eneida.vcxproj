@@ -11,12 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\cgltf.c" />
-    <ClCompile Include="..\src\mz_direct3d12.c" />
-    <ClCompile Include="..\src\mz_library.c" />
+    <ClCompile Include="..\src\c\cgltf.c" />
+    <ClCompile Include="..\src\c\mz_direct3d12.c" />
+    <ClCompile Include="..\src\c\mz_library.c" />
+    <ClCompile Include="..\src\c\stb_ds.c" />
+    <ClCompile Include="..\src\c\stb_image.c" />
     <ClCompile Include="..\src\main.c" />
-    <ClCompile Include="..\src\stb_ds.c" />
-    <ClCompile Include="..\src\stb_image.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\cgltf.h" />
@@ -27,9 +27,10 @@
     <ClInclude Include="..\src\stb_image.h" />
     <ClInclude Include="..\src\mz_types.h" />
     <ClInclude Include="..\src\mz_windows.h" />
+    <ClInclude Include="..\src\tests\mz_test1.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\src\shaders\generate_mipmaps.hlsl" />
+    <FxCompile Include="..\src\hlsl\generate_mipmaps.hlsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -84,6 +85,7 @@
       <DisableSpecificWarnings>4201;4204;4152</DisableSpecificWarnings>
       <ExceptionHandling>false</ExceptionHandling>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>dxguid.lib;d3d12.lib;dxgi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -111,6 +113,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <FloatingPointModel>Fast</FloatingPointModel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
