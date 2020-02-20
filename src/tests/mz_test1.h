@@ -59,16 +59,15 @@ void mztest1_draw(mztest1_context *test1)
 
     ID3D12GraphicsCommandList *cmdlist = mzd3d_begin_frame(gfx);
 
-    //mzd3d_resource_handle back_buffer_handle;
-    //D3D12_CPU_DESCRIPTOR_HANDLE back_buffer_rtv;
-    //gfx->get_back_buffer(gfx->self, &back_buffer_handle, &back_buffer_rtv);
-    //gfx->transition_barrier(gfx->self, back_buffer_handle, D3D12_RESOURCE_STATE_RENDER_TARGET);
+    mzd3d_resource_handle back_buffer_handle;
+    D3D12_CPU_DESCRIPTOR_HANDLE back_buffer_rtv;
+    mzd3d_get_back_buffer(gfx, &back_buffer_handle, &back_buffer_rtv);
+    mzd3d_transition_barrier(gfx, back_buffer_handle, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-    //float color[4] = { 0.2f, 0.4f, 0.8f, 1.0f };
-    //ID3D12GraphicsCommandList3_OMSetRenderTargets(cmdlist, 1, &back_buffer_rtv, TRUE, NULL);
-    //ID3D12GraphicsCommandList3_ClearRenderTargetView(cmdlist, back_buffer_rtv, color, 0, NULL);
+    cmdlist->vtbl->OMSetRenderTargets(cmdlist, 1, &back_buffer_rtv, TRUE, NULL);
+    cmdlist->vtbl->ClearRenderTargetView(cmdlist, back_buffer_rtv, (float[4]) { 0.2f, 0.4f, 0.8f, 1.0f }, 0, NULL);
 
-    //gfx->transition_barrier(gfx->self, back_buffer_handle, D3D12_RESOURCE_STATE_PRESENT);
+    mzd3d_transition_barrier(gfx, back_buffer_handle, D3D12_RESOURCE_STATE_PRESENT);
 
     mzd3d_end_frame(gfx, 0);
 }

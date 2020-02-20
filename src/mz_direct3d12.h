@@ -526,24 +526,24 @@ void mzd3d_transition_barrier(mzd3d_context *context, mzd3d_resource_handle hand
     }
 }
 
-#if 0
-inline void mz_get_back_buffer(mz_gfx_context_t *gfx, mz_gfx_resource_handle_t *out_handle, D3D12_CPU_DESCRIPTOR_HANDLE *out_rtv)
+void mzd3d_get_back_buffer(mzd3d_context *context, mzd3d_resource_handle *out_handle, D3D12_CPU_DESCRIPTOR_HANDLE *out_rtv)
 {
     assert(out_handle && out_rtv);
-    *out_handle = gfx->back_buffers[gfx->back_buffer_index];
-    *out_rtv = gfx->rtv_heap.cpu_start;
-    out_rtv->ptr += (size_t)gfx->back_buffer_index * gfx->rtv_heap.descriptor_size;
-    assert(mz_get_gfx_resource(gfx, *out_handle));
+    *out_handle = context->back_buffers[context->back_buffer_index];
+    *out_rtv = context->rtv_heap.cpu_start;
+    out_rtv->ptr += (size_t)context->back_buffer_index * context->rtv_heap.descriptor_size;
+    assert(mzd3d_get_resource(context, *out_handle));
 }
 
-inline void mz_get_depth_stencil_buffer(mz_gfx_context_t *gfx, mz_gfx_resource_handle_t *out_handle, D3D12_CPU_DESCRIPTOR_HANDLE *out_dsv)
+void mzd3d_get_depth_stencil_buffer(mzd3d_context *context, mzd3d_resource_handle *out_handle, D3D12_CPU_DESCRIPTOR_HANDLE *out_dsv)
 {
     assert(out_handle && out_dsv);
-    *out_handle = gfx->depth_stencil_buffer;
-    *out_dsv = gfx->dsv_heap.cpu_start;
-    assert(mz_get_gfx_resource(gfx, *out_handle));
+    *out_handle = context->depth_stencil_buffer;
+    *out_dsv = context->dsv_heap.cpu_start;
+    assert(mzd3d_get_resource(context, *out_handle));
 }
 
+#if 0
 inline void mz_allocate_gpu_descriptors(mz_gfx_context_t *gfx, uint32_t count, D3D12_CPU_DESCRIPTOR_HANDLE *out_cpu_handle, D3D12_GPU_DESCRIPTOR_HANDLE *out_gpu_handle)
 {
     assert(out_cpu_handle && out_gpu_handle);
