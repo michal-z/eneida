@@ -34,6 +34,7 @@ void mzd3d_allocate_gpu_descriptors(mzd3d_context *gfx, u32 count, D3D12_CPU_DES
 D3D12_GPU_DESCRIPTOR_HANDLE mzd3d_copy_descriptors_to_gpu_heap(mzd3d_context *gfx, u32 count, D3D12_CPU_DESCRIPTOR_HANDLE src_base_handle);
 
 void mzd3d_allocate_upload_memory(mzd3d_context *gfx, u32 size, u8 **out_cpu_addr, D3D12_GPU_VIRTUAL_ADDRESS *out_gpu_addr);
+void mzd3d_allocate_upload_buffer_region(mzd3d_context *gfx, u32 size, u8 **out_cpu_addr, ID3D12Resource **out_buffer, u64 *out_buffer_offset);
 
 mzd3d_resource_handle mzd3d_create_committed_resource(mzd3d_context *gfx, D3D12_HEAP_TYPE heap_type, D3D12_HEAP_FLAGS heap_flags, const D3D12_RESOURCE_DESC *desc, D3D12_RESOURCE_STATES initial_state, const D3D12_CLEAR_VALUE *clear_value);
 void mzd3d_destroy_resource(mzd3d_context *gfx, mzd3d_resource_handle handle);
@@ -585,7 +586,40 @@ void mzd3d_allocate_upload_memory(mzd3d_context *gfx, u32 size, u8 **out_cpu_add
 {
     assert(gfx && size > 0 && out_cpu_addr && out_gpu_addr);
 
-    //u8 *cpu_addr;
+    u8 *cpu_addr;
+    D3D12_GPU_VIRTUAL_ADDRESS gpu_addr;
+    _mzd3d_allocate_gpu_memory(&gfx->upload_memory_heaps[gfx->frame_index], size, &cpu_addr, &gpu_addr);
+
+    if (cpu_addr == NULL && gpu_addr == 0) {
+        MZD3D_VHR(gfx->cmd_list->vtbl->Close(gfx->cmd_list));
+        gfx->cmd_queue->vtbl->ExecuteCommandLists(gfx->cmd_queue, 1, (ID3D12CommandList **)&gfx->cmd_list);
+        mzd3d_wait_for_gpu(gfx);
+        mzd3d_begin_frame(gfx);
+    }
+
+    _mzd3d_allocate_gpu_memory(&gfx->upload_memory_heaps[gfx->frame_index], size, &cpu_addr, &gpu_addr);
+    assert(cpu_addr != NULL && gpu_addr != 0);
+
+    *out_cpu_addr = cpu_addr;
+    *out_gpu_addr = gpu_addr;
+}
+
+void mzd3d_allocate_upload_buffer_region(mzd3d_context *gfx, u32 size, u8 **out_cpu_addr, ID3D12Resource **out_buffer, u64 *out_buffer_offset)
+{
+    assert(gfx && size > 0 && out_cpu_addr && out_buffer && out_buffer_offset);
+
+    if (size & 0xff) {
+        // Always align to 256 bytes.
+        size = (size + 255) & ~0xff;
+    }
+
+    u8 *cpu_addr;
+    D3D12_GPU_VIRTUAL_ADDRESS gpu_addr;
+    mzd3d_allocate_upload_memory(gfx, size, &cpu_addr, &gpu_addr);
+
+    *out_cpu_addr = cpu_addr;
+    *out_buffer = gfx->upload_memory_heaps[gfx->frame_index].heap;
+    *out_buffer_offset = gfx->upload_memory_heaps[gfx->frame_index].size - size;
 }
 
 #endif // #ifdef MZ_DIRECT3D12_IMPLEMENTATION
