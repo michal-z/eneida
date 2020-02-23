@@ -1,1 +1,3 @@
 Beautiful and simple shader: https://www.shadertoy.com/view/Wss3zB
+
+msbuild msvc\eneida.vcxproj -p:Configuration=Debug,Platform=x64 -t:Build,Run
