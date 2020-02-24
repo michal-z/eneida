@@ -120,20 +120,16 @@ i32 __stdcall QueryPerformanceFrequency(i64 *out_frequency);
 i32 __stdcall CloseHandle(void *handle);
 void *__stdcall GetModuleHandleA(const char *module_name);
 void __stdcall Sleep(u32 milliseconds);
-void *__stdcall CreateEventExA(SECURITY_ATTRIBUTES *event_attributes, const char *name, u32 flags,
-                               u32 desired_access);
+void *__stdcall CreateEventExA(SECURITY_ATTRIBUTES *event_attributes, const char *name, u32 flags, u32 desired_access);
 u32 __stdcall WaitForSingleObject(void *handle, u32 milliseconds);
 
-i32 __stdcall PeekMessageA(MSG *out_msg, void *hwnd, u32 msg_filter_min, u32 msg_filter_max,
-                           u32 remove_msg);
+i32 __stdcall PeekMessageA(MSG *out_msg, void *hwnd, u32 msg_filter_min, u32 msg_filter_max, u32 remove_msg);
 i64 __stdcall DispatchMessageA(const MSG *msg);
 void __stdcall PostQuitMessage(i32 exit_code);
 i64 __stdcall DefWindowProcA(void *hwnd, u32 msg, u64 wparam, i64 lparam);
 void *__stdcall LoadCursorA(void *instance, const char *cursor_name);
 i16 __stdcall RegisterClassA(const WNDCLASS *winclass);
-void *__stdcall CreateWindowExA(u32 exstyle, const char *class_name, const char *window_name, u32 style,
-                                i32 x, i32 y, i32 width, i32 height, void *parent, void *menu,
-                                void *instance, void *param);
+void *__stdcall CreateWindowExA(u32 exstyle, const char *class_name, const char *window_name, u32 style, i32 x, i32 y, i32 width, i32 height, void *parent, void *menu, void *instance, void *param);
 i32 __stdcall AdjustWindowRect(RECT *out_rect, u32 style, i32 menu);
 i32 __cdecl wsprintfA(char *out_string, const char *format, ...);
 i32 __stdcall SetWindowTextA(void *hwnd, const char *string);
@@ -155,8 +151,7 @@ typedef enum D3D_FEATURE_LEVEL {
     D3D_FEATURE_LEVEL_12_1 = 0xc100
 } D3D_FEATURE_LEVEL;
 
-i32 __stdcall D3D12CreateDevice(IUnknown *adapter, D3D_FEATURE_LEVEL min_feature_level, const GUID *guid,
-                                void **out_object);
+i32 __stdcall D3D12CreateDevice(IUnknown *adapter, D3D_FEATURE_LEVEL min_feature_level, const GUID *guid, void **out_object);
 i32 __stdcall D3D12GetDebugInterface(const GUID *guid, void **out_object);
 
 typedef enum DXGI_FORMAT {
@@ -743,8 +738,7 @@ typedef enum D3D12_COLOR_WRITE_ENABLE {
     D3D12_COLOR_WRITE_ENABLE_GREEN = 2,
     D3D12_COLOR_WRITE_ENABLE_BLUE = 4,
     D3D12_COLOR_WRITE_ENABLE_ALPHA = 8,
-    D3D12_COLOR_WRITE_ENABLE_ALL = D3D12_COLOR_WRITE_ENABLE_RED | D3D12_COLOR_WRITE_ENABLE_GREEN |
-                                   D3D12_COLOR_WRITE_ENABLE_BLUE | D3D12_COLOR_WRITE_ENABLE_ALPHA
+    D3D12_COLOR_WRITE_ENABLE_ALL = D3D12_COLOR_WRITE_ENABLE_RED | D3D12_COLOR_WRITE_ENABLE_GREEN | D3D12_COLOR_WRITE_ENABLE_BLUE | D3D12_COLOR_WRITE_ENABLE_ALPHA
 } D3D12_COLOR_WRITE_ENABLE;
 
 typedef enum D3D12_LOGIC_OP {
@@ -896,14 +890,11 @@ typedef enum D3D12_INDIRECT_ARGUMENT_TYPE {
     D3D12_INDIRECT_ARGUMENT_TYPE_DRAW_INDEXED = (D3D12_INDIRECT_ARGUMENT_TYPE_DRAW + 1),
     D3D12_INDIRECT_ARGUMENT_TYPE_DISPATCH = (D3D12_INDIRECT_ARGUMENT_TYPE_DRAW_INDEXED + 1),
     D3D12_INDIRECT_ARGUMENT_TYPE_VERTEX_BUFFER_VIEW = (D3D12_INDIRECT_ARGUMENT_TYPE_DISPATCH + 1),
-    D3D12_INDIRECT_ARGUMENT_TYPE_INDEX_BUFFER_VIEW =
-        (D3D12_INDIRECT_ARGUMENT_TYPE_VERTEX_BUFFER_VIEW + 1),
+    D3D12_INDIRECT_ARGUMENT_TYPE_INDEX_BUFFER_VIEW = (D3D12_INDIRECT_ARGUMENT_TYPE_VERTEX_BUFFER_VIEW + 1),
     D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT = (D3D12_INDIRECT_ARGUMENT_TYPE_INDEX_BUFFER_VIEW + 1),
     D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW = (D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT + 1),
-    D3D12_INDIRECT_ARGUMENT_TYPE_SHADER_RESOURCE_VIEW =
-        (D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW + 1),
-    D3D12_INDIRECT_ARGUMENT_TYPE_UNORDERED_ACCESS_VIEW =
-        (D3D12_INDIRECT_ARGUMENT_TYPE_SHADER_RESOURCE_VIEW + 1)
+    D3D12_INDIRECT_ARGUMENT_TYPE_SHADER_RESOURCE_VIEW = (D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW + 1),
+    D3D12_INDIRECT_ARGUMENT_TYPE_UNORDERED_ACCESS_VIEW = (D3D12_INDIRECT_ARGUMENT_TYPE_SHADER_RESOURCE_VIEW + 1)
 } D3D12_INDIRECT_ARGUMENT_TYPE;
 
 typedef struct D3D12_INDIRECT_ARGUMENT_DESC {
@@ -1224,11 +1215,8 @@ typedef enum D3D12_SHADER_COMPONENT_MAPPING {
     D3D12_SHADER_COMPONENT_MAPPING_FORCE_VALUE_1 = 5
 } D3D12_SHADER_COMPONENT_MAPPING;
 
-#define D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(Src0, Src1, Src2, Src3)                           \
-    (((Src0)&0x7) | (((Src1)&0x7) << 3) | (((Src2)&0x7) << (3 * 2)) | (((Src3)&0x7) << (3 * 3)) | \
-     (1 << (3 * 4)))
-#define D3D12_DECODE_SHADER_4_COMPONENT_MAPPING(ComponentToExtract, Mapping) \
-    ((D3D12_SHADER_COMPONENT_MAPPING)(Mapping >> (3 * ComponentToExtract) & 0x7))
+#define D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(Src0, Src1, Src2, Src3) (((Src0)&0x7) | (((Src1)&0x7) << 3) | (((Src2)&0x7) << (3 * 2)) | (((Src3)&0x7) << (3 * 3)) | (1 << (3 * 4)))
+#define D3D12_DECODE_SHADER_4_COMPONENT_MAPPING(ComponentToExtract, Mapping) ((D3D12_SHADER_COMPONENT_MAPPING)(Mapping >> (3 * ComponentToExtract) & 0x7))
 #define D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 2, 3)
 
 typedef enum D3D12_BUFFER_SRV_FLAGS {
@@ -1385,23 +1373,14 @@ typedef enum D3D12_FILTER_REDUCTION_TYPE {
     D3D12_FILTER_REDUCTION_TYPE_MAXIMUM = 3
 } D3D12_FILTER_REDUCTION_TYPE;
 
-#define D3D12_ENCODE_BASIC_FILTER(min, mag, mip, reduction) \
-    ((D3D12_FILTER)((((min)&0x3) << 4) | (((mag)&0x3) << 2) | ((mip)&0x3) | (((reduction)&0x3) << 7)))
-#define D3D12_ENCODE_ANISOTROPIC_FILTER(reduction)                                                \
-    ((D3D12_FILTER)(0x40 |                                                                        \
-                    D3D12_ENCODE_BASIC_FILTER(D3D12_FILTER_TYPE_LINEAR, D3D12_FILTER_TYPE_LINEAR, \
-                                              D3D12_FILTER_TYPE_LINEAR, reduction)))
+#define D3D12_ENCODE_BASIC_FILTER(min, mag, mip, reduction) ((D3D12_FILTER)((((min)&0x3) << 4) | (((mag)&0x3) << 2) | ((mip)&0x3) | (((reduction)&0x3) << 7)))
+#define D3D12_ENCODE_ANISOTROPIC_FILTER(reduction) ((D3D12_FILTER)(0x40 | D3D12_ENCODE_BASIC_FILTER(D3D12_FILTER_TYPE_LINEAR, D3D12_FILTER_TYPE_LINEAR, D3D12_FILTER_TYPE_LINEAR, reduction)))
 #define D3D12_DECODE_MIN_FILTER(D3D12Filter) ((D3D12_FILTER_TYPE)(((D3D12Filter) >> 4) & 0x3))
 #define D3D12_DECODE_MAG_FILTER(D3D12Filter) ((D3D12_FILTER_TYPE)(((D3D12Filter) >> 2) & 0x3))
 #define D3D12_DECODE_MIP_FILTER(D3D12Filter) ((D3D12_FILTER_TYPE)(((D3D12Filter) >> 0) & 0x3))
-#define D3D12_DECODE_FILTER_REDUCTION(D3D12Filter) \
-    ((D3D12_FILTER_REDUCTION_TYPE)(((D3D12Filter) >> 7) & 0x3))
-#define D3D12_DECODE_IS_COMPARISON_FILTER(D3D12Filter) \
-    (D3D12_DECODE_FILTER_REDUCTION(D3D12Filter) == D3D12_FILTER_REDUCTION_TYPE_COMPARISON)
-#define D3D12_DECODE_IS_ANISOTROPIC_FILTER(D3D12Filter)                                            \
-    (((D3D12Filter)&0x40) && (D3D12_FILTER_TYPE_LINEAR == D3D12_DECODE_MIN_FILTER(D3D12Filter)) && \
-     (D3D12_FILTER_TYPE_LINEAR == D3D12_DECODE_MAG_FILTER(D3D12Filter)) &&                         \
-     (D3D12_FILTER_TYPE_LINEAR == D3D12_DECODE_MIP_FILTER(D3D12Filter)))
+#define D3D12_DECODE_FILTER_REDUCTION(D3D12Filter) ((D3D12_FILTER_REDUCTION_TYPE)(((D3D12Filter) >> 7) & 0x3))
+#define D3D12_DECODE_IS_COMPARISON_FILTER(D3D12Filter) (D3D12_DECODE_FILTER_REDUCTION(D3D12Filter) == D3D12_FILTER_REDUCTION_TYPE_COMPARISON)
+#define D3D12_DECODE_IS_ANISOTROPIC_FILTER(D3D12Filter) (((D3D12Filter)&0x40) && (D3D12_FILTER_TYPE_LINEAR == D3D12_DECODE_MIN_FILTER(D3D12Filter)) && (D3D12_FILTER_TYPE_LINEAR == D3D12_DECODE_MAG_FILTER(D3D12Filter)) && (D3D12_FILTER_TYPE_LINEAR == D3D12_DECODE_MIP_FILTER(D3D12Filter)))
 
 typedef enum D3D12_TEXTURE_ADDRESS_MODE {
     D3D12_TEXTURE_ADDRESS_MODE_WRAP = 1,
@@ -1693,10 +1672,8 @@ typedef struct ID3D12Object_vtable {
     u32(__stdcall *AddRef)(ID3D12Object *self);
     u32(__stdcall *Release)(ID3D12Object *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12Object *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
-    i32(__stdcall *SetPrivateData)(ID3D12Object *self, const GUID *guid, u32 data_size,
-                                   const void *data);
+    i32(__stdcall *GetPrivateData)(ID3D12Object *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32(__stdcall *SetPrivateData)(ID3D12Object *self, const GUID *guid, u32 data_size, const void *data);
     i32(__stdcall *SetPrivateDataInterface)(ID3D12Object *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12Object *self, const u16 *name);
 } ID3D12Object_vtable;
@@ -1712,12 +1689,9 @@ typedef struct ID3D12DeviceChild_vtable {
     u32(__stdcall *AddRef)(ID3D12DeviceChild *self);
     u32(__stdcall *Release)(ID3D12DeviceChild *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12DeviceChild *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
-    i32(__stdcall *SetPrivateData)(ID3D12DeviceChild *self, const GUID *guid, u32 data_size,
-                                   const void *data);
-    i32(__stdcall *SetPrivateDataInterface)(ID3D12DeviceChild *self, const GUID *guid,
-                                            const IUnknown *data);
+    i32(__stdcall *GetPrivateData)(ID3D12DeviceChild *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32(__stdcall *SetPrivateData)(ID3D12DeviceChild *self, const GUID *guid, u32 data_size, const void *data);
+    i32(__stdcall *SetPrivateDataInterface)(ID3D12DeviceChild *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12DeviceChild *self, const u16 *name);
     // ID3D12DeviceChild
     i32(__stdcall *GetDevice)(ID3D12DeviceChild *self, const GUID *guid, void **out_device);
@@ -1734,12 +1708,9 @@ typedef struct ID3D12RootSignature_vtable {
     u32(__stdcall *AddRef)(ID3D12RootSignature *self);
     u32(__stdcall *Release)(ID3D12RootSignature *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12RootSignature *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
-    i32(__stdcall *SetPrivateData)(ID3D12RootSignature *self, const GUID *guid, u32 data_size,
-                                   const void *data);
-    i32(__stdcall *SetPrivateDataInterface)(ID3D12RootSignature *self, const GUID *guid,
-                                            const IUnknown *data);
+    i32(__stdcall *GetPrivateData)(ID3D12RootSignature *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32(__stdcall *SetPrivateData)(ID3D12RootSignature *self, const GUID *guid, u32 data_size, const void *data);
+    i32(__stdcall *SetPrivateDataInterface)(ID3D12RootSignature *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12RootSignature *self, const u16 *name);
     // ID3D12DeviceChild
     i32(__stdcall *GetDevice)(ID3D12RootSignature *self, const GUID *guid, void **out_device);
@@ -1756,12 +1727,9 @@ typedef struct ID3D12Pageable_vtable {
     u32(__stdcall *AddRef)(ID3D12Pageable *self);
     u32(__stdcall *Release)(ID3D12Pageable *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12Pageable *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
-    i32(__stdcall *SetPrivateData)(ID3D12Pageable *self, const GUID *guid, u32 data_size,
-                                   const void *data);
-    i32(__stdcall *SetPrivateDataInterface)(ID3D12Pageable *self, const GUID *guid,
-                                            const IUnknown *data);
+    i32(__stdcall *GetPrivateData)(ID3D12Pageable *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32(__stdcall *SetPrivateData)(ID3D12Pageable *self, const GUID *guid, u32 data_size, const void *data);
+    i32(__stdcall *SetPrivateDataInterface)(ID3D12Pageable *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12Pageable *self, const u16 *name);
     // ID3D12DeviceChild
     i32(__stdcall *GetDevice)(ID3D12Pageable *self, const GUID *guid, void **out_device);
@@ -1778,8 +1746,7 @@ typedef struct ID3D12Heap_vtable {
     u32(__stdcall *AddRef)(ID3D12Heap *self);
     u32(__stdcall *Release)(ID3D12Heap *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12Heap *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
+    i32(__stdcall *GetPrivateData)(ID3D12Heap *self, const GUID *guid, u32 *out_data_size, void *out_data);
     i32(__stdcall *SetPrivateData)(ID3D12Heap *self, const GUID *guid, u32 data_size, const void *data);
     i32(__stdcall *SetPrivateDataInterface)(ID3D12Heap *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12Heap *self, const u16 *name);
@@ -1801,32 +1768,22 @@ typedef struct ID3D12Resource_vtable {
     u32(__stdcall *AddRef)(ID3D12Resource *self);
     u32(__stdcall *Release)(ID3D12Resource *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12Resource *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
-    i32(__stdcall *SetPrivateData)(ID3D12Resource *self, const GUID *guid, u32 data_size,
-                                   const void *data);
-    i32(__stdcall *SetPrivateDataInterface)(ID3D12Resource *self, const GUID *guid,
-                                            const IUnknown *data);
+    i32(__stdcall *GetPrivateData)(ID3D12Resource *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32(__stdcall *SetPrivateData)(ID3D12Resource *self, const GUID *guid, u32 data_size, const void *data);
+    i32(__stdcall *SetPrivateDataInterface)(ID3D12Resource *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12Resource *self, const u16 *name);
     // ID3D12DeviceChild
     i32(__stdcall *GetDevice)(ID3D12Resource *self, const GUID *guid, void **out_device);
     // ID3D12Pageable
     // ID3D12Resource
-    i32(__stdcall *Map)(ID3D12Resource *self, u32 subresource, const D3D12_RANGE *read_range,
-                        void **out_data);
+    i32(__stdcall *Map)(ID3D12Resource *self, u32 subresource, const D3D12_RANGE *read_range, void **out_data);
     void(__stdcall *Unmap)(ID3D12Resource *self, u32 subresource, const D3D12_RANGE *written_range);
-    D3D12_RESOURCE_DESC *(__stdcall *GetDesc)(ID3D12Resource *self,
-                                              D3D12_RESOURCE_DESC *out_resource_desc);
+    D3D12_RESOURCE_DESC *(__stdcall *GetDesc)(ID3D12Resource *self, D3D12_RESOURCE_DESC *out_resource_desc);
     D3D12_GPU_VIRTUAL_ADDRESS(__stdcall *GetGPUVirtualAddress)
     (ID3D12Resource *self);
-    i32(__stdcall *WriteToSubresource)(ID3D12Resource *self, u32 dst_subresource,
-                                       const D3D12_BOX *dst_box, const void *src_data, u32 src_row_pitch,
-                                       u32 src_depth_pitch);
-    i32(__stdcall *ReadFromSubresource)(ID3D12Resource *self, void *dst_data, u32 dst_row_pitch,
-                                        u32 dst_depth_pitch, u32 src_subresource,
-                                        const D3D12_BOX *src_box);
-    i32(__stdcall *GetHeapProperties)(ID3D12Resource *self, D3D12_HEAP_PROPERTIES *out_properties,
-                                      D3D12_HEAP_FLAGS *out_flags);
+    i32(__stdcall *WriteToSubresource)(ID3D12Resource *self, u32 dst_subresource, const D3D12_BOX *dst_box, const void *src_data, u32 src_row_pitch, u32 src_depth_pitch);
+    i32(__stdcall *ReadFromSubresource)(ID3D12Resource *self, void *dst_data, u32 dst_row_pitch, u32 dst_depth_pitch, u32 src_subresource, const D3D12_BOX *src_box);
+    i32(__stdcall *GetHeapProperties)(ID3D12Resource *self, D3D12_HEAP_PROPERTIES *out_properties, D3D12_HEAP_FLAGS *out_flags);
 } ID3D12Resource_vtable;
 
 struct ID3D12Resource {
@@ -1840,12 +1797,9 @@ typedef struct ID3D12CommandAllocator_vtable {
     u32(__stdcall *AddRef)(ID3D12CommandAllocator *self);
     u32(__stdcall *Release)(ID3D12CommandAllocator *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12CommandAllocator *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
-    i32(__stdcall *SetPrivateData)(ID3D12CommandAllocator *self, const GUID *guid, u32 data_size,
-                                   const void *data);
-    i32(__stdcall *SetPrivateDataInterface)(ID3D12CommandAllocator *self, const GUID *guid,
-                                            const IUnknown *data);
+    i32(__stdcall *GetPrivateData)(ID3D12CommandAllocator *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32(__stdcall *SetPrivateData)(ID3D12CommandAllocator *self, const GUID *guid, u32 data_size, const void *data);
+    i32(__stdcall *SetPrivateDataInterface)(ID3D12CommandAllocator *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12CommandAllocator *self, const u16 *name);
     // ID3D12DeviceChild
     i32(__stdcall *GetDevice)(ID3D12CommandAllocator *self, const GUID *guid, void **out_device);
@@ -1865,8 +1819,7 @@ typedef struct ID3D12Fence_vtable {
     u32(__stdcall *AddRef)(ID3D12Fence *self);
     u32(__stdcall *Release)(ID3D12Fence *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12Fence *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
+    i32(__stdcall *GetPrivateData)(ID3D12Fence *self, const GUID *guid, u32 *out_data_size, void *out_data);
     i32(__stdcall *SetPrivateData)(ID3D12Fence *self, const GUID *guid, u32 data_size, const void *data);
     i32(__stdcall *SetPrivateDataInterface)(ID3D12Fence *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12Fence *self, const u16 *name);
@@ -1890,12 +1843,9 @@ typedef struct ID3D12PipelineState_vtable {
     u32(__stdcall *AddRef)(ID3D12PipelineState *self);
     u32(__stdcall *Release)(ID3D12PipelineState *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12PipelineState *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
-    i32(__stdcall *SetPrivateData)(ID3D12PipelineState *self, const GUID *guid, u32 data_size,
-                                   const void *data);
-    i32(__stdcall *SetPrivateDataInterface)(ID3D12PipelineState *self, const GUID *guid,
-                                            const IUnknown *data);
+    i32(__stdcall *GetPrivateData)(ID3D12PipelineState *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32(__stdcall *SetPrivateData)(ID3D12PipelineState *self, const GUID *guid, u32 data_size, const void *data);
+    i32(__stdcall *SetPrivateDataInterface)(ID3D12PipelineState *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12PipelineState *self, const u16 *name);
     // ID3D12DeviceChild
     i32(__stdcall *GetDevice)(ID3D12PipelineState *self, const GUID *guid, void **out_device);
@@ -1915,23 +1865,17 @@ typedef struct ID3D12DescriptorHeap_vtable {
     u32(__stdcall *AddRef)(ID3D12DescriptorHeap *self);
     u32(__stdcall *Release)(ID3D12DescriptorHeap *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12DescriptorHeap *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
-    i32(__stdcall *SetPrivateData)(ID3D12DescriptorHeap *self, const GUID *guid, u32 data_size,
-                                   const void *data);
-    i32(__stdcall *SetPrivateDataInterface)(ID3D12DescriptorHeap *self, const GUID *guid,
-                                            const IUnknown *data);
+    i32(__stdcall *GetPrivateData)(ID3D12DescriptorHeap *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32(__stdcall *SetPrivateData)(ID3D12DescriptorHeap *self, const GUID *guid, u32 data_size, const void *data);
+    i32(__stdcall *SetPrivateDataInterface)(ID3D12DescriptorHeap *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12DescriptorHeap *self, const u16 *name);
     // ID3D12DeviceChild
     i32(__stdcall *GetDevice)(ID3D12DescriptorHeap *self, const GUID *guid, void **out_device);
     // ID3D12Pageable
     // ID3D12DescriptorHeap
-    D3D12_DESCRIPTOR_HEAP_DESC *(__stdcall *GetDesc)(ID3D12DescriptorHeap *self,
-                                                     D3D12_DESCRIPTOR_HEAP_DESC *out_desc);
-    D3D12_CPU_DESCRIPTOR_HANDLE *(__stdcall *GetCPUDescriptorHandleForHeapStart)(
-        ID3D12DescriptorHeap *self, D3D12_CPU_DESCRIPTOR_HANDLE *out_handle);
-    D3D12_GPU_DESCRIPTOR_HANDLE *(__stdcall *GetGPUDescriptorHandleForHeapStart)(
-        ID3D12DescriptorHeap *self, D3D12_GPU_DESCRIPTOR_HANDLE *out_handle);
+    D3D12_DESCRIPTOR_HEAP_DESC *(__stdcall *GetDesc)(ID3D12DescriptorHeap *self, D3D12_DESCRIPTOR_HEAP_DESC *out_desc);
+    D3D12_CPU_DESCRIPTOR_HANDLE *(__stdcall *GetCPUDescriptorHandleForHeapStart)(ID3D12DescriptorHeap *self, D3D12_CPU_DESCRIPTOR_HANDLE *out_handle);
+    D3D12_GPU_DESCRIPTOR_HANDLE *(__stdcall *GetGPUDescriptorHandleForHeapStart)(ID3D12DescriptorHeap *self, D3D12_GPU_DESCRIPTOR_HANDLE *out_handle);
 } ID3D12DescriptorHeap_vtable;
 
 struct ID3D12DescriptorHeap {
@@ -1945,12 +1889,9 @@ typedef struct ID3D12QueryHeap_vtable {
     u32(__stdcall *AddRef)(ID3D12QueryHeap *self);
     u32(__stdcall *Release)(ID3D12QueryHeap *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12QueryHeap *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
-    i32(__stdcall *SetPrivateData)(ID3D12QueryHeap *self, const GUID *guid, u32 data_size,
-                                   const void *data);
-    i32(__stdcall *SetPrivateDataInterface)(ID3D12QueryHeap *self, const GUID *guid,
-                                            const IUnknown *data);
+    i32(__stdcall *GetPrivateData)(ID3D12QueryHeap *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32(__stdcall *SetPrivateData)(ID3D12QueryHeap *self, const GUID *guid, u32 data_size, const void *data);
+    i32(__stdcall *SetPrivateDataInterface)(ID3D12QueryHeap *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12QueryHeap *self, const u16 *name);
     // ID3D12DeviceChild
     i32(__stdcall *GetDevice)(ID3D12QueryHeap *self, const GUID *guid, void **out_device);
@@ -1969,12 +1910,9 @@ typedef struct ID3D12CommandSignature_vtable {
     u32(__stdcall *AddRef)(ID3D12CommandSignature *self);
     u32(__stdcall *Release)(ID3D12CommandSignature *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12CommandSignature *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
-    i32(__stdcall *SetPrivateData)(ID3D12CommandSignature *self, const GUID *guid, u32 data_size,
-                                   const void *data);
-    i32(__stdcall *SetPrivateDataInterface)(ID3D12CommandSignature *self, const GUID *guid,
-                                            const IUnknown *data);
+    i32(__stdcall *GetPrivateData)(ID3D12CommandSignature *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32(__stdcall *SetPrivateData)(ID3D12CommandSignature *self, const GUID *guid, u32 data_size, const void *data);
+    i32(__stdcall *SetPrivateDataInterface)(ID3D12CommandSignature *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12CommandSignature *self, const u16 *name);
     // ID3D12DeviceChild
     i32(__stdcall *GetDevice)(ID3D12CommandSignature *self, const GUID *guid, void **out_device);
@@ -1993,12 +1931,9 @@ typedef struct ID3D12CommandList_vtable {
     u32(__stdcall *AddRef)(ID3D12CommandList *self);
     u32(__stdcall *Release)(ID3D12CommandList *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12CommandList *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
-    i32(__stdcall *SetPrivateData)(ID3D12CommandList *self, const GUID *guid, u32 data_size,
-                                   const void *data);
-    i32(__stdcall *SetPrivateDataInterface)(ID3D12CommandList *self, const GUID *guid,
-                                            const IUnknown *data);
+    i32(__stdcall *GetPrivateData)(ID3D12CommandList *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32(__stdcall *SetPrivateData)(ID3D12CommandList *self, const GUID *guid, u32 data_size, const void *data);
+    i32(__stdcall *SetPrivateDataInterface)(ID3D12CommandList *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12CommandList *self, const u16 *name);
     // ID3D12DeviceChild
     i32(__stdcall *GetDevice)(ID3D12CommandList *self, const GUID *guid, void **out_device);
@@ -2018,12 +1953,9 @@ typedef struct ID3D12GraphicsCommandList_vtable {
     u32(__stdcall *AddRef)(ID3D12GraphicsCommandList *self);
     u32(__stdcall *Release)(ID3D12GraphicsCommandList *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12GraphicsCommandList *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
-    i32(__stdcall *SetPrivateData)(ID3D12GraphicsCommandList *self, const GUID *guid, u32 data_size,
-                                   const void *data);
-    i32(__stdcall *SetPrivateDataInterface)(ID3D12GraphicsCommandList *self, const GUID *guid,
-                                            const IUnknown *data);
+    i32(__stdcall *GetPrivateData)(ID3D12GraphicsCommandList *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32(__stdcall *SetPrivateData)(ID3D12GraphicsCommandList *self, const GUID *guid, u32 data_size, const void *data);
+    i32(__stdcall *SetPrivateDataInterface)(ID3D12GraphicsCommandList *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12GraphicsCommandList *self, const u16 *name);
     // ID3D12DeviceChild
     i32(__stdcall *GetDevice)(ID3D12GraphicsCommandList *self, const GUID *guid, void **out_device);
@@ -2032,138 +1964,56 @@ typedef struct ID3D12GraphicsCommandList_vtable {
     (ID3D12GraphicsCommandList *self);
     // ID3D12GraphicsCommandList
     i32(__stdcall *Close)(ID3D12GraphicsCommandList *self);
-    i32(__stdcall *Reset)(ID3D12GraphicsCommandList *self, ID3D12CommandAllocator *allocator,
-                          ID3D12PipelineState *initial_state);
+    i32(__stdcall *Reset)(ID3D12GraphicsCommandList *self, ID3D12CommandAllocator *allocator, ID3D12PipelineState *initial_state);
     void(__stdcall *ClearState)(ID3D12GraphicsCommandList *self, ID3D12PipelineState *pipeline_state);
-    void(__stdcall *DrawInstanced)(ID3D12GraphicsCommandList *self, u32 vertex_count_per_instance,
-                                   u32 instance_count, u32 start_vertex_location,
-                                   u32 start_instance_location);
-    void(__stdcall *DrawIndexedInstanced)(ID3D12GraphicsCommandList *self, u32 index_count_per_instance,
-                                          u32 instance_count, u32 start_index_location,
-                                          i32 base_vertex_location, u32 start_instance_location);
-    void(__stdcall *Dispatch)(ID3D12GraphicsCommandList *self, u32 thread_group_count_x,
-                              u32 thread_group_count_y, u32 thread_group_count_z);
-    void(__stdcall *CopyBufferRegion)(ID3D12GraphicsCommandList *self, ID3D12Resource *dst_buffer,
-                                      u64 dst_offset, ID3D12Resource *src_buffer, u64 src_offset,
-                                      u64 num_bytes);
-    void(__stdcall *CopyTextureRegion)(ID3D12GraphicsCommandList *self,
-                                       const D3D12_TEXTURE_COPY_LOCATION *dst, u32 dst_x, u32 dst_y,
-                                       u32 dst_z, const D3D12_TEXTURE_COPY_LOCATION *src,
-                                       const D3D12_BOX *src_box);
-    void(__stdcall *CopyResource)(ID3D12GraphicsCommandList *self, ID3D12Resource *dst,
-                                  ID3D12Resource *src);
-    void(__stdcall *CopyTiles)(ID3D12GraphicsCommandList *self, ID3D12Resource *tiled_resource,
-                               const D3D12_TILED_RESOURCE_COORDINATE *tile_region_start_coordinate,
-                               const D3D12_TILE_REGION_SIZE *tile_region_size, ID3D12Resource *buffer,
-                               u64 buffer_start_offset_in_bytes, D3D12_TILE_COPY_FLAGS flags);
-    void(__stdcall *ResolveSubresource)(ID3D12GraphicsCommandList *self, ID3D12Resource *dst_resource,
-                                        u32 dst_subresource, ID3D12Resource *src_resource,
-                                        u32 src_subresource, DXGI_FORMAT format);
-    void(__stdcall *IASetPrimitiveTopology)(ID3D12GraphicsCommandList *self,
-                                            D3D12_PRIMITIVE_TOPOLOGY primitive_topology);
-    void(__stdcall *RSSetViewports)(ID3D12GraphicsCommandList *self, u32 num_viewports,
-                                    const D3D12_VIEWPORT *viewports);
-    void(__stdcall *RSSetScissorRects)(ID3D12GraphicsCommandList *self, u32 num_rects,
-                                       const D3D12_RECT *rects);
+    void(__stdcall *DrawInstanced)(ID3D12GraphicsCommandList *self, u32 vertex_count_per_instance, u32 instance_count, u32 start_vertex_location, u32 start_instance_location);
+    void(__stdcall *DrawIndexedInstanced)(ID3D12GraphicsCommandList *self, u32 index_count_per_instance, u32 instance_count, u32 start_index_location, i32 base_vertex_location, u32 start_instance_location);
+    void(__stdcall *Dispatch)(ID3D12GraphicsCommandList *self, u32 thread_group_count_x, u32 thread_group_count_y, u32 thread_group_count_z);
+    void(__stdcall *CopyBufferRegion)(ID3D12GraphicsCommandList *self, ID3D12Resource *dst_buffer, u64 dst_offset, ID3D12Resource *src_buffer, u64 src_offset, u64 num_bytes);
+    void(__stdcall *CopyTextureRegion)(ID3D12GraphicsCommandList *self, const D3D12_TEXTURE_COPY_LOCATION *dst, u32 dst_x, u32 dst_y, u32 dst_z, const D3D12_TEXTURE_COPY_LOCATION *src, const D3D12_BOX *src_box);
+    void(__stdcall *CopyResource)(ID3D12GraphicsCommandList *self, ID3D12Resource *dst, ID3D12Resource *src);
+    void(__stdcall *CopyTiles)(ID3D12GraphicsCommandList *self, ID3D12Resource *tiled_resource, const D3D12_TILED_RESOURCE_COORDINATE *tile_region_start_coordinate, const D3D12_TILE_REGION_SIZE *tile_region_size, ID3D12Resource *buffer, u64 buffer_start_offset_in_bytes, D3D12_TILE_COPY_FLAGS flags);
+    void(__stdcall *ResolveSubresource)(ID3D12GraphicsCommandList *self, ID3D12Resource *dst_resource, u32 dst_subresource, ID3D12Resource *src_resource, u32 src_subresource, DXGI_FORMAT format);
+    void(__stdcall *IASetPrimitiveTopology)(ID3D12GraphicsCommandList *self, D3D12_PRIMITIVE_TOPOLOGY primitive_topology);
+    void(__stdcall *RSSetViewports)(ID3D12GraphicsCommandList *self, u32 num_viewports, const D3D12_VIEWPORT *viewports);
+    void(__stdcall *RSSetScissorRects)(ID3D12GraphicsCommandList *self, u32 num_rects, const D3D12_RECT *rects);
     void(__stdcall *OMSetBlendFactor)(ID3D12GraphicsCommandList *self, const f32 blend_factor[4]);
     void(__stdcall *OMSetStencilRef)(ID3D12GraphicsCommandList *self, u32 stencil_ref);
-    void(__stdcall *SetPipelineState)(ID3D12GraphicsCommandList *self,
-                                      ID3D12PipelineState *pipeline_state);
-    void(__stdcall *ResourceBarrier)(ID3D12GraphicsCommandList *self, u32 num_barriers,
-                                     const D3D12_RESOURCE_BARRIER *barriers);
-    void(__stdcall *ExecuteBundle)(ID3D12GraphicsCommandList *self,
-                                   ID3D12GraphicsCommandList *command_list);
-    void(__stdcall *SetDescriptorHeaps)(ID3D12GraphicsCommandList *self, u32 num_heaps,
-                                        ID3D12DescriptorHeap *const *heaps);
-    void(__stdcall *SetComputeRootSignature)(ID3D12GraphicsCommandList *self,
-                                             ID3D12RootSignature *root_signature);
-    void(__stdcall *SetGraphicsRootSignature)(ID3D12GraphicsCommandList *self,
-                                              ID3D12RootSignature *root_signature);
-    void(__stdcall *SetComputeRootDescriptorTable)(ID3D12GraphicsCommandList *self,
-                                                   u32 root_parameter_index,
-                                                   D3D12_GPU_DESCRIPTOR_HANDLE base_descriptor);
-    void(__stdcall *SetGraphicsRootDescriptorTable)(ID3D12GraphicsCommandList *self,
-                                                    u32 root_parameter_index,
-                                                    D3D12_GPU_DESCRIPTOR_HANDLE base_descriptor);
-    void(__stdcall *SetComputeRoot32BitConstant)(ID3D12GraphicsCommandList *self,
-                                                 u32 root_parameter_index, u32 src_data,
-                                                 u32 dest_offset_in_32bit_values);
-    void(__stdcall *SetGraphicsRoot32BitConstant)(ID3D12GraphicsCommandList *self,
-                                                  u32 root_parameter_index, u32 src_data,
-                                                  u32 dest_offset_in_32bit_values);
-    void(__stdcall *SetComputeRoot32BitConstants)(ID3D12GraphicsCommandList *self,
-                                                  u32 root_parameter_index, u32 num_32bit_values_to_set,
-                                                  const void *src_data, u32 dest_offset_in_32bit_values);
-    void(__stdcall *SetGraphicsRoot32BitConstants)(ID3D12GraphicsCommandList *self,
-                                                   u32 root_parameter_index, u32 num_32bit_values_to_set,
-                                                   const void *src_data,
-                                                   u32 dest_offset_in_32bit_values);
-    void(__stdcall *SetComputeRootConstantBufferView)(ID3D12GraphicsCommandList *self,
-                                                      u32 root_parameter_index,
-                                                      D3D12_GPU_VIRTUAL_ADDRESS buffer_location);
-    void(__stdcall *SetGraphicsRootConstantBufferView)(ID3D12GraphicsCommandList *self,
-                                                       u32 root_parameter_index,
-                                                       D3D12_GPU_VIRTUAL_ADDRESS buffer_location);
-    void(__stdcall *SetComputeRootShaderResourceView)(ID3D12GraphicsCommandList *self,
-                                                      u32 root_parameter_index,
-                                                      D3D12_GPU_VIRTUAL_ADDRESS buffer_location);
-    void(__stdcall *SetGraphicsRootShaderResourceView)(ID3D12GraphicsCommandList *self,
-                                                       u32 root_parameter_index,
-                                                       D3D12_GPU_VIRTUAL_ADDRESS buffer_location);
-    void(__stdcall *SetComputeRootUnorderedAccessView)(ID3D12GraphicsCommandList *self,
-                                                       u32 root_parameter_index,
-                                                       D3D12_GPU_VIRTUAL_ADDRESS buffer_location);
-    void(__stdcall *SetGraphicsRootUnorderedAccessView)(ID3D12GraphicsCommandList *self,
-                                                        u32 root_parameter_index,
-                                                        D3D12_GPU_VIRTUAL_ADDRESS buffer_location);
-    void(__stdcall *IASetIndexBuffer)(ID3D12GraphicsCommandList *self,
-                                      const D3D12_INDEX_BUFFER_VIEW *view);
-    void(__stdcall *IASetVertexBuffers)(ID3D12GraphicsCommandList *self, u32 start_slot, u32 num_views,
-                                        const D3D12_VERTEX_BUFFER_VIEW *views);
-    void(__stdcall *SOSetTargets)(ID3D12GraphicsCommandList *self, u32 start_slot, u32 num_views,
-                                  const D3D12_STREAM_OUTPUT_BUFFER_VIEW *views);
-    void(__stdcall *OMSetRenderTargets)(ID3D12GraphicsCommandList *self,
-                                        u32 num_render_target_descriptors,
-                                        const D3D12_CPU_DESCRIPTOR_HANDLE *render_target_descriptors,
-                                        i32 single_handle_to_descriptor_range,
-                                        const D3D12_CPU_DESCRIPTOR_HANDLE *depth_stencil_descriptor);
-    void(__stdcall *ClearDepthStencilView)(ID3D12GraphicsCommandList *self,
-                                           D3D12_CPU_DESCRIPTOR_HANDLE depth_stencil_view,
-                                           D3D12_CLEAR_FLAGS clear_flags, f32 depth, u8 stencil,
-                                           u32 num_rects, const D3D12_RECT *rects);
-    void(__stdcall *ClearRenderTargetView)(ID3D12GraphicsCommandList *self,
-                                           D3D12_CPU_DESCRIPTOR_HANDLE render_target_view,
-                                           const f32 color_rgba[4], u32 num_rects,
-                                           const D3D12_RECT *rects);
-    void(__stdcall *ClearUnorderedAccessViewUint)(
-        ID3D12GraphicsCommandList *self, D3D12_GPU_DESCRIPTOR_HANDLE view_gpu_handle_in_current_heap,
-        D3D12_CPU_DESCRIPTOR_HANDLE view_cpu_handle, ID3D12Resource *resource, const u32 values[4],
-        u32 num_rects, const D3D12_RECT *rects);
-    void(__stdcall *ClearUnorderedAccessViewFloat)(
-        ID3D12GraphicsCommandList *self, D3D12_GPU_DESCRIPTOR_HANDLE view_gpu_handle_in_current_heap,
-        D3D12_CPU_DESCRIPTOR_HANDLE view_cpu_handle, ID3D12Resource *resource, const f32 values[4],
-        u32 num_rects, const D3D12_RECT *rects);
-    void(__stdcall *DiscardResource)(ID3D12GraphicsCommandList *self, ID3D12Resource *resource,
-                                     const D3D12_DISCARD_REGION *region);
-    void(__stdcall *BeginQuery)(ID3D12GraphicsCommandList *self, ID3D12QueryHeap *query_heap,
-                                D3D12_QUERY_TYPE type, u32 index);
-    void(__stdcall *EndQuery)(ID3D12GraphicsCommandList *self, ID3D12QueryHeap *query_heap,
-                              D3D12_QUERY_TYPE type, u32 index);
-    void(__stdcall *ResolveQueryData)(ID3D12GraphicsCommandList *self, ID3D12QueryHeap *query_heap,
-                                      D3D12_QUERY_TYPE type, u32 start_index, u32 num_queries,
-                                      ID3D12Resource *destination_buffer,
-                                      u64 aligned_destination_buffer_offset);
-    void(__stdcall *SetPredication)(ID3D12GraphicsCommandList *self, ID3D12Resource *buffer,
-                                    u64 aligned_buffer_offset, D3D12_PREDICATION_OP operation);
-    void(__stdcall *SetMarker)(ID3D12GraphicsCommandList *self, u32 metadata, const void *data,
-                               u32 size);
-    void(__stdcall *BeginEvent)(ID3D12GraphicsCommandList *self, u32 metadata, const void *data,
-                                u32 size);
+    void(__stdcall *SetPipelineState)(ID3D12GraphicsCommandList *self, ID3D12PipelineState *pipeline_state);
+    void(__stdcall *ResourceBarrier)(ID3D12GraphicsCommandList *self, u32 num_barriers, const D3D12_RESOURCE_BARRIER *barriers);
+    void(__stdcall *ExecuteBundle)(ID3D12GraphicsCommandList *self, ID3D12GraphicsCommandList *command_list);
+    void(__stdcall *SetDescriptorHeaps)(ID3D12GraphicsCommandList *self, u32 num_heaps, ID3D12DescriptorHeap *const *heaps);
+    void(__stdcall *SetComputeRootSignature)(ID3D12GraphicsCommandList *self, ID3D12RootSignature *root_signature);
+    void(__stdcall *SetGraphicsRootSignature)(ID3D12GraphicsCommandList *self, ID3D12RootSignature *root_signature);
+    void(__stdcall *SetComputeRootDescriptorTable)(ID3D12GraphicsCommandList *self, u32 root_parameter_index, D3D12_GPU_DESCRIPTOR_HANDLE base_descriptor);
+    void(__stdcall *SetGraphicsRootDescriptorTable)(ID3D12GraphicsCommandList *self, u32 root_parameter_index, D3D12_GPU_DESCRIPTOR_HANDLE base_descriptor);
+    void(__stdcall *SetComputeRoot32BitConstant)(ID3D12GraphicsCommandList *self, u32 root_parameter_index, u32 src_data, u32 dest_offset_in_32bit_values);
+    void(__stdcall *SetGraphicsRoot32BitConstant)(ID3D12GraphicsCommandList *self, u32 root_parameter_index, u32 src_data, u32 dest_offset_in_32bit_values);
+    void(__stdcall *SetComputeRoot32BitConstants)(ID3D12GraphicsCommandList *self, u32 root_parameter_index, u32 num_32bit_values_to_set, const void *src_data, u32 dest_offset_in_32bit_values);
+    void(__stdcall *SetGraphicsRoot32BitConstants)(ID3D12GraphicsCommandList *self, u32 root_parameter_index, u32 num_32bit_values_to_set, const void *src_data, u32 dest_offset_in_32bit_values);
+    void(__stdcall *SetComputeRootConstantBufferView)(ID3D12GraphicsCommandList *self, u32 root_parameter_index, D3D12_GPU_VIRTUAL_ADDRESS buffer_location);
+    void(__stdcall *SetGraphicsRootConstantBufferView)(ID3D12GraphicsCommandList *self, u32 root_parameter_index, D3D12_GPU_VIRTUAL_ADDRESS buffer_location);
+    void(__stdcall *SetComputeRootShaderResourceView)(ID3D12GraphicsCommandList *self, u32 root_parameter_index, D3D12_GPU_VIRTUAL_ADDRESS buffer_location);
+    void(__stdcall *SetGraphicsRootShaderResourceView)(ID3D12GraphicsCommandList *self, u32 root_parameter_index, D3D12_GPU_VIRTUAL_ADDRESS buffer_location);
+    void(__stdcall *SetComputeRootUnorderedAccessView)(ID3D12GraphicsCommandList *self, u32 root_parameter_index, D3D12_GPU_VIRTUAL_ADDRESS buffer_location);
+    void(__stdcall *SetGraphicsRootUnorderedAccessView)(ID3D12GraphicsCommandList *self, u32 root_parameter_index, D3D12_GPU_VIRTUAL_ADDRESS buffer_location);
+    void(__stdcall *IASetIndexBuffer)(ID3D12GraphicsCommandList *self, const D3D12_INDEX_BUFFER_VIEW *view);
+    void(__stdcall *IASetVertexBuffers)(ID3D12GraphicsCommandList *self, u32 start_slot, u32 num_views, const D3D12_VERTEX_BUFFER_VIEW *views);
+    void(__stdcall *SOSetTargets)(ID3D12GraphicsCommandList *self, u32 start_slot, u32 num_views, const D3D12_STREAM_OUTPUT_BUFFER_VIEW *views);
+    void(__stdcall *OMSetRenderTargets)(ID3D12GraphicsCommandList *self, u32 num_render_target_descriptors, const D3D12_CPU_DESCRIPTOR_HANDLE *render_target_descriptors, i32 single_handle_to_descriptor_range, const D3D12_CPU_DESCRIPTOR_HANDLE *depth_stencil_descriptor);
+    void(__stdcall *ClearDepthStencilView)(ID3D12GraphicsCommandList *self, D3D12_CPU_DESCRIPTOR_HANDLE depth_stencil_view, D3D12_CLEAR_FLAGS clear_flags, f32 depth, u8 stencil, u32 num_rects, const D3D12_RECT *rects);
+    void(__stdcall *ClearRenderTargetView)(ID3D12GraphicsCommandList *self, D3D12_CPU_DESCRIPTOR_HANDLE render_target_view, const f32 color_rgba[4], u32 num_rects, const D3D12_RECT *rects);
+    void(__stdcall *ClearUnorderedAccessViewUint)(ID3D12GraphicsCommandList *self, D3D12_GPU_DESCRIPTOR_HANDLE view_gpu_handle_in_current_heap, D3D12_CPU_DESCRIPTOR_HANDLE view_cpu_handle, ID3D12Resource *resource, const u32 values[4], u32 num_rects, const D3D12_RECT *rects);
+    void(__stdcall *ClearUnorderedAccessViewFloat)(ID3D12GraphicsCommandList *self, D3D12_GPU_DESCRIPTOR_HANDLE view_gpu_handle_in_current_heap, D3D12_CPU_DESCRIPTOR_HANDLE view_cpu_handle, ID3D12Resource *resource, const f32 values[4], u32 num_rects, const D3D12_RECT *rects);
+    void(__stdcall *DiscardResource)(ID3D12GraphicsCommandList *self, ID3D12Resource *resource, const D3D12_DISCARD_REGION *region);
+    void(__stdcall *BeginQuery)(ID3D12GraphicsCommandList *self, ID3D12QueryHeap *query_heap, D3D12_QUERY_TYPE type, u32 index);
+    void(__stdcall *EndQuery)(ID3D12GraphicsCommandList *self, ID3D12QueryHeap *query_heap, D3D12_QUERY_TYPE type, u32 index);
+    void(__stdcall *ResolveQueryData)(ID3D12GraphicsCommandList *self, ID3D12QueryHeap *query_heap, D3D12_QUERY_TYPE type, u32 start_index, u32 num_queries, ID3D12Resource *destination_buffer, u64 aligned_destination_buffer_offset);
+    void(__stdcall *SetPredication)(ID3D12GraphicsCommandList *self, ID3D12Resource *buffer, u64 aligned_buffer_offset, D3D12_PREDICATION_OP operation);
+    void(__stdcall *SetMarker)(ID3D12GraphicsCommandList *self, u32 metadata, const void *data, u32 size);
+    void(__stdcall *BeginEvent)(ID3D12GraphicsCommandList *self, u32 metadata, const void *data, u32 size);
     void(__stdcall *EndEvent)(ID3D12GraphicsCommandList *self);
-    void(__stdcall *ExecuteIndirect)(ID3D12GraphicsCommandList *self,
-                                     ID3D12CommandSignature *command_signature, u32 max_command_count,
-                                     ID3D12Resource *argument_buffer, u64 argument_buffer_offset,
-                                     ID3D12Resource *count_buffer, u64 count_buffer_offset);
+    void(__stdcall *ExecuteIndirect)(ID3D12GraphicsCommandList *self, ID3D12CommandSignature *command_signature, u32 max_command_count, ID3D12Resource *argument_buffer, u64 argument_buffer_offset, ID3D12Resource *count_buffer, u64 count_buffer_offset);
 } ID3D12GraphicsCommandList_vtable;
 
 struct ID3D12GraphicsCommandList {
@@ -2177,41 +2027,25 @@ typedef struct ID3D12CommandQueue_vtable {
     u32(__stdcall *AddRef)(ID3D12CommandQueue *self);
     u32(__stdcall *Release)(ID3D12CommandQueue *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12CommandQueue *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
-    i32(__stdcall *SetPrivateData)(ID3D12CommandQueue *self, const GUID *guid, u32 data_size,
-                                   const void *data);
-    i32(__stdcall *SetPrivateDataInterface)(ID3D12CommandQueue *self, const GUID *guid,
-                                            const IUnknown *data);
+    i32(__stdcall *GetPrivateData)(ID3D12CommandQueue *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32(__stdcall *SetPrivateData)(ID3D12CommandQueue *self, const GUID *guid, u32 data_size, const void *data);
+    i32(__stdcall *SetPrivateDataInterface)(ID3D12CommandQueue *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12CommandQueue *self, const u16 *name);
     // ID3D12DeviceChild
     i32(__stdcall *GetDevice)(ID3D12CommandQueue *self, const GUID *guid, void **out_device);
     // ID3D12Pageable
     // ID3D12CommandQueue
-    void(__stdcall *UpdateTileMappings)(
-        ID3D12CommandQueue *self, ID3D12Resource *resource, u32 num_resource_regions,
-        const D3D12_TILED_RESOURCE_COORDINATE *resource_region_start_coordinates,
-        const D3D12_TILE_REGION_SIZE *resource_region_sizes, ID3D12Heap *heap, u32 num_ranges,
-        const D3D12_TILE_RANGE_FLAGS *range_flags, const u32 *heap_range_start_offsets,
-        const u32 *range_tile_counts, D3D12_TILE_MAPPING_FLAGS flags);
-    void(__stdcall *CopyTileMappings)(ID3D12CommandQueue *self, ID3D12Resource *dst_resource,
-                                      const D3D12_TILED_RESOURCE_COORDINATE *dst_region_start_coordinate,
-                                      ID3D12Resource *src_resource,
-                                      const D3D12_TILED_RESOURCE_COORDINATE *src_region_start_coordinate,
-                                      const D3D12_TILE_REGION_SIZE *region_size,
-                                      D3D12_TILE_MAPPING_FLAGS flags);
-    void(__stdcall *ExecuteCommandLists)(ID3D12CommandQueue *self, u32 num_command_lists,
-                                         ID3D12CommandList *const *command_lists);
+    void(__stdcall *UpdateTileMappings)(ID3D12CommandQueue *self, ID3D12Resource *resource, u32 num_resource_regions, const D3D12_TILED_RESOURCE_COORDINATE *resource_region_start_coordinates, const D3D12_TILE_REGION_SIZE *resource_region_sizes, ID3D12Heap *heap, u32 num_ranges, const D3D12_TILE_RANGE_FLAGS *range_flags, const u32 *heap_range_start_offsets, const u32 *range_tile_counts, D3D12_TILE_MAPPING_FLAGS flags);
+    void(__stdcall *CopyTileMappings)(ID3D12CommandQueue *self, ID3D12Resource *dst_resource, const D3D12_TILED_RESOURCE_COORDINATE *dst_region_start_coordinate, ID3D12Resource *src_resource, const D3D12_TILED_RESOURCE_COORDINATE *src_region_start_coordinate, const D3D12_TILE_REGION_SIZE *region_size, D3D12_TILE_MAPPING_FLAGS flags);
+    void(__stdcall *ExecuteCommandLists)(ID3D12CommandQueue *self, u32 num_command_lists, ID3D12CommandList *const *command_lists);
     void(__stdcall *SetMarker)(ID3D12CommandQueue *self, u32 metadata, const void *data, u32 size);
     void(__stdcall *BeginEvent)(ID3D12CommandQueue *self, u32 metadata, const void *data, u32 size);
     void(__stdcall *EndEvent)(ID3D12CommandQueue *self);
     i32(__stdcall *Signal)(ID3D12CommandQueue *self, ID3D12Fence *fence, u64 value);
     i32(__stdcall *Wait)(ID3D12CommandQueue *self, ID3D12Fence *fence, u64 value);
     i32(__stdcall *GetTimestampFrequency)(ID3D12CommandQueue *self, u64 *out_frequency);
-    i32(__stdcall *GetClockCalibration)(ID3D12CommandQueue *self, u64 *out_gpu_timestamp,
-                                        u64 *out_cpu_timestamp);
-    D3D12_COMMAND_QUEUE_DESC *(__stdcall *GetDesc)(ID3D12CommandQueue *self,
-                                                   D3D12_COMMAND_QUEUE_DESC *out_desc);
+    i32(__stdcall *GetClockCalibration)(ID3D12CommandQueue *self, u64 *out_gpu_timestamp, u64 *out_cpu_timestamp);
+    D3D12_COMMAND_QUEUE_DESC *(__stdcall *GetDesc)(ID3D12CommandQueue *self, D3D12_COMMAND_QUEUE_DESC *out_desc);
 } ID3D12CommandQueue_vtable;
 
 struct ID3D12CommandQueue {
@@ -2225,118 +2059,47 @@ typedef struct ID3D12Device_vtable {
     u32(__stdcall *AddRef)(ID3D12Device *self);
     u32(__stdcall *Release)(ID3D12Device *self);
     // ID3D12Object
-    i32(__stdcall *GetPrivateData)(ID3D12Device *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
-    i32(__stdcall *SetPrivateData)(ID3D12Device *self, const GUID *guid, u32 data_size,
-                                   const void *data);
+    i32(__stdcall *GetPrivateData)(ID3D12Device *self, const GUID *guid, u32 *out_data_size, void *out_data);
+    i32(__stdcall *SetPrivateData)(ID3D12Device *self, const GUID *guid, u32 data_size, const void *data);
     i32(__stdcall *SetPrivateDataInterface)(ID3D12Device *self, const GUID *guid, const IUnknown *data);
     i32(__stdcall *SetName)(ID3D12Device *self, const u16 *name);
     // ID3D12Device
     u32(__stdcall *GetNodeCount)(ID3D12Device *self);
-    i32(__stdcall *CreateCommandQueue)(ID3D12Device *self, const D3D12_COMMAND_QUEUE_DESC *desc,
-                                       const GUID *guid, void **out_command_queue);
-    i32(__stdcall *CreateCommandAllocator)(ID3D12Device *self, D3D12_COMMAND_LIST_TYPE type,
-                                           const GUID *guid, void **out_command_allocator);
-    i32(__stdcall *CreateGraphicsPipelineState)(ID3D12Device *self,
-                                                const D3D12_GRAPHICS_PIPELINE_STATE_DESC *desc,
-                                                const GUID *guid, void **out_pipeline_state);
-    i32(__stdcall *CreateComputePipelineState)(ID3D12Device *self,
-                                               const D3D12_COMPUTE_PIPELINE_STATE_DESC *desc,
-                                               const GUID *guid, void **out_pipeline_state);
-    i32(__stdcall *CreateCommandList)(ID3D12Device *self, u32 node_mask, D3D12_COMMAND_LIST_TYPE type,
-                                      ID3D12CommandAllocator *command_allocator,
-                                      ID3D12PipelineState *initial_state, const GUID *guid,
-                                      void **out_command_list);
-    i32(__stdcall *CheckFeatureSupport)(ID3D12Device *self, D3D12_FEATURE feature,
-                                        void *out_feature_support_data, u32 feature_support_data_size);
-    i32(__stdcall *CreateDescriptorHeap)(ID3D12Device *self, const D3D12_DESCRIPTOR_HEAP_DESC *desc,
-                                         const GUID *guid, void **out_heap);
-    u32(__stdcall *GetDescriptorHandleIncrementSize)(ID3D12Device *self,
-                                                     D3D12_DESCRIPTOR_HEAP_TYPE type);
-    i32(__stdcall *CreateRootSignature)(ID3D12Device *self, u32 node_mask,
-                                        const void *blob_with_root_signature, u64 blob_length_in_bytes,
-                                        const GUID *guid, void **root_signature);
-    void(__stdcall *CreateConstantBufferView)(ID3D12Device *self,
-                                              const D3D12_CONSTANT_BUFFER_VIEW_DESC *desc,
-                                              D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
-    void(__stdcall *CreateShaderResourceView)(ID3D12Device *self, ID3D12Resource *resource,
-                                              const D3D12_SHADER_RESOURCE_VIEW_DESC *desc,
-                                              D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
-    void(__stdcall *CreateUnorderedAccessView)(ID3D12Device *self, ID3D12Resource *resource,
-                                               ID3D12Resource *counter_resource,
-                                               const D3D12_UNORDERED_ACCESS_VIEW_DESC *desc,
-                                               D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
-    void(__stdcall *CreateRenderTargetView)(ID3D12Device *self, ID3D12Resource *resource,
-                                            const D3D12_RENDER_TARGET_VIEW_DESC *desc,
-                                            D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
-    void(__stdcall *CreateDepthStencilView)(ID3D12Device *self, ID3D12Resource *resource,
-                                            const D3D12_DEPTH_STENCIL_VIEW_DESC *desc,
-                                            D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
-    void(__stdcall *CreateSampler)(ID3D12Device *self, const D3D12_SAMPLER_DESC *desc,
-                                   D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
-    void(__stdcall *CopyDescriptors)(ID3D12Device *self, u32 num_dest_descriptor_ranges,
-                                     const D3D12_CPU_DESCRIPTOR_HANDLE *dest_descriptor_range_starts,
-                                     const u32 *dest_descriptor_range_sizes,
-                                     u32 num_src_descriptor_ranges,
-                                     const D3D12_CPU_DESCRIPTOR_HANDLE *src_descriptor_range_starts,
-                                     const u32 *src_descriptor_range_sizes,
-                                     D3D12_DESCRIPTOR_HEAP_TYPE descriptor_heaps_type);
-    void(__stdcall *CopyDescriptorsSimple)(ID3D12Device *self, u32 num_descriptors,
-                                           D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor_range_start,
-                                           D3D12_CPU_DESCRIPTOR_HANDLE src_descriptor_range_start,
-                                           D3D12_DESCRIPTOR_HEAP_TYPE descriptor_heaps_type);
-    D3D12_RESOURCE_ALLOCATION_INFO *(__stdcall *GetResourceAllocationInfo)(
-        ID3D12Device *self, u32 visible_mask, u32 num_resource_descs,
-        const D3D12_RESOURCE_DESC *resource_descs, D3D12_RESOURCE_ALLOCATION_INFO *out_alloc_info);
-    D3D12_HEAP_PROPERTIES *(__stdcall *GetCustomHeapProperties)(
-        ID3D12Device *self, u32 node_mask, D3D12_HEAP_TYPE heap_type,
-        D3D12_HEAP_PROPERTIES *out_heap_properties);
-    i32(__stdcall *CreateCommittedResource)(ID3D12Device *self,
-                                            const D3D12_HEAP_PROPERTIES *heap_properties,
-                                            D3D12_HEAP_FLAGS heap_flags, const D3D12_RESOURCE_DESC *desc,
-                                            D3D12_RESOURCE_STATES initial_resource_state,
-                                            const D3D12_CLEAR_VALUE *optimized_clear_value,
-                                            const GUID *guid, void **out_resource);
-    i32(__stdcall *CreateHeap)(ID3D12Device *self, const D3D12_HEAP_DESC *desc, const GUID *guid,
-                               void **out_heap);
-    i32(__stdcall *CreatePlacedResource)(ID3D12Device *self, ID3D12Heap *heap, u64 heap_offset,
-                                         const D3D12_RESOURCE_DESC *desc,
-                                         D3D12_RESOURCE_STATES initial_resource_state,
-                                         const D3D12_CLEAR_VALUE *optimized_clear_value,
-                                         const GUID *guid, void **out_resource);
-    i32(__stdcall *CreateReservedResource)(ID3D12Device *self, const D3D12_RESOURCE_DESC *desc,
-                                           D3D12_RESOURCE_STATES initial_resource_state,
-                                           const D3D12_CLEAR_VALUE *optimized_clear_value,
-                                           const GUID *guid, void **out_resource);
-    i32(__stdcall *CreateSharedHandle)(ID3D12Device *self, ID3D12DeviceChild *object,
-                                       const SECURITY_ATTRIBUTES *attributes, u32 access, u16 *name,
-                                       void **out_handle);
-    i32(__stdcall *OpenSharedHandle)(ID3D12Device *self, void *nt_handle, const GUID *guid,
-                                     void **out_object);
-    i32(__stdcall *OpenSharedHandleByName)(ID3D12Device *self, u16 *name, u32 access,
-                                           void **out_nt_handle);
+    i32(__stdcall *CreateCommandQueue)(ID3D12Device *self, const D3D12_COMMAND_QUEUE_DESC *desc, const GUID *guid, void **out_command_queue);
+    i32(__stdcall *CreateCommandAllocator)(ID3D12Device *self, D3D12_COMMAND_LIST_TYPE type, const GUID *guid, void **out_command_allocator);
+    i32(__stdcall *CreateGraphicsPipelineState)(ID3D12Device *self, const D3D12_GRAPHICS_PIPELINE_STATE_DESC *desc, const GUID *guid, void **out_pipeline_state);
+    i32(__stdcall *CreateComputePipelineState)(ID3D12Device *self, const D3D12_COMPUTE_PIPELINE_STATE_DESC *desc, const GUID *guid, void **out_pipeline_state);
+    i32(__stdcall *CreateCommandList)(ID3D12Device *self, u32 node_mask, D3D12_COMMAND_LIST_TYPE type, ID3D12CommandAllocator *command_allocator, ID3D12PipelineState *initial_state, const GUID *guid, void **out_command_list);
+    i32(__stdcall *CheckFeatureSupport)(ID3D12Device *self, D3D12_FEATURE feature, void *out_feature_support_data, u32 feature_support_data_size);
+    i32(__stdcall *CreateDescriptorHeap)(ID3D12Device *self, const D3D12_DESCRIPTOR_HEAP_DESC *desc, const GUID *guid, void **out_heap);
+    u32(__stdcall *GetDescriptorHandleIncrementSize)(ID3D12Device *self, D3D12_DESCRIPTOR_HEAP_TYPE type);
+    i32(__stdcall *CreateRootSignature)(ID3D12Device *self, u32 node_mask, const void *blob_with_root_signature, u64 blob_length_in_bytes, const GUID *guid, void **root_signature);
+    void(__stdcall *CreateConstantBufferView)(ID3D12Device *self, const D3D12_CONSTANT_BUFFER_VIEW_DESC *desc, D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
+    void(__stdcall *CreateShaderResourceView)(ID3D12Device *self, ID3D12Resource *resource, const D3D12_SHADER_RESOURCE_VIEW_DESC *desc, D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
+    void(__stdcall *CreateUnorderedAccessView)(ID3D12Device *self, ID3D12Resource *resource, ID3D12Resource *counter_resource, const D3D12_UNORDERED_ACCESS_VIEW_DESC *desc, D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
+    void(__stdcall *CreateRenderTargetView)(ID3D12Device *self, ID3D12Resource *resource, const D3D12_RENDER_TARGET_VIEW_DESC *desc, D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
+    void(__stdcall *CreateDepthStencilView)(ID3D12Device *self, ID3D12Resource *resource, const D3D12_DEPTH_STENCIL_VIEW_DESC *desc, D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
+    void(__stdcall *CreateSampler)(ID3D12Device *self, const D3D12_SAMPLER_DESC *desc, D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor);
+    void(__stdcall *CopyDescriptors)(ID3D12Device *self, u32 num_dest_descriptor_ranges, const D3D12_CPU_DESCRIPTOR_HANDLE *dest_descriptor_range_starts, const u32 *dest_descriptor_range_sizes, u32 num_src_descriptor_ranges, const D3D12_CPU_DESCRIPTOR_HANDLE *src_descriptor_range_starts, const u32 *src_descriptor_range_sizes, D3D12_DESCRIPTOR_HEAP_TYPE descriptor_heaps_type);
+    void(__stdcall *CopyDescriptorsSimple)(ID3D12Device *self, u32 num_descriptors, D3D12_CPU_DESCRIPTOR_HANDLE dest_descriptor_range_start, D3D12_CPU_DESCRIPTOR_HANDLE src_descriptor_range_start, D3D12_DESCRIPTOR_HEAP_TYPE descriptor_heaps_type);
+    D3D12_RESOURCE_ALLOCATION_INFO *(__stdcall *GetResourceAllocationInfo)(ID3D12Device *self, u32 visible_mask, u32 num_resource_descs, const D3D12_RESOURCE_DESC *resource_descs, D3D12_RESOURCE_ALLOCATION_INFO *out_alloc_info);
+    D3D12_HEAP_PROPERTIES *(__stdcall *GetCustomHeapProperties)(ID3D12Device *self, u32 node_mask, D3D12_HEAP_TYPE heap_type, D3D12_HEAP_PROPERTIES *out_heap_properties);
+    i32(__stdcall *CreateCommittedResource)(ID3D12Device *self, const D3D12_HEAP_PROPERTIES *heap_properties, D3D12_HEAP_FLAGS heap_flags, const D3D12_RESOURCE_DESC *desc, D3D12_RESOURCE_STATES initial_resource_state, const D3D12_CLEAR_VALUE *optimized_clear_value, const GUID *guid, void **out_resource);
+    i32(__stdcall *CreateHeap)(ID3D12Device *self, const D3D12_HEAP_DESC *desc, const GUID *guid, void **out_heap);
+    i32(__stdcall *CreatePlacedResource)(ID3D12Device *self, ID3D12Heap *heap, u64 heap_offset, const D3D12_RESOURCE_DESC *desc, D3D12_RESOURCE_STATES initial_resource_state, const D3D12_CLEAR_VALUE *optimized_clear_value, const GUID *guid, void **out_resource);
+    i32(__stdcall *CreateReservedResource)(ID3D12Device *self, const D3D12_RESOURCE_DESC *desc, D3D12_RESOURCE_STATES initial_resource_state, const D3D12_CLEAR_VALUE *optimized_clear_value, const GUID *guid, void **out_resource);
+    i32(__stdcall *CreateSharedHandle)(ID3D12Device *self, ID3D12DeviceChild *object, const SECURITY_ATTRIBUTES *attributes, u32 access, u16 *name, void **out_handle);
+    i32(__stdcall *OpenSharedHandle)(ID3D12Device *self, void *nt_handle, const GUID *guid, void **out_object);
+    i32(__stdcall *OpenSharedHandleByName)(ID3D12Device *self, u16 *name, u32 access, void **out_nt_handle);
     i32(__stdcall *MakeResident)(ID3D12Device *self, u32 num_objects, ID3D12Pageable *const *objects);
     i32(__stdcall *Evict)(ID3D12Device *self, u32 num_objects, ID3D12Pageable *const *objects);
-    i32(__stdcall *CreateFence)(ID3D12Device *self, u64 initial_value, D3D12_FENCE_FLAGS flags,
-                                const GUID *guid, void **out_fence);
+    i32(__stdcall *CreateFence)(ID3D12Device *self, u64 initial_value, D3D12_FENCE_FLAGS flags, const GUID *guid, void **out_fence);
     i32(__stdcall *GetDeviceRemovedReason)(ID3D12Device *self);
-    void(__stdcall *GetCopyableFootprints)(ID3D12Device *self, const D3D12_RESOURCE_DESC *desc,
-                                           u32 first_subresource, u32 num_subresources, u64 base_offset,
-                                           D3D12_PLACED_SUBRESOURCE_FOOTPRINT *out_layouts,
-                                           u32 *out_num_rows, u64 *out_row_size_in_bytes,
-                                           u64 *out_total_bytes);
-    i32(__stdcall *CreateQueryHeap)(ID3D12Device *self, const D3D12_QUERY_HEAP_DESC *desc,
-                                    const GUID *guid, void **out_heap);
+    void(__stdcall *GetCopyableFootprints)(ID3D12Device *self, const D3D12_RESOURCE_DESC *desc, u32 first_subresource, u32 num_subresources, u64 base_offset, D3D12_PLACED_SUBRESOURCE_FOOTPRINT *out_layouts, u32 *out_num_rows, u64 *out_row_size_in_bytes, u64 *out_total_bytes);
+    i32(__stdcall *CreateQueryHeap)(ID3D12Device *self, const D3D12_QUERY_HEAP_DESC *desc, const GUID *guid, void **out_heap);
     i32(__stdcall *SetStablePowerState)(ID3D12Device *self, i32 enable);
-    i32(__stdcall *CreateCommandSignature)(ID3D12Device *self, const D3D12_COMMAND_SIGNATURE_DESC *desc,
-                                           ID3D12RootSignature *root_signature, const GUID *guid,
-                                           void **out_command_signature);
-    void(__stdcall *GetResourceTiling)(
-        ID3D12Device *self, ID3D12Resource *tiled_resource, u32 *out_num_tiles_for_entire_resource,
-        D3D12_PACKED_MIP_INFO *out_packed_mip_desc,
-        D3D12_TILE_SHAPE *out_standard_tile_shape_for_non_packed_mips, u32 *out_num_subresource_tilings,
-        u32 first_subresource_tiling_to_get,
-        D3D12_SUBRESOURCE_TILING *out_subresource_tiling_for_non_packed_mips);
+    i32(__stdcall *CreateCommandSignature)(ID3D12Device *self, const D3D12_COMMAND_SIGNATURE_DESC *desc, ID3D12RootSignature *root_signature, const GUID *guid, void **out_command_signature);
+    void(__stdcall *GetResourceTiling)(ID3D12Device *self, ID3D12Resource *tiled_resource, u32 *out_num_tiles_for_entire_resource, D3D12_PACKED_MIP_INFO *out_packed_mip_desc, D3D12_TILE_SHAPE *out_standard_tile_shape_for_non_packed_mips, u32 *out_num_subresource_tilings, u32 first_subresource_tiling_to_get, D3D12_SUBRESOURCE_TILING *out_subresource_tiling_for_non_packed_mips);
     i64(__stdcall *GetAdapterLuid)(ID3D12Device *self);
 } ID3D12Device_vtable;
 
@@ -2597,12 +2360,9 @@ typedef struct IDXGISwapChain_vtable {
     u32(__stdcall *AddRef)(IDXGISwapChain *self);
     u32(__stdcall *Release)(IDXGISwapChain *self);
     // IDXGIObject
-    i32(__stdcall *SetPrivateData)(IDXGISwapChain *self, const GUID *guid, u32 data_size,
-                                   const void *data);
-    i32(__stdcall *SetPrivateDataInterface)(IDXGISwapChain *self, const GUID *guid,
-                                            const IUnknown *data);
-    i32(__stdcall *GetPrivateData)(IDXGISwapChain *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
+    i32(__stdcall *SetPrivateData)(IDXGISwapChain *self, const GUID *guid, u32 data_size, const void *data);
+    i32(__stdcall *SetPrivateDataInterface)(IDXGISwapChain *self, const GUID *guid, const IUnknown *data);
+    i32(__stdcall *GetPrivateData)(IDXGISwapChain *self, const GUID *guid, u32 *out_data_size, void *out_data);
     i32(__stdcall *GetParent)(IDXGISwapChain *self, const GUID *guid, void **out_parent);
     // IDXGIDeviceSubObject
     i32(__stdcall *GetDevice)(IDXGISwapChain *self, const GUID *guid, void **out_device);
@@ -2610,11 +2370,9 @@ typedef struct IDXGISwapChain_vtable {
     i32(__stdcall *Present)(IDXGISwapChain *self, u32 sync_interval, u32 flags);
     i32(__stdcall *GetBuffer)(IDXGISwapChain *self, u32 buffer, const GUID *guid, void **out_surface);
     i32(__stdcall *SetFullscreenState)(IDXGISwapChain *self, i32 fullscreen, IDXGIOutput *target);
-    i32(__stdcall *GetFullscreenState)(IDXGISwapChain *self, i32 *out_fullscreen,
-                                       IDXGIOutput **out_target);
+    i32(__stdcall *GetFullscreenState)(IDXGISwapChain *self, i32 *out_fullscreen, IDXGIOutput **out_target);
     i32(__stdcall *GetDesc)(IDXGISwapChain *self, DXGI_SWAP_CHAIN_DESC *out_desc);
-    i32(__stdcall *ResizeBuffers)(IDXGISwapChain *self, u32 buffer_count, u32 width, u32 height,
-                                  DXGI_FORMAT new_format, u32 swap_chain_flags);
+    i32(__stdcall *ResizeBuffers)(IDXGISwapChain *self, u32 buffer_count, u32 width, u32 height, DXGI_FORMAT new_format, u32 swap_chain_flags);
     i32(__stdcall *ResizeTarget)(IDXGISwapChain *self, const DXGI_MODE_DESC *new_target_parameters);
     i32(__stdcall *GetContainingOutput)(IDXGISwapChain *self, IDXGIOutput **out_output);
     i32(__stdcall *GetFrameStatistics)(IDXGISwapChain *self, DXGI_FRAME_STATISTICS *out_stats);
@@ -2631,12 +2389,9 @@ typedef struct IDXGISwapChain3_vtable {
     u32(__stdcall *AddRef)(IDXGISwapChain3 *self);
     u32(__stdcall *Release)(IDXGISwapChain3 *self);
     // IDXGIObject
-    i32(__stdcall *SetPrivateData)(IDXGISwapChain3 *self, const GUID *guid, u32 data_size,
-                                   const void *data);
-    i32(__stdcall *SetPrivateDataInterface)(IDXGISwapChain3 *self, const GUID *guid,
-                                            const IUnknown *data);
-    i32(__stdcall *GetPrivateData)(IDXGISwapChain3 *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
+    i32(__stdcall *SetPrivateData)(IDXGISwapChain3 *self, const GUID *guid, u32 data_size, const void *data);
+    i32(__stdcall *SetPrivateDataInterface)(IDXGISwapChain3 *self, const GUID *guid, const IUnknown *data);
+    i32(__stdcall *GetPrivateData)(IDXGISwapChain3 *self, const GUID *guid, u32 *out_data_size, void *out_data);
     i32(__stdcall *GetParent)(IDXGISwapChain3 *self, const GUID *guid, void **out_parent);
     // IDXGIDeviceSubObject
     i32(__stdcall *GetDevice)(IDXGISwapChain3 *self, const GUID *guid, void **out_device);
@@ -2644,11 +2399,9 @@ typedef struct IDXGISwapChain3_vtable {
     i32(__stdcall *Present)(IDXGISwapChain3 *self, u32 sync_interval, u32 flags);
     i32(__stdcall *GetBuffer)(IDXGISwapChain3 *self, u32 buffer, const GUID *guid, void **out_surface);
     i32(__stdcall *SetFullscreenState)(IDXGISwapChain3 *self, i32 fullscreen, IDXGIOutput *target);
-    i32(__stdcall *GetFullscreenState)(IDXGISwapChain3 *self, i32 *out_fullscreen,
-                                       IDXGIOutput **out_target);
+    i32(__stdcall *GetFullscreenState)(IDXGISwapChain3 *self, i32 *out_fullscreen, IDXGIOutput **out_target);
     i32(__stdcall *GetDesc)(IDXGISwapChain3 *self, DXGI_SWAP_CHAIN_DESC *out_desc);
-    i32(__stdcall *ResizeBuffers)(IDXGISwapChain3 *self, u32 buffer_count, u32 width, u32 height,
-                                  DXGI_FORMAT new_format, u32 swap_chain_flags);
+    i32(__stdcall *ResizeBuffers)(IDXGISwapChain3 *self, u32 buffer_count, u32 width, u32 height, DXGI_FORMAT new_format, u32 swap_chain_flags);
     i32(__stdcall *ResizeTarget)(IDXGISwapChain3 *self, const DXGI_MODE_DESC *new_target_parameters);
     i32(__stdcall *GetContainingOutput)(IDXGISwapChain3 *self, IDXGIOutput **out_output);
     i32(__stdcall *GetFrameStatistics)(IDXGISwapChain3 *self, DXGI_FRAME_STATISTICS *out_stats);
@@ -2658,8 +2411,7 @@ typedef struct IDXGISwapChain3_vtable {
     i32(__stdcall *GetFullscreenDesc)(IDXGISwapChain3 *self, DXGI_SWAP_CHAIN_FULLSCREEN_DESC *out_desc);
     i32(__stdcall *GetHwnd)(IDXGISwapChain3 *self, void **out_hwnd);
     i32(__stdcall *GetCoreWindow)(IDXGISwapChain3 *self, const GUID *guid, void **out_window);
-    i32(__stdcall *Present1)(IDXGISwapChain3 *self, u32 sync_interval, u32 flags,
-                             const DXGI_PRESENT_PARAMETERS *params);
+    i32(__stdcall *Present1)(IDXGISwapChain3 *self, u32 sync_interval, u32 flags, const DXGI_PRESENT_PARAMETERS *params);
     i32(__stdcall *IsTemporaryMonoSupported)(IDXGISwapChain3 *self);
     i32(__stdcall *GetRestrictToOutput)(IDXGISwapChain3 *self, IDXGIOutput **out_restrict_to_output);
     i32(__stdcall *SetBackgroundColor)(IDXGISwapChain3 *self, const DXGI_RGBA *color);
@@ -2675,12 +2427,9 @@ typedef struct IDXGISwapChain3_vtable {
     i32(__stdcall *GetMatrixTransform)(IDXGISwapChain3 *self, DXGI_MATRIX_3X2_F *out_matrix);
     // IDXGISwapChain3
     u32(__stdcall *GetCurrentBackBufferIndex)(IDXGISwapChain3 *self);
-    i32(__stdcall *CheckColorSpaceSupport)(IDXGISwapChain3 *self, DXGI_COLOR_SPACE_TYPE color_space,
-                                           u32 *out_support);
+    i32(__stdcall *CheckColorSpaceSupport)(IDXGISwapChain3 *self, DXGI_COLOR_SPACE_TYPE color_space, u32 *out_support);
     i32(__stdcall *SetColorSpace1)(IDXGISwapChain3 *self, DXGI_COLOR_SPACE_TYPE color_space);
-    i32(__stdcall *ResizeBuffers1)(IDXGISwapChain3 *self, u32 buffer_count, u32 width, u32 height,
-                                   DXGI_FORMAT format, u32 swap_chain_flags,
-                                   const u32 *creation_node_mask, IUnknown *const *present_queue);
+    i32(__stdcall *ResizeBuffers1)(IDXGISwapChain3 *self, u32 buffer_count, u32 width, u32 height, DXGI_FORMAT format, u32 swap_chain_flags, const u32 *creation_node_mask, IUnknown *const *present_queue);
 } IDXGISwapChain3_vtable;
 
 struct IDXGISwapChain3 {
@@ -2693,48 +2442,32 @@ typedef struct IDXGIFactory4_vtable {
     u32(__stdcall *AddRef)(IDXGIFactory4 *self);
     u32(__stdcall *Release)(IDXGIFactory4 *self);
     // IDXGIObject
-    i32(__stdcall *SetPrivateData)(IDXGIFactory4 *self, const GUID *guid, u32 data_size,
-                                   const void *data);
+    i32(__stdcall *SetPrivateData)(IDXGIFactory4 *self, const GUID *guid, u32 data_size, const void *data);
     i32(__stdcall *SetPrivateDataInterface)(IDXGIFactory4 *self, const GUID *guid, const IUnknown *data);
-    i32(__stdcall *GetPrivateData)(IDXGIFactory4 *self, const GUID *guid, u32 *out_data_size,
-                                   void *out_data);
+    i32(__stdcall *GetPrivateData)(IDXGIFactory4 *self, const GUID *guid, u32 *out_data_size, void *out_data);
     i32(__stdcall *GetParent)(IDXGIFactory4 *self, const GUID *guid, void **out_parent);
     // IDXGIFactory
     i32(__stdcall *EnumAdapters)(IDXGIFactory4 *self, u32 adapter, IDXGIAdapter **out_adapter);
     i32(__stdcall *MakeWindowAssociation)(IDXGIFactory4 *self, void *hwnd, u32 flags);
     i32(__stdcall *GetWindowAssociation)(IDXGIFactory4 *self, void **out_hwnd);
-    i32(__stdcall *CreateSwapChain)(IDXGIFactory4 *self, IUnknown *device, DXGI_SWAP_CHAIN_DESC *desc,
-                                    IDXGISwapChain **out_swap_chain);
+    i32(__stdcall *CreateSwapChain)(IDXGIFactory4 *self, IUnknown *device, DXGI_SWAP_CHAIN_DESC *desc, IDXGISwapChain **out_swap_chain);
     i32(__stdcall *CreateSoftwareAdapter)(IDXGIFactory4 *self, void *module, IDXGIAdapter **out_adapter);
     i32(__stdcall *EnumAdapters1)(IDXGIFactory4 *self, u32 adapter, IDXGIAdapter1 **out_adapter);
     i32(__stdcall *IsCurrent)(IDXGIFactory4 *self);
     i32(__stdcall *IsWindowedStereoEnabled)(IDXGIFactory4 *self);
-    i32(__stdcall *CreateSwapChainForHwnd)(IDXGIFactory4 *self, IUnknown *device, void *hwnd,
-                                           const DXGI_SWAP_CHAIN_DESC1 *desc,
-                                           const DXGI_SWAP_CHAIN_FULLSCREEN_DESC *fullscreen_desc,
-                                           IDXGIOutput *restrict_to_output,
-                                           IDXGISwapChain1 **out_swap_chain);
-    i32(__stdcall *CreateSwapChainForCoreWindow)(IDXGIFactory4 *self, IUnknown *device, IUnknown *window,
-                                                 const DXGI_SWAP_CHAIN_DESC1 *desc,
-                                                 IDXGIOutput *restrict_to_output,
-                                                 IDXGISwapChain1 **out_swap_chain);
+    i32(__stdcall *CreateSwapChainForHwnd)(IDXGIFactory4 *self, IUnknown *device, void *hwnd, const DXGI_SWAP_CHAIN_DESC1 *desc, const DXGI_SWAP_CHAIN_FULLSCREEN_DESC *fullscreen_desc, IDXGIOutput *restrict_to_output, IDXGISwapChain1 **out_swap_chain);
+    i32(__stdcall *CreateSwapChainForCoreWindow)(IDXGIFactory4 *self, IUnknown *device, IUnknown *window, const DXGI_SWAP_CHAIN_DESC1 *desc, IDXGIOutput *restrict_to_output, IDXGISwapChain1 **out_swap_chain);
     i32(__stdcall *GetSharedResourceAdapterLuid)(IDXGIFactory4 *self, void *resource, i64 *out_luid);
-    i32(__stdcall *RegisterStereoStatusWindow)(IDXGIFactory4 *self, void *hwnd, u32 msg,
-                                               u32 *out_cookie);
+    i32(__stdcall *RegisterStereoStatusWindow)(IDXGIFactory4 *self, void *hwnd, u32 msg, u32 *out_cookie);
     i32(__stdcall *RegisterStereoStatusEvent)(IDXGIFactory4 *self, void *event, u32 *out_cookie);
     void(__stdcall *UnregisterStereoStatus)(IDXGIFactory4 *self, u32 cookie);
-    i32(__stdcall *RegisterOcclusionStatusWindow)(IDXGIFactory4 *self, void *hwnd, u32 msg,
-                                                  u32 *out_cookie);
+    i32(__stdcall *RegisterOcclusionStatusWindow)(IDXGIFactory4 *self, void *hwnd, u32 msg, u32 *out_cookie);
     i32(__stdcall *RegisterOcclusionStatusEvent)(IDXGIFactory4 *self, void *event, u32 *out_cookie);
     void(__stdcall *UnregisterOcclusionStatus)(IDXGIFactory4 *self, u32 cookie);
-    i32(__stdcall *CreateSwapChainForComposition)(IDXGIFactory4 *self, IUnknown *device,
-                                                  const DXGI_SWAP_CHAIN_DESC1 *desc,
-                                                  IDXGIOutput *restrict_to_output,
-                                                  IDXGISwapChain1 **out_swap_chain);
+    i32(__stdcall *CreateSwapChainForComposition)(IDXGIFactory4 *self, IUnknown *device, const DXGI_SWAP_CHAIN_DESC1 *desc, IDXGIOutput *restrict_to_output, IDXGISwapChain1 **out_swap_chain);
     u32(__stdcall *GetCreationFlags)(IDXGIFactory4 *self);
     // IDXGIFactory4
-    i32(__stdcall *EnumAdapterByLuid)(IDXGIFactory4 *self, i64 adapter_luid, const GUID *guid,
-                                      void **out_adapter);
+    i32(__stdcall *EnumAdapterByLuid)(IDXGIFactory4 *self, i64 adapter_luid, const GUID *guid, void **out_adapter);
     i32(__stdcall *EnumWarpAdapter)(IDXGIFactory4 *self, const GUID *guid, void **out_adapter);
 } IDXGIFactory4_vtable;
 

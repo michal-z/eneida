@@ -11,20 +11,13 @@
         (addr) = NULL;                        \
     }
 
-void
-mzl_load_file(const char *filename, u32 *out_size, u8 **out_content);
-f64
-mzl_get_time(void);
-void
-mzl_update_frame_stats(void *window, const char *name, f64 *out_time, f32 *out_delta_time);
-void *
-mzl_create_window(const char *name, u32 width, u32 height);
-void *
-mzl_malloc(u64 size, const char *filename, i32 line);
-void *
-mzl_realloc(void *addr, u64 size, const char *filename, i32 line);
-void
-mzl_free(void *addr, const char *filename, i32 line);
+void mzl_load_file(const char *filename, u32 *out_size, u8 **out_content);
+f64 mzl_get_time(void);
+void mzl_update_frame_stats(void *window, const char *name, f64 *out_time, f32 *out_delta_time);
+void *mzl_create_window(const char *name, u32 width, u32 height);
+void *mzl_malloc(u64 size, const char *filename, i32 line);
+void *mzl_realloc(void *addr, u64 size, const char *filename, i32 line);
+void mzl_free(void *addr, const char *filename, i32 line);
 
 #endif // #ifndef MZ_LIBRARY_INCLUDED__
 
@@ -45,8 +38,7 @@ mzl_free(void *addr, const char *filename, i32 line);
 #include "mz_libc.h"
 #include "mz_windows.h"
 
-void
-mzl_load_file(const char *filename, u32 *out_size, u8 **out_content)
+void mzl_load_file(const char *filename, u32 *out_size, u8 **out_content)
 {
     assert(out_size && out_content);
     *out_size = 0;
@@ -70,8 +62,7 @@ mzl_load_file(const char *filename, u32 *out_size, u8 **out_content)
     *out_content = content;
 }
 
-f64
-mzl_get_time(void)
+f64 mzl_get_time(void)
 {
     static i64 start_counter;
     static i64 frequency;
@@ -84,8 +75,7 @@ mzl_get_time(void)
     return (counter - start_counter) / (f64)frequency;
 }
 
-void
-mzl_update_frame_stats(void *window, const char *name, f64 *out_time, f32 *out_delta_time)
+void mzl_update_frame_stats(void *window, const char *name, f64 *out_time, f32 *out_delta_time)
 {
     static f64 previous_time = -1.0;
     static f64 header_refresh_time = 0.0;
@@ -128,8 +118,7 @@ static i64 __stdcall _mzl_process_window_message(void *window, u32 message, u64 
     return DefWindowProcA(window, message, wparam, lparam);
 }
 
-void *
-mzl_create_window(const char *name, u32 width, u32 height)
+void *mzl_create_window(const char *name, u32 width, u32 height)
 {
     WNDCLASS winclass = {
         .lpfnWndProc = _mzl_process_window_message,
@@ -144,32 +133,26 @@ mzl_create_window(const char *name, u32 width, u32 height)
     RECT rect = { 0, 0, (i32)width, (i32)height };
     AdjustWindowRect(&rect, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX, 0);
 
-    void *window = CreateWindowExA(0, name, name,
-                                   WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_VISIBLE,
-                                   CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left,
-                                   rect.bottom - rect.top, NULL, NULL, NULL, 0);
+    void *window = CreateWindowExA(0, name, name, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, NULL, 0);
     assert(window);
     return window;
 }
 
-void *
-mzl_malloc(u64 size, const char *filename, i32 line)
+void *mzl_malloc(u64 size, const char *filename, i32 line)
 {
     (void)filename;
     (void)line;
     return malloc(size);
 }
 
-void *
-mzl_realloc(void *addr, u64 size, const char *filename, i32 line)
+void *mzl_realloc(void *addr, u64 size, const char *filename, i32 line)
 {
     (void)filename;
     (void)line;
     return realloc(addr, size);
 }
 
-void
-mzl_free(void *addr, const char *filename, i32 line)
+void mzl_free(void *addr, const char *filename, i32 line)
 {
     (void)filename;
     (void)line;
