@@ -1,8 +1,2 @@
 *.pdb
-*.ilk
-*.exe
-*.cso
-*.ipdb
-*.iobj
-/msvc/.vs
-/msvc/x64
+eneida.exe
