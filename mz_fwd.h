@@ -11,7 +11,9 @@
 #define NULL ((void *)0)
 
 #ifdef _DEBUG
-#define assert(expression) if (!(expression)) __debugbreak()
+#define assert(expression)                                                     \
+  if (!(expression))                                                           \
+  __debugbreak()
 #else
 #define assert(expression)
 #endif
