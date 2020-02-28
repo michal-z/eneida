@@ -1,7 +1,7 @@
 @echo off
 
 if "%1" == "fmt" (
-    "build\clang-format.exe" -i *.c *.h
+    "build\clang-format.exe" -i -style="{IndentWidth: 4, TabWidth: 4, ColumnLimit: 105, UseCRLF: true, DeriveLineEnding: false}" *.c *.h
     goto :end
 )
 
