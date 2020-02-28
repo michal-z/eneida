@@ -277,7 +277,7 @@ ID3D12Resource *mzgr_get_resource(mzgr_context_t *gfx, mzgr_resource_handle_t ha
     return gfx->resource_pool.resources[handle.index].raw;
 }
 
-_mzgr_resource_t *_mzgr_get_resource_state(mzgr_context_t *gfx, mzgr_resource_handle_t handle) {
+static _mzgr_resource_t *_mzgr_get_resource_state(mzgr_context_t *gfx, mzgr_resource_handle_t handle) {
     assert(handle.index > 0 && handle.index <= _MZGR_MAX_NUM_RESOURCES);
     assert(handle.generation > 0 && handle.generation == gfx->resource_pool.generations[handle.index]);
     assert(gfx->resource_pool.resources[handle.index].raw);
