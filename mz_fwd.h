@@ -12,8 +12,8 @@
 
 #ifdef _DEBUG
 #define assert(expression)                                                                         \
-  if (!(expression))                                                                               \
-  __debugbreak()
+    if (!(expression))                                                                             \
+    __debugbreak()
 #else
 #define assert(expression)
 #endif
