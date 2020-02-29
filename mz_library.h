@@ -25,6 +25,8 @@ extern mzl_memcmp_t mzl_memcmp;
 extern mzl_strcmp_t mzl_strcmp;
 extern mzl_strlen_t mzl_strlen;
 
+inline i32 abs(i32 x) { return x >= 0 ? x : -x; }
+
 void *mzl_load_file(const char *filename, u32 *out_file_size);
 
 f64 mzl_get_time(void);

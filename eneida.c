@@ -18,7 +18,7 @@ void start(void) {
     SetProcessDPIAware();
 
     i32 *arr = NULL;
-    arrsetcap(arr, 128);
+    // arrsetcap(arr, 128);
     for (i32 i = 0; i < 32; ++i) {
         arrpush(arr, i);
     }

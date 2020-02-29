@@ -1,7 +1,7 @@
 #ifndef MZ_GRAPHICS_INCLUDED_
 #define MZ_GRAPHICS_INCLUDED_
 
-#include "mz_tinywin.h"
+#include "mz_d3d12.h"
 
 #define MZGR_FAILED(hr) ((hr) < 0)
 #define MZGR_VHR(hr)                                                                               \

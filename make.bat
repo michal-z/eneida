@@ -14,8 +14,8 @@ set APPNAME=eneida
 
 if exist %APPNAME%.exe del %APPNAME%.exe
 
-%CC% /Zi %CFLAGS% /nologo /GS- /Gs999999 /Gy /Gw /EHa- /W4 ^
-    %APPNAME%.c stb_ds.c ^
+%CC% /Zi %CFLAGS% /nologo /GS- /Gs999999 /Gy /Gw /EHa- /W4 /I. ^
+    %APPNAME%.c libs.c ^
     /link build\kernel32.lib /OPT:REF /INCREMENTAL:NO /SUBSYSTEM:WINDOWS /ENTRY:start /NODEFAULTLIB ^
     /OUT:%APPNAME%.exe
 
