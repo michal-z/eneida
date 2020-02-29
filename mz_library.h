@@ -11,6 +11,12 @@
         (addr) = NULL;                                                                                  \
     }
 
+typedef void *(*mzl_memset_t)(void *dest, i32 value, u64 num_bytes);
+typedef void *(*mzl_memcpy_t)(void *dest, const void *src, u64 num_bytes);
+
+extern mzl_memset_t mzl_memset;
+extern mzl_memcpy_t mzl_memcpy;
+
 void *mzl_load_file(const char *filename, u32 *out_file_size);
 
 f64 mzl_get_time(void);
@@ -25,9 +31,7 @@ void *mzl_realloc(void *addr, u64 size, const char *filename, i32 line);
 
 void mzl_free(void *addr, const char *filename, i32 line);
 
-void *mzl_memset(void *ptr, int value, u64 num_bytes);
-
-void *mzl_memcpy(void *destination, const void *source, u64 num_bytes);
+void mzl_load_api(void);
 
 #endif // #ifndef MZ_LIBRARY_INCLUDED_
 
@@ -165,19 +169,21 @@ void mzl_free(void *addr, const char *filename, i32 line) {
     }
 }
 
-void *mzl_memset(void *ptr, int value, u64 num_bytes) {
-    assert(ptr && value < 256 && num_bytes > 0);
-    // Call our (slow) assembly memset.
-    void *memset(void *ptr, int value, u64 num_bytes);
-    return memset(ptr, value, num_bytes);
+mzl_memset_t mzl_memset;
+mzl_memcpy_t mzl_memcpy;
+
+void mzl_load_api(void) {
+    void *__stdcall LoadLibraryA(const char *dll_name);
+    void *__stdcall GetProcAddress(void *dll, const char *proc);
+
+    void *ucrtbase_dll = LoadLibraryA("ucrtbase.dll");
+    mzl_memset = (mzl_memset_t)GetProcAddress(ucrtbase_dll, "memset");
+    mzl_memcpy = (mzl_memcpy_t)GetProcAddress(ucrtbase_dll, "memcpy");
 }
 
-void *mzl_memcpy(void *destination, const void *source, u64 num_bytes) {
-    assert(destination && source && num_bytes > 0);
-    // Call our (slow) assembly memcpy.
-    void *memcpy(void *destination, const void *source, u64 num_bytes);
-    return memcpy(destination, source, num_bytes);
-}
+void *memset(void *dest, i32 value, u64 num_bytes) { return mzl_memset(dest, value, num_bytes); }
+
+void *memcpy(void *dest, const void *src, u64 num_bytes) { return mzl_memcpy(dest, src, num_bytes); }
 
 #undef MZ_LIBRARY_IMPLEMENTATION
 #endif // #ifdef MZ_LIBRARY_IMPLEMENTATION

@@ -12,6 +12,7 @@ int _fltused;
 void start(void) {
     mztinywin_load_api();
     mzd3d12_load_api();
+    mzl_load_api();
 
     SetProcessDPIAware();
 
