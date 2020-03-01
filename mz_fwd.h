@@ -15,7 +15,7 @@
   if (!(expression))                                                                               \
   __debugbreak()
 #else
-#define assert(expression)
+#define assert(expression) ((void)0)
 #endif
 
 typedef unsigned char u8;
