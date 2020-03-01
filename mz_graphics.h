@@ -295,12 +295,9 @@ mzgr_context_t *mzgr_create_context(void *window) {
 
   IDXGIFactory4 *factory;
 #ifdef _DEBUG
-  // MZGR_VHR(CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, &IID_IDXGIFactory4,
-  // (void **)&factory));
-  MZGR_VHR(CreateDXGIFactory1(&IID_IDXGIFactory4, (void **)&factory));
+  MZGR_VHR(CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, &IID_IDXGIFactory4, (void **)&factory));
 #else
-  // MZGR_VHR(CreateDXGIFactory2(0, &IID_IDXGIFactory4, (void **)&factory));
-  MZGR_VHR(CreateDXGIFactory1(&IID_IDXGIFactory4, (void **)&factory));
+  MZGR_VHR(CreateDXGIFactory2(0, &IID_IDXGIFactory4, (void **)&factory));
 #endif
 #ifdef _DEBUG
   {

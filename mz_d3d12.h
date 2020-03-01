@@ -32,24 +32,7 @@ typedef struct IDXGISwapChain1 IDXGISwapChain1;
 typedef struct IDXGISwapChain3 IDXGISwapChain3;
 typedef struct IDXGIFactory4 IDXGIFactory4;
 
-typedef enum D3D_FEATURE_LEVEL {
-  D3D_FEATURE_LEVEL_9_1 = 0x9100,
-  D3D_FEATURE_LEVEL_9_2 = 0x9200,
-  D3D_FEATURE_LEVEL_9_3 = 0x9300,
-  D3D_FEATURE_LEVEL_10_0 = 0xa000,
-  D3D_FEATURE_LEVEL_10_1 = 0xa100,
-  D3D_FEATURE_LEVEL_11_0 = 0xb000,
-  D3D_FEATURE_LEVEL_11_1 = 0xb100,
-  D3D_FEATURE_LEVEL_12_0 = 0xc000,
-  D3D_FEATURE_LEVEL_12_1 = 0xc100
-} D3D_FEATURE_LEVEL;
-
-typedef i32(__stdcall *CreateDXGIFactory1_t)(const GUID *guid, void **out_object);
-
-typedef i32(__stdcall *D3D12CreateDevice_t)(IUnknown *adapter, D3D_FEATURE_LEVEL min_feature_level,
-                                            const GUID *guid, void **out_object);
-typedef i32(__stdcall *D3D12GetDebugInterface_t)(const GUID *guid, void **out_object);
-
+#define DXGI_CREATE_FACTORY_DEBUG 0x01
 #define D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES 0xffffffff
 
 typedef enum DXGI_FORMAT {
@@ -181,6 +164,18 @@ typedef struct DXGI_SAMPLE_DESC {
 } DXGI_SAMPLE_DESC;
 
 typedef u64 D3D12_GPU_VIRTUAL_ADDRESS;
+
+typedef enum D3D_FEATURE_LEVEL {
+  D3D_FEATURE_LEVEL_9_1 = 0x9100,
+  D3D_FEATURE_LEVEL_9_2 = 0x9200,
+  D3D_FEATURE_LEVEL_9_3 = 0x9300,
+  D3D_FEATURE_LEVEL_10_0 = 0xa000,
+  D3D_FEATURE_LEVEL_10_1 = 0xa100,
+  D3D_FEATURE_LEVEL_11_0 = 0xb000,
+  D3D_FEATURE_LEVEL_11_1 = 0xb100,
+  D3D_FEATURE_LEVEL_12_0 = 0xc000,
+  D3D_FEATURE_LEVEL_12_1 = 0xc100
+} D3D_FEATURE_LEVEL;
 
 typedef enum D3D12_HEAP_TYPE {
   D3D12_HEAP_TYPE_DEFAULT = 1,
@@ -3102,8 +3097,7 @@ typedef struct IDXGIFactory4_vtable {
   i32(__stdcall *GetWindowAssociation)(IDXGIFactory4 *self, void **out_hwnd);
   i32(__stdcall *CreateSwapChain)(IDXGIFactory4 *self, IUnknown *device, DXGI_SWAP_CHAIN_DESC *desc,
                                   IDXGISwapChain **out_swap_chain);
-  i32(__stdcall *CreateSoftwareAdapter)(IDXGIFactory4 *self, void *module,
-                                        IDXGIAdapter **out_adapter);
+  i32(__stdcall *CreateSoftwareAdapter)(IDXGIFactory4 *self, void *mod, IDXGIAdapter **out_adapter);
   i32(__stdcall *EnumAdapters1)(IDXGIFactory4 *self, u32 adapter, IDXGIAdapter1 **out_adapter);
   i32(__stdcall *IsCurrent)(IDXGIFactory4 *self);
   i32(__stdcall *IsWindowedStereoEnabled)(IDXGIFactory4 *self);
@@ -3200,7 +3194,13 @@ extern const GUID IID_ID3D12Debug1;
 extern const GUID IID_IDXGIFactory4;
 extern const GUID IID_IDXGISwapChain3;
 
-extern CreateDXGIFactory1_t CreateDXGIFactory1;
+typedef i32(__stdcall *CreateDXGIFactory2_t)(u32 flags, const GUID *guid, void **out_object);
+
+typedef i32(__stdcall *D3D12CreateDevice_t)(IUnknown *adapter, D3D_FEATURE_LEVEL min_feature_level,
+                                            const GUID *guid, void **out_object);
+typedef i32(__stdcall *D3D12GetDebugInterface_t)(const GUID *guid, void **out_object);
+
+extern CreateDXGIFactory2_t CreateDXGIFactory2;
 extern D3D12CreateDevice_t D3D12CreateDevice;
 extern D3D12GetDebugInterface_t D3D12GetDebugInterface;
 
@@ -3239,7 +3239,7 @@ const GUID IID_ID3D12Fence = {
 const GUID IID_ID3D12PipelineState = {
     0x765a30f3, 0xf624, 0x4c6f, {0xa8, 0x28, 0xac, 0xe9, 0x48, 0x62, 0x24, 0x45}};
 
-CreateDXGIFactory1_t CreateDXGIFactory1;
+CreateDXGIFactory2_t CreateDXGIFactory2;
 D3D12CreateDevice_t D3D12CreateDevice;
 D3D12GetDebugInterface_t D3D12GetDebugInterface;
 
@@ -3257,11 +3257,12 @@ void mzd3d12_load_api(void) {
                "Error", 0);
     ExitProcess(1);
   }
-  D3D12CreateDevice = GetProcAddress(d3d12_dll, "D3D12CreateDevice");
-  D3D12GetDebugInterface = GetProcAddress(d3d12_dll, "D3D12GetDebugInterface");
+  D3D12CreateDevice = (D3D12CreateDevice_t)GetProcAddress(d3d12_dll, "D3D12CreateDevice");
+  D3D12GetDebugInterface =
+      (D3D12GetDebugInterface_t)GetProcAddress(d3d12_dll, "D3D12GetDebugInterface");
 
   void *dxgi_dll = LoadLibraryA("dxgi.dll");
-  CreateDXGIFactory1 = GetProcAddress(dxgi_dll, "CreateDXGIFactory1");
+  CreateDXGIFactory2 = (CreateDXGIFactory2_t)GetProcAddress(dxgi_dll, "CreateDXGIFactory2");
 }
 
 #undef MZ_D3D12_IMPLEMENTATION
