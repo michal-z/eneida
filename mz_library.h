@@ -17,6 +17,14 @@ typedef void *(*mzl_memmove_t)(void *dest, const void *src, u64 num_bytes);
 typedef i32 (*mzl_memcmp_t)(const void *ptr1, const void *ptr2, u64 num_bytes);
 typedef i32 (*mzl_strcmp_t)(const char *str1, const char *str2);
 typedef u64 (*mzl_strlen_t)(const char *str);
+typedef i32 (*mzl_strncmp_t)(const char *str1, const char *str2, u64 num_bytes);
+typedef char *(*mzl_strchr_t)(char *str, i32 character);
+typedef char *(*mzl_strstr_t)(char *str1, const char *str2);
+typedef char *(*mzl_strncpy_t)(char *destination, const char *source, u64 num);
+typedef char *(*mzl_strrchr_t)(char *str, i32 character);
+typedef char *(*mzl_strcpy_t)(char *destination, const char *source);
+typedef f64 (*mzl_atof_t)(const char *str);
+typedef i32 (*mzl_atoi_t)(const char *str);
 
 extern mzl_memset_t mzl_memset;
 extern mzl_memcpy_t mzl_memcpy;
@@ -24,6 +32,14 @@ extern mzl_memmove_t mzl_memmove;
 extern mzl_memcmp_t mzl_memcmp;
 extern mzl_strcmp_t mzl_strcmp;
 extern mzl_strlen_t mzl_strlen;
+extern mzl_strncmp_t mzl_strncmp;
+extern mzl_strchr_t mzl_strchr;
+extern mzl_strstr_t mzl_strstr;
+extern mzl_strncpy_t mzl_strncpy;
+extern mzl_strrchr_t mzl_strrchr;
+extern mzl_strcpy_t mzl_strcpy;
+extern mzl_atof_t mzl_atof;
+extern mzl_atoi_t mzl_atoi;
 
 inline i32 abs(i32 x) { return x >= 0 ? x : -x; }
 
@@ -186,6 +202,14 @@ mzl_memmove_t mzl_memmove;
 mzl_memcmp_t mzl_memcmp;
 mzl_strcmp_t mzl_strcmp;
 mzl_strlen_t mzl_strlen;
+mzl_strncmp_t mzl_strncmp;
+mzl_strchr_t mzl_strchr;
+mzl_strstr_t mzl_strstr;
+mzl_strncpy_t mzl_strncpy;
+mzl_strrchr_t mzl_strrchr;
+mzl_strcpy_t mzl_strcpy;
+mzl_atof_t mzl_atof;
+mzl_atoi_t mzl_atoi;
 
 void mzl_load_api(void) {
     void *__stdcall LoadLibraryA(const char *dll_name);
@@ -198,6 +222,14 @@ void mzl_load_api(void) {
     mzl_memcmp = (mzl_memcmp_t)GetProcAddress(ucrtbase_dll, "memcmp");
     mzl_strcmp = (mzl_strcmp_t)GetProcAddress(ucrtbase_dll, "strcmp");
     mzl_strlen = (mzl_strlen_t)GetProcAddress(ucrtbase_dll, "strlen");
+    mzl_strncmp = (mzl_strncmp_t)GetProcAddress(ucrtbase_dll, "strncmp");
+    mzl_strchr = (mzl_strchr_t)GetProcAddress(ucrtbase_dll, "strchr");
+    mzl_strstr = (mzl_strstr_t)GetProcAddress(ucrtbase_dll, "strstr");
+    mzl_strncpy = (mzl_strncpy_t)GetProcAddress(ucrtbase_dll, "strncpy");
+    mzl_strrchr = (mzl_strrchr_t)GetProcAddress(ucrtbase_dll, "strrchr");
+    mzl_strcpy = (mzl_strcpy_t)GetProcAddress(ucrtbase_dll, "strcpy");
+    mzl_atof = (mzl_atof_t)GetProcAddress(ucrtbase_dll, "atof");
+    mzl_atoi = (mzl_atoi_t)GetProcAddress(ucrtbase_dll, "atoi");
 }
 
 void *memset(void *dest, i32 value, u64 num_bytes) { return mzl_memset(dest, value, num_bytes); }

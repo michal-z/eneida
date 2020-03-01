@@ -1,3 +1,4 @@
+#include "mz_stb_image.h"
 #include "stb_ds.h"
 #define MZ_TINYWIN_IMPLEMENTATION
 #include "mz_tinywin.h"
@@ -27,6 +28,14 @@ void start(void) {
         wsprintf(buf, "%d\n", arr[i]);
         OutputDebugString(buf);
     }
+
+#if 0
+    u32 size;
+    void *data = mzl_load_file("img.jpg", &size);
+    i32 width, height, n;
+    stbi_load_from_memory(data, size, &width, &height, &n, 0);
+    MZL_FREE(data);
+#endif
 
     void *window = mzl_create_window("eneida", 1920, 1080);
     mzgr_context_t *gfx = mzgr_create_context(window);
