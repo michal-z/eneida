@@ -2,7 +2,7 @@
 
 if "%1" == "fmt" (
     "build\clang-format.exe" -i *.c *.h ^
-    -style="{IndentWidth: 4, TabWidth: 4, ColumnLimit: 100}"
+    -style="{ColumnLimit: 100}"
     goto :end
 )
 

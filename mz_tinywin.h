@@ -37,50 +37,50 @@
 #define MB_ICONERROR 0x00000010L
 
 typedef struct POINT {
-    i32 x;
-    i32 y;
+  i32 x;
+  i32 y;
 } POINT;
 
 typedef struct MSG {
-    void *hwnd;
-    u32 message;
-    u64 wParam;
-    i64 lParam;
-    u32 time;
-    POINT pt;
+  void *hwnd;
+  u32 message;
+  u64 wParam;
+  i64 lParam;
+  u32 time;
+  POINT pt;
 } MSG;
 
 typedef struct WNDCLASS {
-    u32 style;
-    void *lpfnWndProc;
-    i32 cbClsExtra;
-    i32 cbWndExtra;
-    void *hInstance;
-    void *hIcon;
-    void *hCursor;
-    void *hbrBackground;
-    const char *lpszMenuName;
-    const char *lpszClassName;
+  u32 style;
+  void *lpfnWndProc;
+  i32 cbClsExtra;
+  i32 cbWndExtra;
+  void *hInstance;
+  void *hIcon;
+  void *hCursor;
+  void *hbrBackground;
+  const char *lpszMenuName;
+  const char *lpszClassName;
 } WNDCLASS;
 
 typedef struct GUID {
-    u32 Data1;
-    u16 Data2;
-    u16 Data3;
-    u8 Data4[8];
+  u32 Data1;
+  u16 Data2;
+  u16 Data3;
+  u8 Data4[8];
 } GUID;
 
 typedef struct SECURITY_ATTRIBUTES {
-    u32 nLength;
-    void *lpSecurityDescriptor;
-    i32 bInheritHandle;
+  u32 nLength;
+  void *lpSecurityDescriptor;
+  i32 bInheritHandle;
 } SECURITY_ATTRIBUTES;
 
 typedef struct RECT {
-    i32 left;
-    i32 top;
-    i32 right;
-    i32 bottom;
+  i32 left;
+  i32 top;
+  i32 right;
+  i32 bottom;
 } RECT;
 
 typedef void(__stdcall *OutputDebugString_t)(const char *output_string);
@@ -199,46 +199,45 @@ MessageBox_t MessageBox;
 GetClientRect_t GetClientRect;
 
 void mztinywin_load_api(void) {
-    void *__stdcall LoadLibraryA(const char *dll_name);
-    void *__stdcall GetProcAddress(void *dll, const char *proc);
+  void *__stdcall LoadLibraryA(const char *dll_name);
+  void *__stdcall GetProcAddress(void *dll, const char *proc);
 
-    void *kernel32_dll = LoadLibraryA("kernel32.dll");
-    GetModuleHandle = (GetModuleHandle_t)GetProcAddress(kernel32_dll, "GetModuleHandleA");
-    OutputDebugString = (OutputDebugString_t)GetProcAddress(kernel32_dll, "OutputDebugStringA");
-    QueryPerformanceCounter =
-        (QueryPerformanceCounter_t)GetProcAddress(kernel32_dll, "QueryPerformanceCounter");
-    QueryPerformanceFrequency =
-        (QueryPerformanceFrequency_t)GetProcAddress(kernel32_dll, "QueryPerformanceFrequency");
-    ExitProcess = (ExitProcess_t)GetProcAddress(kernel32_dll, "ExitProcess");
-    VirtualAlloc = (VirtualAlloc_t)GetProcAddress(kernel32_dll, "VirtualAlloc");
-    VirtualFree = (VirtualFree_t)GetProcAddress(kernel32_dll, "VirtualFree");
-    CreateFile = (CreateFile_t)GetProcAddress(kernel32_dll, "CreateFileA");
-    ReadFile = (ReadFile_t)GetProcAddress(kernel32_dll, "ReadFile");
-    GetFileSize = (GetFileSize_t)GetProcAddress(kernel32_dll, "GetFileSize");
-    CloseHandle = (CloseHandle_t)GetProcAddress(kernel32_dll, "CloseHandle");
-    Sleep = (Sleep_t)GetProcAddress(kernel32_dll, "Sleep");
-    HeapAlloc = (HeapAlloc_t)GetProcAddress(kernel32_dll, "HeapAlloc");
-    HeapFree = (HeapFree_t)GetProcAddress(kernel32_dll, "HeapFree");
-    HeapReAlloc = (HeapReAlloc_t)GetProcAddress(kernel32_dll, "HeapReAlloc");
-    GetProcessHeap = (GetProcessHeap_t)GetProcAddress(kernel32_dll, "GetProcessHeap");
-    CreateEventEx = (CreateEventEx_t)GetProcAddress(kernel32_dll, "CreateEventExA");
-    WaitForSingleObject =
-        (WaitForSingleObject_t)GetProcAddress(kernel32_dll, "WaitForSingleObject");
+  void *kernel32_dll = LoadLibraryA("kernel32.dll");
+  GetModuleHandle = (GetModuleHandle_t)GetProcAddress(kernel32_dll, "GetModuleHandleA");
+  OutputDebugString = (OutputDebugString_t)GetProcAddress(kernel32_dll, "OutputDebugStringA");
+  QueryPerformanceCounter =
+      (QueryPerformanceCounter_t)GetProcAddress(kernel32_dll, "QueryPerformanceCounter");
+  QueryPerformanceFrequency =
+      (QueryPerformanceFrequency_t)GetProcAddress(kernel32_dll, "QueryPerformanceFrequency");
+  ExitProcess = (ExitProcess_t)GetProcAddress(kernel32_dll, "ExitProcess");
+  VirtualAlloc = (VirtualAlloc_t)GetProcAddress(kernel32_dll, "VirtualAlloc");
+  VirtualFree = (VirtualFree_t)GetProcAddress(kernel32_dll, "VirtualFree");
+  CreateFile = (CreateFile_t)GetProcAddress(kernel32_dll, "CreateFileA");
+  ReadFile = (ReadFile_t)GetProcAddress(kernel32_dll, "ReadFile");
+  GetFileSize = (GetFileSize_t)GetProcAddress(kernel32_dll, "GetFileSize");
+  CloseHandle = (CloseHandle_t)GetProcAddress(kernel32_dll, "CloseHandle");
+  Sleep = (Sleep_t)GetProcAddress(kernel32_dll, "Sleep");
+  HeapAlloc = (HeapAlloc_t)GetProcAddress(kernel32_dll, "HeapAlloc");
+  HeapFree = (HeapFree_t)GetProcAddress(kernel32_dll, "HeapFree");
+  HeapReAlloc = (HeapReAlloc_t)GetProcAddress(kernel32_dll, "HeapReAlloc");
+  GetProcessHeap = (GetProcessHeap_t)GetProcAddress(kernel32_dll, "GetProcessHeap");
+  CreateEventEx = (CreateEventEx_t)GetProcAddress(kernel32_dll, "CreateEventExA");
+  WaitForSingleObject = (WaitForSingleObject_t)GetProcAddress(kernel32_dll, "WaitForSingleObject");
 
-    void *user32_dll = LoadLibraryA("user32.dll");
-    PeekMessage = (PeekMessage_t)GetProcAddress(user32_dll, "PeekMessageA");
-    DispatchMessage = (DispatchMessage_t)GetProcAddress(user32_dll, "DispatchMessageA");
-    PostQuitMessage = (PostQuitMessage_t)GetProcAddress(user32_dll, "PostQuitMessage");
-    DefWindowProc = (DefWindowProc_t)GetProcAddress(user32_dll, "DefWindowProcA");
-    LoadCursor = (LoadCursor_t)GetProcAddress(user32_dll, "LoadCursorA");
-    RegisterClass = (RegisterClass_t)GetProcAddress(user32_dll, "RegisterClassA");
-    CreateWindowEx = (CreateWindowEx_t)GetProcAddress(user32_dll, "CreateWindowExA");
-    AdjustWindowRect = (AdjustWindowRect_t)GetProcAddress(user32_dll, "AdjustWindowRect");
-    wsprintf = (wsprintf_t)GetProcAddress(user32_dll, "wsprintfA");
-    SetWindowText = (SetWindowText_t)GetProcAddress(user32_dll, "SetWindowTextA");
-    SetProcessDPIAware = (SetProcessDPIAware_t)GetProcAddress(user32_dll, "SetProcessDPIAware");
-    MessageBox = (MessageBox_t)GetProcAddress(user32_dll, "MessageBoxA");
-    GetClientRect = (GetClientRect_t)GetProcAddress(user32_dll, "GetClientRect");
+  void *user32_dll = LoadLibraryA("user32.dll");
+  PeekMessage = (PeekMessage_t)GetProcAddress(user32_dll, "PeekMessageA");
+  DispatchMessage = (DispatchMessage_t)GetProcAddress(user32_dll, "DispatchMessageA");
+  PostQuitMessage = (PostQuitMessage_t)GetProcAddress(user32_dll, "PostQuitMessage");
+  DefWindowProc = (DefWindowProc_t)GetProcAddress(user32_dll, "DefWindowProcA");
+  LoadCursor = (LoadCursor_t)GetProcAddress(user32_dll, "LoadCursorA");
+  RegisterClass = (RegisterClass_t)GetProcAddress(user32_dll, "RegisterClassA");
+  CreateWindowEx = (CreateWindowEx_t)GetProcAddress(user32_dll, "CreateWindowExA");
+  AdjustWindowRect = (AdjustWindowRect_t)GetProcAddress(user32_dll, "AdjustWindowRect");
+  wsprintf = (wsprintf_t)GetProcAddress(user32_dll, "wsprintfA");
+  SetWindowText = (SetWindowText_t)GetProcAddress(user32_dll, "SetWindowTextA");
+  SetProcessDPIAware = (SetProcessDPIAware_t)GetProcAddress(user32_dll, "SetProcessDPIAware");
+  MessageBox = (MessageBox_t)GetProcAddress(user32_dll, "MessageBoxA");
+  GetClientRect = (GetClientRect_t)GetProcAddress(user32_dll, "GetClientRect");
 }
 
 #undef MZ_TINYWIN_IMPLEMENTATION
