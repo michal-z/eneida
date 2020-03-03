@@ -14,5 +14,6 @@ typedef long long ptrdiff_t;
 #define STB_DS_IMPLEMENTATION
 #include "stb_ds.h"
 
+static inline f64 fabs(f64 x) { return x >= 0.0 ? x : -x; }
 #define STB_PERLIN_IMPLEMENTATION
 #include "stb_perlin.h"

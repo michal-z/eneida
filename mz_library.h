@@ -11,6 +11,7 @@
     (addr) = NULL;                                                                                 \
   }
 
+// Generally we don't use libc - below are exceptions.
 typedef void *(*mzl_memset_t)(void *dest, i32 value, u64 num_bytes);
 typedef void *(*mzl_memcpy_t)(void *dest, const void *src, u64 num_bytes);
 typedef void *(*mzl_memmove_t)(void *dest, const void *src, u64 num_bytes);
@@ -24,8 +25,6 @@ extern mzl_memmove_t mzl_memmove;
 extern mzl_memcmp_t mzl_memcmp;
 extern mzl_strcmp_t mzl_strcmp;
 extern mzl_strlen_t mzl_strlen;
-
-inline f64 fabs(f64 x) { return x >= 0.0 ? x : -x; }
 
 void *mzl_load_file(const char *filename, u32 *out_file_size);
 
