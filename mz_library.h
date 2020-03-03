@@ -13,7 +13,7 @@
 
 // Generally we don't use libc - below are exceptions.
 typedef void *(*mzl_memset_t)(void *dest, i32 value, u64 num_bytes);
-typedef void *(*mzl_memcpy_t)(void *dest, const void *src, u64 num_bytes);
+typedef void *(*mzl_memcpy_t)(void *restrict dest, const void *restrict src, u64 num_bytes);
 typedef void *(*mzl_memmove_t)(void *dest, const void *src, u64 num_bytes);
 typedef i32 (*mzl_memcmp_t)(const void *ptr1, const void *ptr2, u64 num_bytes);
 typedef i32 (*mzl_strcmp_t)(const char *str1, const char *str2);
@@ -201,7 +201,7 @@ void mzl_load_api(void) {
 
 void *memset(void *dest, i32 value, u64 num_bytes) { return mzl_memset(dest, value, num_bytes); }
 
-void *memcpy(void *dest, const void *src, u64 num_bytes) {
+void *memcpy(void *restrict dest, const void *restrict src, u64 num_bytes) {
   return mzl_memcpy(dest, src, num_bytes);
 }
 
