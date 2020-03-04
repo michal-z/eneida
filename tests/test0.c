@@ -1,16 +1,3 @@
-#ifndef TEST0_INCLUDED_
-#define TEST0_INCLUDED_
-
-#include "eneida.h"
-
-test_api_t get_test0(void);
-
-#endif // #ifndef TEST0_INCLUDED_
-
-#ifdef TEST0_IMPLEMENTATION
-
-#include "mz_graphics.h"
-
 typedef struct test0_context {
   mzgr_context_t *gfx;
 } test0_context_t;
@@ -51,7 +38,7 @@ static void test0_update(void *context, f64 time, f32 delta_time) {
   mzgr_end_frame(ctx->gfx, 0);
 }
 
-test_api_t get_test0(void) {
+static test_api_t get_test0(void) {
   static test0_context_t ctx;
   return (test_api_t) {
     .context = &ctx,
@@ -60,6 +47,3 @@ test_api_t get_test0(void) {
     .update = test0_update,
   };
 }
-
-#undef TEST0_IMPLEMENTATION
-#endif // #ifdef TEST0_IMPLEMENTATION

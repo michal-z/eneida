@@ -1,6 +1,3 @@
-#include "eneida.h"
-#include "stb_ds.h"
-#include "stb_perlin.h"
 #define MZ_TINYWIN_IMPLEMENTATION
 #include "mz_tinywin.h"
 #define MZ_LIBRARY_IMPLEMENTATION
@@ -9,8 +6,17 @@
 #include "mz_d3d12.h"
 #define MZ_GRAPHICS_IMPLEMENTATION
 #include "mz_graphics.h"
-#define TEST0_IMPLEMENTATION
-#include "tests/test0.h"
+#include "stb_ds.h"
+#include "stb_perlin.h"
+
+typedef struct test_api {
+  void *context;
+  i32 (*init)(void *context, void *window);
+  void (*deinit)(void *context);
+  void (*update)(void *context, f64 time, f32 delta_time);
+} test_api_t;
+
+#include "tests/test0.c"
 
 int _fltused;
 
