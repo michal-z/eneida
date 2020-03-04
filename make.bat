@@ -6,7 +6,7 @@ if "%1" == "fmt" (
   goto :end
 )
 
-set CFLAGS=/Od /D_DEBUG
+set CFLAGS=/Zi /Od /D_DEBUG
 ::set CFLAGS=/O2 /Oi /fp:fast
 
 set CC=build\clang-cl.exe
@@ -14,13 +14,12 @@ set APPNAME=eneida
 
 if exist %APPNAME%.exe del %APPNAME%.exe
 
-%CC% -fuse-ld=lld -nostdinc /Zi %CFLAGS% /nologo /GS- /Gs999999 /Gy /Gw /EHa- /I. /W4 ^
+%CC% -fuse-ld=lld -nostdinc %CFLAGS% /nologo /GS- /Gs16384 /Gy /Gw /GR- /EHa- /I. /W4 ^
   %APPNAME%.c libs.c ^
-  /link build\kernel32.lib /OPT:REF /INCREMENTAL:NO /SUBSYSTEM:WINDOWS /ENTRY:start /NODEFAULTLIB ^
+  /link build\kernel32.lib /opt:ref /incremental:no /subsystem:windows /entry:start /nodefaultlib ^
   /OUT:%APPNAME%.exe
 
 :end
-if exist *.obj del *.obj
 
 if "%1" == "run" (
   if exist %APPNAME%.exe (
