@@ -442,7 +442,7 @@ CREDITS
 #error "You must define both STBDS_REALLOC and STBDS_FREE, or neither."
 #endif
 #if !defined(STBDS_REALLOC) && !defined(STBDS_FREE)
-#include <stdlib.h>
+//#include <stdlib.h>
 #define STBDS_REALLOC(c, p, s) realloc(p, s)
 #define STBDS_FREE(c, p) free(p)
 #endif

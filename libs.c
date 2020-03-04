@@ -1,6 +1,4 @@
 #include "mz_library.h"
-typedef unsigned long long size_t;
-typedef long long ptrdiff_t;
 #define memset mzl_memset
 #define memcpy mzl_memcpy
 #define memmove mzl_memmove

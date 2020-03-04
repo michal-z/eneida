@@ -28,3 +28,5 @@ typedef int i32;
 typedef long long i64;
 typedef float f32;
 typedef double f64;
+typedef long long ptrdiff_t;
+typedef unsigned long long size_t;
