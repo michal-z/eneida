@@ -3,7 +3,7 @@
 
 #include "eneida.h"
 
-void test0_load_api(test_api_t *out_api);
+test_api_t get_test0(void);
 
 #endif // #ifndef TEST0_INCLUDED_
 
@@ -51,12 +51,14 @@ static void test0_update(void *context, f64 time, f32 delta_time) {
   mzgr_end_frame(ctx->gfx, 0);
 }
 
-void test0_load_api(test_api_t *out_api) {
+test_api_t get_test0(void) {
   static test0_context_t ctx;
-  out_api->context = &ctx;
-  out_api->init = test0_init;
-  out_api->deinit = test0_deinit;
-  out_api->update = test0_update;
+  return (test_api_t) {
+    .context = &ctx,
+    .init = test0_init,
+    .deinit = test0_deinit,
+    .update = test0_update,
+  };
 }
 
 #undef TEST0_IMPLEMENTATION

@@ -21,8 +21,9 @@ void start(void) {
 
   SetProcessDPIAware();
 
-  test_api_t tests[16] = {0};
-  test0_load_api(&tests[0]);
+  test_api_t tests[] = {
+      get_test0(),
+  };
 
   test_api_t *test = &tests[0];
 
