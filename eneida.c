@@ -37,7 +37,7 @@ void start(void) {
 
   {
     f32 x = mzm_f32_sqrt(100.0f);
-    assert(x == 10.0f);
+    MZ_ASSERT(x == 10.0f);
   }
 
   test_api_t *test = &tests[0];

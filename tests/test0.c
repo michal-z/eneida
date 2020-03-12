@@ -3,7 +3,7 @@ typedef struct test0_context {
 } test0_context_t;
 
 static i32 test0_init(void *context, void *window) {
-  assert(context && window);
+  MZ_ASSERT(context && window);
   test0_context_t *ctx = context;
 
   ctx->gfx = mzgr_create_context(window);
@@ -23,7 +23,7 @@ static i32 test0_init(void *context, void *window) {
 }
 
 static void test0_deinit(void *context) {
-  assert(context);
+  MZ_ASSERT(context);
   test0_context_t *ctx = context;
 
   mzgr_wait_for_gpu(ctx->gfx);
@@ -31,7 +31,7 @@ static void test0_deinit(void *context) {
 }
 
 static void test0_update(void *context, f64 time, f32 delta_time) {
-  assert(context);
+  MZ_ASSERT(context);
   test0_context_t *ctx = context;
 
   mzgr_begin_frame(ctx->gfx);

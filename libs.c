@@ -6,7 +6,7 @@
 #define strcmp mzl_strcmp
 #define strlen mzl_strlen
 
-#define STBDS_ASSERT(x) assert(x)
+#define STBDS_ASSERT(x) MZ_ASSERT(x)
 #define STBDS_REALLOC(c, p, s) mzl_realloc(p, s, __FILE__, __LINE__)
 #define STBDS_FREE(c, p) mzl_free(p, __FILE__, __LINE__)
 #define STB_DS_IMPLEMENTATION

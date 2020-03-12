@@ -6,7 +6,7 @@
 #define MZGR_FAILED(hr) ((hr) < 0)
 #define MZGR_VHR(hr)                                                                               \
   if ((hr) < 0) {                                                                                  \
-    assert(0);                                                                                     \
+    MZ_ASSERT(0);                                                                                  \
   }
 #define MZGR_RELEASE(obj)                                                                          \
   if ((obj)) {                                                                                     \
@@ -150,18 +150,18 @@ typedef struct mzgr_context {
 } mzgr_context_t;
 
 ID3D12Device *mzgr_get_device(mzgr_context_t *gfx) {
-  assert(gfx);
+  MZ_ASSERT(gfx);
   return gfx->device;
 }
 
 ID3D12GraphicsCommandList *mzgr_get_command_list(mzgr_context_t *gfx) {
-  assert(gfx);
+  MZ_ASSERT(gfx);
   return gfx->cmd_list;
 }
 
 static D3D12_CPU_DESCRIPTOR_HANDLE _mzgr_allocate_cpu_descriptors(_mzgr_descriptor_heap_t *dh,
                                                                   u32 count) {
-  assert(dh && (dh->size + count) < dh->capacity);
+  MZ_ASSERT(dh && (dh->size + count) < dh->capacity);
 
   D3D12_CPU_DESCRIPTOR_HANDLE cpu_handle;
   cpu_handle.ptr = dh->cpu_start.ptr + (u64)dh->size * dh->descriptor_size;
@@ -172,7 +172,7 @@ static D3D12_CPU_DESCRIPTOR_HANDLE _mzgr_allocate_cpu_descriptors(_mzgr_descript
 
 D3D12_CPU_DESCRIPTOR_HANDLE
 mzgr_allocate_cpu_descriptors(mzgr_context_t *gfx, D3D12_DESCRIPTOR_HEAP_TYPE type, u32 count) {
-  assert(gfx);
+  MZ_ASSERT(gfx);
   if (type == D3D12_DESCRIPTOR_HEAP_TYPE_RTV) {
     return _mzgr_allocate_cpu_descriptors(&gfx->rtv_heap, count);
   } else if (type == D3D12_DESCRIPTOR_HEAP_TYPE_DSV) {
@@ -180,7 +180,7 @@ mzgr_allocate_cpu_descriptors(mzgr_context_t *gfx, D3D12_DESCRIPTOR_HEAP_TYPE ty
   } else if (type == D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) {
     return _mzgr_allocate_cpu_descriptors(&gfx->cbv_srv_uav_cpu_heap, count);
   }
-  assert(0);
+  MZ_ASSERT(0);
   return (D3D12_CPU_DESCRIPTOR_HANDLE){0};
 }
 
@@ -234,7 +234,7 @@ static _mzgr_gpu_memory_heap_t _mzgr_create_gpu_memory_heap(ID3D12Device *device
 static mzgr_resource_handle_t _mzgr_add_resource(_mzgr_resource_pool_t *pool, ID3D12Resource *raw,
                                                  D3D12_RESOURCE_STATES initial_state,
                                                  DXGI_FORMAT format) {
-  assert(pool && raw);
+  MZ_ASSERT(pool && raw);
 
   u32 slot_idx = 0;
   for (u32 i = 1; i <= _MZGR_MAX_NUM_RESOURCES; ++i) {
@@ -243,7 +243,7 @@ static mzgr_resource_handle_t _mzgr_add_resource(_mzgr_resource_pool_t *pool, ID
       break;
     }
   }
-  assert(slot_idx > 0 && slot_idx <= _MZGR_MAX_NUM_RESOURCES);
+  MZ_ASSERT(slot_idx > 0 && slot_idx <= _MZGR_MAX_NUM_RESOURCES);
 
   pool->resources[slot_idx].raw = raw;
   pool->resources[slot_idx].state = initial_state;
@@ -254,7 +254,7 @@ static mzgr_resource_handle_t _mzgr_add_resource(_mzgr_resource_pool_t *pool, ID
 
 static mzgr_pipeline_handle_t
 _mzgr_add_pipeline(_mzgr_pipeline_pool_t *pool, ID3D12PipelineState *pso, ID3D12RootSignature *rs) {
-  assert(pool && pso && rs);
+  MZ_ASSERT(pool && pso && rs);
 
   u32 slot_idx = 0;
   for (u32 i = 1; i <= _MZGR_MAX_NUM_PIPELINES; ++i) {
@@ -263,7 +263,7 @@ _mzgr_add_pipeline(_mzgr_pipeline_pool_t *pool, ID3D12PipelineState *pso, ID3D12
       break;
     }
   }
-  assert(slot_idx > 0 && slot_idx <= _MZGR_MAX_NUM_PIPELINES);
+  MZ_ASSERT(slot_idx > 0 && slot_idx <= _MZGR_MAX_NUM_PIPELINES);
 
   pool->pipelines[slot_idx].pso = pso;
   pool->pipelines[slot_idx].rs = rs;
@@ -272,24 +272,24 @@ _mzgr_add_pipeline(_mzgr_pipeline_pool_t *pool, ID3D12PipelineState *pso, ID3D12
 }
 
 ID3D12Resource *mzgr_get_resource(mzgr_context_t *gfx, mzgr_resource_handle_t handle) {
-  assert(handle.index > 0 && handle.index <= _MZGR_MAX_NUM_RESOURCES);
-  assert(handle.generation > 0 &&
-         handle.generation == gfx->resource_pool.generations[handle.index]);
-  assert(gfx->resource_pool.resources[handle.index].raw);
+  MZ_ASSERT(handle.index > 0 && handle.index <= _MZGR_MAX_NUM_RESOURCES);
+  MZ_ASSERT(handle.generation > 0 &&
+            handle.generation == gfx->resource_pool.generations[handle.index]);
+  MZ_ASSERT(gfx->resource_pool.resources[handle.index].raw);
   return gfx->resource_pool.resources[handle.index].raw;
 }
 
 static _mzgr_resource_t *_mzgr_get_resource_state(mzgr_context_t *gfx,
                                                   mzgr_resource_handle_t handle) {
-  assert(handle.index > 0 && handle.index <= _MZGR_MAX_NUM_RESOURCES);
-  assert(handle.generation > 0 &&
-         handle.generation == gfx->resource_pool.generations[handle.index]);
-  assert(gfx->resource_pool.resources[handle.index].raw);
+  MZ_ASSERT(handle.index > 0 && handle.index <= _MZGR_MAX_NUM_RESOURCES);
+  MZ_ASSERT(handle.generation > 0 &&
+            handle.generation == gfx->resource_pool.generations[handle.index]);
+  MZ_ASSERT(gfx->resource_pool.resources[handle.index].raw);
   return &gfx->resource_pool.resources[handle.index];
 }
 
 mzgr_context_t *mzgr_create_context(void *window) {
-  assert(window);
+  MZ_ASSERT(window);
   mzgr_context_t *gfx = MZL_MALLOC(sizeof(mzgr_context_t));
   mzl_memset(gfx, 0, sizeof(mzgr_context_t));
 
@@ -462,7 +462,7 @@ mzgr_resource_handle_t mzgr_create_committed_resource(mzgr_context_t *gfx,
                                                       const D3D12_RESOURCE_DESC *desc,
                                                       D3D12_RESOURCE_STATES initial_state,
                                                       const D3D12_CLEAR_VALUE *clear_value) {
-  assert(gfx && desc);
+  MZ_ASSERT(gfx && desc);
 
   ID3D12Resource *raw;
   MZGR_VHR(ID3D12Device_CreateCommittedResource(
@@ -473,7 +473,7 @@ mzgr_resource_handle_t mzgr_create_committed_resource(mzgr_context_t *gfx,
 }
 
 void mzgr_destroy_context(mzgr_context_t *gfx) {
-  assert(gfx);
+  MZ_ASSERT(gfx);
   for (u32 i = 1; i <= _MZGR_MAX_NUM_RESOURCES; ++i) {
     MZGR_RELEASE(gfx->resource_pool.resources[i].raw);
   }
@@ -554,7 +554,7 @@ void mzgr_destroy_resource(mzgr_context_t *gfx, mzgr_resource_handle_t handle) {
 
   u32 refcount = ID3D12Resource_Release(resource->raw);
   if (refcount != 0) {
-    assert(0);
+    MZ_ASSERT(0);
   }
 
   resource->raw = NULL;
@@ -582,29 +582,29 @@ void mzgr_transition_barrier(mzgr_context_t *gfx, mzgr_resource_handle_t handle,
 
 void mzgr_get_back_buffer(mzgr_context_t *gfx, mzgr_resource_handle_t *out_handle,
                           D3D12_CPU_DESCRIPTOR_HANDLE *out_rtv) {
-  assert(out_handle && out_rtv);
+  MZ_ASSERT(out_handle && out_rtv);
   *out_handle = gfx->back_buffers[gfx->back_buffer_index];
   *out_rtv = gfx->rtv_heap.cpu_start;
   out_rtv->ptr += (u64)gfx->back_buffer_index * gfx->rtv_heap.descriptor_size;
-  assert(mzgr_get_resource(gfx, *out_handle));
+  MZ_ASSERT(mzgr_get_resource(gfx, *out_handle));
 }
 
 void mzgr_get_depth_stencil_buffer(mzgr_context_t *gfx, mzgr_resource_handle_t *out_handle,
                                    D3D12_CPU_DESCRIPTOR_HANDLE *out_dsv) {
-  assert(out_handle && out_dsv);
+  MZ_ASSERT(out_handle && out_dsv);
   *out_handle = gfx->depth_stencil_buffer;
   *out_dsv = gfx->dsv_heap.cpu_start;
-  assert(mzgr_get_resource(gfx, *out_handle));
+  MZ_ASSERT(mzgr_get_resource(gfx, *out_handle));
 }
 
 void mzgr_allocate_gpu_descriptors(mzgr_context_t *gfx, u32 count,
                                    D3D12_CPU_DESCRIPTOR_HANDLE *out_cpu_handle,
                                    D3D12_GPU_DESCRIPTOR_HANDLE *out_gpu_handle) {
-  assert(out_cpu_handle && out_gpu_handle);
+  MZ_ASSERT(out_cpu_handle && out_gpu_handle);
 
   _mzgr_descriptor_heap_t *dh = &gfx->cbv_srv_uav_gpu_heaps[gfx->frame_index];
 
-  assert((dh->size + count) < dh->capacity);
+  MZ_ASSERT((dh->size + count) < dh->capacity);
 
   out_cpu_handle->ptr = dh->cpu_start.ptr + (u64)dh->size * dh->descriptor_size;
   out_gpu_handle->ptr = dh->gpu_start.ptr + (u64)dh->size * dh->descriptor_size;
@@ -625,7 +625,7 @@ mzgr_copy_descriptors_to_gpu_heap(mzgr_context_t *gfx, u32 count,
 
 static void _mzgr_allocate_gpu_memory(_mzgr_gpu_memory_heap_t *mheap, u32 size, u8 **out_cpu_addr,
                                       D3D12_GPU_VIRTUAL_ADDRESS *out_gpu_addr) {
-  assert(mheap && size > 0 && out_cpu_addr && out_gpu_addr);
+  MZ_ASSERT(mheap && size > 0 && out_cpu_addr && out_gpu_addr);
 
   if (size & 0xff) {
     // Always align to 256 bytes.
@@ -645,7 +645,7 @@ static void _mzgr_allocate_gpu_memory(_mzgr_gpu_memory_heap_t *mheap, u32 size, 
 
 void mzgr_allocate_upload_memory(mzgr_context_t *gfx, u32 size, u8 **out_cpu_addr,
                                  D3D12_GPU_VIRTUAL_ADDRESS *out_gpu_addr) {
-  assert(gfx && size > 0 && out_cpu_addr && out_gpu_addr);
+  MZ_ASSERT(gfx && size > 0 && out_cpu_addr && out_gpu_addr);
 
   u8 *cpu_addr;
   D3D12_GPU_VIRTUAL_ADDRESS gpu_addr;
@@ -661,7 +661,7 @@ void mzgr_allocate_upload_memory(mzgr_context_t *gfx, u32 size, u8 **out_cpu_add
 
   _mzgr_allocate_gpu_memory(&gfx->upload_memory_heaps[gfx->frame_index], size, &cpu_addr,
                             &gpu_addr);
-  assert(cpu_addr != NULL && gpu_addr != 0);
+  MZ_ASSERT(cpu_addr != NULL && gpu_addr != 0);
 
   *out_cpu_addr = cpu_addr;
   *out_gpu_addr = gpu_addr;
@@ -669,7 +669,7 @@ void mzgr_allocate_upload_memory(mzgr_context_t *gfx, u32 size, u8 **out_cpu_add
 
 void mzgr_allocate_upload_buffer_region(mzgr_context_t *gfx, u32 size, u8 **out_cpu_addr,
                                         ID3D12Resource **out_buffer, u64 *out_buffer_offset) {
-  assert(gfx && size > 0 && out_cpu_addr && out_buffer && out_buffer_offset);
+  MZ_ASSERT(gfx && size > 0 && out_cpu_addr && out_buffer && out_buffer_offset);
 
   if (size & 0xff) {
     // Always align to 256 bytes.

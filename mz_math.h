@@ -71,19 +71,19 @@ inline i32 mzm_f32_equal_epsilon(f32 a, f32 b, f32 epsilon) {
 }
 
 inline u32 mzm_u32_rand(u32 *state) {
-  assert(state);
+  MZ_ASSERT(state);
   *state = *state * 1103515245 + 12345;
   return (*state >> 16) & 0x7fff;
 }
 
 inline f32 mzm_f32_rand(u32 *state) {
-  assert(state);
+  MZ_ASSERT(state);
   u32 result = (127 << 23) | (mzm_u32_rand(state) << 8);
   return *(f32 *)&result - 1.0f;
 }
 
 inline f32 mzm_f32_rand_range(u32 *state, f32 begin, f32 end) {
-  assert(state && begin < end);
+  MZ_ASSERT(state && begin < end);
   return begin + (end - begin) * mzm_f32_rand(state);
 }
 
@@ -99,6 +99,23 @@ inline f32 _mzm_f32_sin_reduction(f32 x) {
   return y;
 }
 
+inline f32 _mzm_f32_cos_reduction(f32 x, f32 *out_sign) {
+  MZ_ASSERT(out_sign);
+  f32 quotient = MZM_1_DIV_2PI * x;
+  quotient = x >= 0.0f ? (f32)((i32)(quotient + 0.5f)) : (f32)((i32)(quotient - 0.5f));
+  f32 y = x - MZM_2PI * quotient;
+  if (y > MZM_PI_DIV_2) {
+    y = MZM_PI - y;
+    *out_sign = -1.0f;
+  } else if (y < -MZM_PI_DIV_2) {
+    y = -MZM_PI - y;
+    *out_sign = -1.0f;
+  } else {
+    *out_sign = 1.0f;
+  }
+  return y;
+}
+
 inline f32 mzm_f32_sin(f32 x) {
   f32 y = _mzm_f32_sin_reduction(x);
   f32 yy = y * y;
@@ -110,6 +127,37 @@ inline f32 mzm_f32_sin(f32 x) {
   return x * y;
 }
 
+inline f32 mzm_f32_sin_fast(f32 x) {
+  f32 y = _mzm_f32_sin_reduction(x);
+  f32 yy = y * y;
+  x = -0.00018524670f * yy + 0.0083139502f;
+  x = x * yy - 0.16665852f;
+  x = x * yy + 1.0f;
+  return x * y;
+}
+
+inline f32 mzm_f32_cos(f32 x) {
+  f32 sign;
+  f32 y = _mzm_f32_cos_reduction(x, &sign);
+  f32 yy = y * y;
+  x = -2.6051615e-07f * yy + 2.4760495e-05f;
+  x = x * yy - 0.0013888378f;
+  x = x * yy + 0.041666638f;
+  x = x * yy - 0.5f;
+  x = x * yy + 1.0f;
+  return x * sign;
+}
+
+inline f32 mzm_f32_cos_fast(f32 x) {
+  f32 sign;
+  f32 y = _mzm_f32_cos_reduction(x, &sign);
+  f32 yy = y * y;
+  x = -0.0012712436f * yy + 0.041493919f;
+  x = x * yy - 0.49992746f;
+  x = x * yy + 1.0f;
+  return sign * x;
+}
+
 void mzm_unit_tests(void);
 
 #endif // #ifndef MZ_MATH_INCLUDED_
@@ -117,10 +165,13 @@ void mzm_unit_tests(void);
 #ifdef MZ_MATH_IMPLEMENTATION
 
 void mzm_unit_tests(void) {
-  assert(mzm_f32_equal_epsilon(mzm_f32_sqrt(2.0f), 1.414213562f, 0.00001f));
-  assert(mzm_f32_abs(-1.0f) == 1.0f);
-  assert(mzm_f32_abs(1.0f) == 1.0f);
-  assert(mzm_f32_equal_epsilon(mzm_f32_sin(123.123f), -0.56537f, 0.00001f));
+  MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_sqrt(2.0f), 1.414213562f, 0.00001f));
+  MZ_ASSERT(mzm_f32_abs(-1.0f) == 1.0f);
+  MZ_ASSERT(mzm_f32_abs(1.0f) == 1.0f);
+  MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_sin(123.123f), -0.56537f, 0.00001f));
+  MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_sin_fast(123.123f), -0.56537f, 0.00001f));
+  MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_cos(123.123f), -0.82483472f, 0.00001f));
+  MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_cos_fast(123.123f), -0.82483472f, 0.0001f));
 }
 
 #undef MZ_MATH_IMPLEMENTATION

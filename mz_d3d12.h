@@ -3244,7 +3244,7 @@ D3D12CreateDevice_t D3D12CreateDevice;
 D3D12GetDebugInterface_t D3D12GetDebugInterface;
 
 void mzd3d12_load_api(void) {
-  assert(MessageBox);
+  MZ_ASSERT(MessageBox);
 
   void *__stdcall LoadLibraryA(const char *dll_name);
   void *__stdcall GetProcAddress(void *dll, const char *proc);

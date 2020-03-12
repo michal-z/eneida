@@ -110,7 +110,7 @@ void *mzl_create_window(const char *name, u32 width, u32 height) {
       .lpszClassName = name,
   };
   if (!RegisterClass(&winclass)) {
-    assert(0);
+    MZ_ASSERT(0);
   }
 
   RECT rect = {0, 0, (i32)width, (i32)height};
@@ -120,39 +120,39 @@ void *mzl_create_window(const char *name, u32 width, u32 height) {
       0, name, name, WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_VISIBLE,
       CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL,
       NULL, 0);
-  assert(window);
+  MZ_ASSERT(window);
   return window;
 }
 
 void *mzl_load_file(const char *filename, u32 *out_file_size) {
-  assert(out_file_size);
+  MZ_ASSERT(out_file_size);
   void *handle = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
-  assert(handle != (void *)-1);
+  MZ_ASSERT(handle != (void *)-1);
   u32 size = GetFileSize(handle, NULL);
   char *content = (char *)MZL_MALLOC(size);
   u32 bytes_read;
   ReadFile(handle, content, size, &bytes_read, NULL);
   CloseHandle(handle);
-  assert(bytes_read == size);
+  MZ_ASSERT(bytes_read == size);
   *out_file_size = size;
   return content;
 }
 
 void *mzl_malloc(u64 size, const char *filename, i32 line) {
-  assert(size > 0);
+  MZ_ASSERT(size > 0);
   void *mem = HeapAlloc(GetProcessHeap(), 0, size);
   if (!mem) {
     char info[256];
     wsprintf(info, "mzl_malloc: Failed to allocate memory (%s:%d).\n", filename, line);
     OutputDebugString(info);
-    assert(0);
+    MZ_ASSERT(0);
     ExitProcess(1);
   }
   return mem;
 }
 
 void *mzl_realloc(void *addr, u64 size, const char *filename, i32 line) {
-  assert(size > 0);
+  MZ_ASSERT(size > 0);
   if (addr == NULL) {
     return mzl_malloc(size, filename, line);
   } else {
@@ -161,7 +161,7 @@ void *mzl_realloc(void *addr, u64 size, const char *filename, i32 line) {
       char info[256];
       wsprintf(info, "mzl_realloc: Failed to re-allocate memory (%s:%d).\n", filename, line);
       OutputDebugString(info);
-      assert(0);
+      MZ_ASSERT(0);
       ExitProcess(1);
     }
     return mem;
@@ -169,12 +169,12 @@ void *mzl_realloc(void *addr, u64 size, const char *filename, i32 line) {
 }
 
 void mzl_free(void *addr, const char *filename, i32 line) {
-  assert(addr);
+  MZ_ASSERT(addr);
   if (!HeapFree(GetProcessHeap(), 0, addr)) {
     char info[256];
     wsprintf(info, "mzl_free: Failed to free memory (%s:%d).\n", filename, line);
     OutputDebugString(info);
-    assert(0);
+    MZ_ASSERT(0);
     ExitProcess(1);
   }
 }
