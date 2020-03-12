@@ -6,6 +6,8 @@
 #include "mz_d3d12.h"
 #define MZ_GRAPHICS_IMPLEMENTATION
 #include "mz_graphics.h"
+#define MZ_MATH_IMPLEMENTATION
+#include "mz_math.h"
 #include "stb_ds.h"
 #include "stb_perlin.h"
 
@@ -30,6 +32,13 @@ void start(void) {
   test_api_t tests[] = {
       get_test0(),
   };
+
+  mzm_unit_tests();
+
+  {
+    f32 x = mzm_f32_sqrt(100.0f);
+    assert(x == 10.0f);
+  }
 
   test_api_t *test = &tests[0];
 
