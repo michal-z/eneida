@@ -200,12 +200,55 @@ inline void mzm_f32_sincos_fast(f32 x, f32 *out_sin, f32 *out_cos) {
 // vec2 functions
 //--------------------------------------------------------------------------------------------------
 inline mzm_vec2_t mzm_vec2(f32 x, f32 y) { return (mzm_vec2_t){x, y}; }
+inline mzm_vec2_t mzm_vec2_from_x(f32 x) { return mzm_vec2(x, x); }
+
+inline mzm_vec2_t *mzm_vec2_add(mzm_vec2_t *out, const mzm_vec2_t *a, const mzm_vec2_t *b) {
+  out->x = a->x + b->x;
+  out->y = a->y + b->y;
+  return out;
+}
+
+inline mzm_vec2_t *mzm_vec2_sub(mzm_vec2_t *out, const mzm_vec2_t *a, const mzm_vec2_t *b) {
+  out->x = a->x - b->x;
+  out->y = a->y - b->y;
+  return out;
+}
+
+inline mzm_vec2_t *mzm_vec2_neg(mzm_vec2_t *out, const mzm_vec2_t *a) {
+  out->x = -a->x;
+  out->y = -a->y;
+  return out;
+}
+
+inline f32 mzm_vec2_dot(const mzm_vec2_t *a, const mzm_vec2_t *b) {
+  return a->x * b->x + a->y * b->y;
+}
 //--------------------------------------------------------------------------------------------------
 // vec3 functions
 //--------------------------------------------------------------------------------------------------
 inline mzm_vec3_t mzm_vec3(f32 x, f32 y, f32 z) { return (mzm_vec3_t){x, y, z}; }
+inline mzm_vec3_t mzm_vec3_from_x(f32 x) { return mzm_vec3(x, x, x); }
 
-inline mzm_vec3_t mzm_vec3_from_scalar(f32 x) { return mzm_vec3(x, x, x); }
+inline mzm_vec3_t *mzm_vec3_add(mzm_vec3_t *out, const mzm_vec3_t *a, const mzm_vec3_t *b) {
+  out->x = a->x + b->x;
+  out->y = a->y + b->y;
+  out->z = a->z + b->z;
+  return out;
+}
+
+inline mzm_vec3_t *mzm_vec3_sub(mzm_vec3_t *out, const mzm_vec3_t *a, const mzm_vec3_t *b) {
+  out->x = a->x - b->x;
+  out->y = a->y - b->y;
+  out->z = a->z - b->z;
+  return out;
+}
+
+inline mzm_vec3_t *mzm_vec3_neg(mzm_vec3_t *out, const mzm_vec3_t *a) {
+  out->x = -a->x;
+  out->y = -a->y;
+  out->z = -a->z;
+  return out;
+}
 
 inline f32 mzm_vec3_dot(const mzm_vec3_t *a, const mzm_vec3_t *b) {
   return a->x * b->x + a->y * b->y + a->z * b->z;
@@ -214,6 +257,35 @@ inline f32 mzm_vec3_dot(const mzm_vec3_t *a, const mzm_vec3_t *b) {
 // vec4 functions
 //--------------------------------------------------------------------------------------------------
 inline mzm_vec4_t mzm_vec4(f32 x, f32 y, f32 z, f32 w) { return (mzm_vec4_t){x, y, z, w}; }
+inline mzm_vec4_t mzm_vec4_from_x(f32 x) { return mzm_vec4(x, x, x, x); }
+
+inline mzm_vec4_t *mzm_vec4_add(mzm_vec4_t *out, const mzm_vec4_t *a, const mzm_vec4_t *b) {
+  out->x = a->x + b->x;
+  out->y = a->y + b->y;
+  out->z = a->z + b->z;
+  out->w = a->w + b->w;
+  return out;
+}
+
+inline mzm_vec4_t *mzm_vec4_sub(mzm_vec4_t *out, const mzm_vec4_t *a, const mzm_vec4_t *b) {
+  out->x = a->x - b->x;
+  out->y = a->y - b->y;
+  out->z = a->z - b->z;
+  out->w = a->w - b->w;
+  return out;
+}
+
+inline mzm_vec4_t *mzm_vec4_neg(mzm_vec4_t *out, const mzm_vec4_t *a) {
+  out->x = -a->x;
+  out->y = -a->y;
+  out->z = -a->z;
+  out->w = -a->w;
+  return out;
+}
+
+inline f32 mzm_vec4_dot(const mzm_vec4_t *a, const mzm_vec4_t *b) {
+  return a->x * b->x + a->y * b->y + a->z * b->z + a->w * b->w;
+}
 
 void mzm_unit_tests(void);
 
