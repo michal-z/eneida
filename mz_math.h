@@ -28,13 +28,6 @@ static __inline__ __m128 __DEFAULT_FN_ATTRS _mm_load_ss(const float *__p) {
   return __extension__(__m128){__u, 0, 0, 0};
 }
 
-inline f32 __attribute__((__always_inline__, __nodebug__)) mzm_f32_sqrt(f32 x) {
-  __m128 v = _mm_load_ss(&x);
-  v = _mm_sqrt_ss(v);
-  _mm_store_ss(&x, v);
-  return x;
-}
-
 #define MZM_PI 3.141592654f
 #define MZM_2PI 6.283185307f
 #define MZM_1_DIV_PI 0.318309886f
@@ -42,20 +35,32 @@ inline f32 __attribute__((__always_inline__, __nodebug__)) mzm_f32_sqrt(f32 x) {
 #define MZM_PI_DIV_2 1.570796327f
 #define MZM_PI_DIV_4 0.785398163f
 
+typedef struct mzm_vec2 {
+  f32 x;
+  f32 y;
+} mzm_vec2_t;
+
 typedef struct mzm_vec3 {
   f32 x;
   f32 y;
   f32 z;
 } mzm_vec3_t;
 
-inline mzm_vec3_t mzm_vec3(f32 x, f32 y, f32 z) { return (mzm_vec3_t){x, y, z}; }
+typedef struct mzm_vec4 {
+  f32 x;
+  f32 y;
+  f32 z;
+  f32 w;
+} mzm_vec4_t;
 
-inline mzm_vec3_t mzm_vec3_from_scalar(f32 x) { return mzm_vec3(x, x, x); }
-
-inline f32 mzm_vec3_dot(const mzm_vec3_t *a, const mzm_vec3_t *b) {
-  return a->x * b->x + a->y * b->y + a->z * b->z;
+inline u32 mzm_u32_rand(u32 *state) {
+  MZ_ASSERT(state);
+  *state = *state * 1103515245 + 12345;
+  return (*state >> 16) & 0x7fff;
 }
-
+//--------------------------------------------------------------------------------------------------
+// f32 functions
+//--------------------------------------------------------------------------------------------------
 inline f32 mzm_f32_abs(f32 x) {
   union {
     f32 f;
@@ -66,14 +71,15 @@ inline f32 mzm_f32_abs(f32 x) {
   return fu.f;
 }
 
-inline i32 mzm_f32_equal_epsilon(f32 a, f32 b, f32 epsilon) {
-  return mzm_f32_abs(a - b) <= epsilon;
+inline f32 __attribute__((__always_inline__, __nodebug__)) mzm_f32_sqrt(f32 x) {
+  __m128 v = _mm_load_ss(&x);
+  v = _mm_sqrt_ss(v);
+  _mm_store_ss(&x, v);
+  return x;
 }
 
-inline u32 mzm_u32_rand(u32 *state) {
-  MZ_ASSERT(state);
-  *state = *state * 1103515245 + 12345;
-  return (*state >> 16) & 0x7fff;
+inline i32 mzm_f32_equal_epsilon(f32 a, f32 b, f32 epsilon) {
+  return mzm_f32_abs(a - b) <= epsilon;
 }
 
 inline f32 mzm_f32_rand(u32 *state) {
@@ -158,6 +164,57 @@ inline f32 mzm_f32_cos_fast(f32 x) {
   return sign * x;
 }
 
+inline void mzm_f32_sincos(f32 x, f32 *out_sin, f32 *out_cos) {
+  MZ_ASSERT(out_sin && out_cos);
+
+  f32 sign;
+  f32 y = _mzm_f32_cos_reduction(x, &sign);
+  f32 yy = y * y;
+
+  x = -2.3889859e-08f * yy + 2.7525562e-06f;
+  x = x * yy - 0.00019840874f;
+  x = x * yy + 0.0083333310f;
+  x = x * yy - 0.16666667f;
+  x = x * yy + 1.0f;
+  *out_sin = x * y;
+
+  x = -2.6051615e-07f * yy + 2.4760495e-05f;
+  x = x * yy - 0.0013888378f;
+  x = x * yy + 0.041666638f;
+  x = x * yy - 0.5f;
+  x = x * yy + 1.0f;
+  *out_cos = x * sign;
+}
+
+inline void mzm_f32_sincos_fast(f32 x, f32 *out_sin, f32 *out_cos) {
+  MZ_ASSERT(out_sin && out_cos);
+
+  f32 sign;
+  f32 y = _mzm_f32_cos_reduction(x, &sign);
+  f32 yy = y * y;
+
+  *out_sin = (((-0.00018524670f * yy + 0.0083139502f) * yy - 0.16665852f) * yy + 1.0f) * y;
+  *out_cos = sign * (((-0.0012712436f * yy + 0.041493919f) * yy - 0.49992746f) * yy + 1.0f);
+}
+//--------------------------------------------------------------------------------------------------
+// vec2 functions
+//--------------------------------------------------------------------------------------------------
+inline mzm_vec2_t mzm_vec2(f32 x, f32 y) { return (mzm_vec2_t){x, y}; }
+//--------------------------------------------------------------------------------------------------
+// vec3 functions
+//--------------------------------------------------------------------------------------------------
+inline mzm_vec3_t mzm_vec3(f32 x, f32 y, f32 z) { return (mzm_vec3_t){x, y, z}; }
+
+inline mzm_vec3_t mzm_vec3_from_scalar(f32 x) { return mzm_vec3(x, x, x); }
+
+inline f32 mzm_vec3_dot(const mzm_vec3_t *a, const mzm_vec3_t *b) {
+  return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+//--------------------------------------------------------------------------------------------------
+// vec4 functions
+//--------------------------------------------------------------------------------------------------
+inline mzm_vec4_t mzm_vec4(f32 x, f32 y, f32 z, f32 w) { return (mzm_vec4_t){x, y, z, w}; }
+
 void mzm_unit_tests(void);
 
 #endif // #ifndef MZ_MATH_INCLUDED_
@@ -172,6 +229,16 @@ void mzm_unit_tests(void) {
   MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_sin_fast(123.123f), -0.56537f, 0.00001f));
   MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_cos(123.123f), -0.82483472f, 0.00001f));
   MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_cos_fast(123.123f), -0.82483472f, 0.0001f));
+  {
+    f32 s, c;
+    mzm_f32_sincos(123.123f, &s, &c);
+    MZ_ASSERT(mzm_f32_equal_epsilon(s, -0.56537f, 0.00001f));
+    MZ_ASSERT(mzm_f32_equal_epsilon(c, -0.82483472f, 0.00001f));
+
+    mzm_f32_sincos_fast(123.123f, &s, &c);
+    MZ_ASSERT(mzm_f32_equal_epsilon(s, -0.56537f, 0.00001f));
+    MZ_ASSERT(mzm_f32_equal_epsilon(c, -0.82483472f, 0.0001f));
+  }
 }
 
 #undef MZ_MATH_IMPLEMENTATION

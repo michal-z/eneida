@@ -40,10 +40,10 @@ static void test0_update(void *context, f64 time, f32 delta_time) {
 
 static test_api_t get_test0(void) {
   static test0_context_t ctx;
-  return (test_api_t) {
-    .context = &ctx,
-    .init = test0_init,
-    .deinit = test0_deinit,
-    .update = test0_update,
+  return (test_api_t){
+      .context = &ctx,
+      .init = test0_init,
+      .deinit = test0_deinit,
+      .update = test0_update,
   };
 }
