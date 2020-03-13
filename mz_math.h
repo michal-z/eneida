@@ -53,6 +53,10 @@ typedef struct mzm_vec4 {
   f32 w;
 } mzm_vec4_t;
 
+typedef struct mzm_mat44 {
+  mzm_vec4_t r[4];
+} mzm_mat44_t;
+
 inline u32 mzm_u32_rand(u32 *state) {
   MZ_ASSERT(state);
   *state = *state * 1103515245 + 12345;
@@ -202,6 +206,12 @@ inline void mzm_f32_sincos_fast(f32 x, f32 *out_sin, f32 *out_cos) {
 inline mzm_vec2_t mzm_vec2(f32 x, f32 y) { return (mzm_vec2_t){x, y}; }
 inline mzm_vec2_t mzm_vec2_from_x(f32 x) { return mzm_vec2(x, x); }
 
+inline mzm_vec2_t *mzm_vec2_set(mzm_vec2_t *out, f32 x, f32 y) {
+  out->x = x;
+  out->y = y;
+  return out;
+}
+
 inline mzm_vec2_t *mzm_vec2_add(mzm_vec2_t *out, const mzm_vec2_t *a, const mzm_vec2_t *b) {
   out->x = a->x + b->x;
   out->y = a->y + b->y;
@@ -223,11 +233,27 @@ inline mzm_vec2_t *mzm_vec2_neg(mzm_vec2_t *out, const mzm_vec2_t *a) {
 inline f32 mzm_vec2_dot(const mzm_vec2_t *a, const mzm_vec2_t *b) {
   return a->x * b->x + a->y * b->y;
 }
+
+inline f32 mzm_vec2_length(const mzm_vec2_t *a) { return mzm_f32_sqrt(mzm_vec2_dot(a, a)); }
+
+inline mzm_vec2_t *mzm_vec2_normalize(mzm_vec2_t *out, const mzm_vec2_t *a) {
+  f32 length = mzm_vec2_length(a);
+  MZ_ASSERT(!mzm_f32_equal_epsilon(length, 0.0f, 0.0001f));
+  f32 rcplen = 1.0f / length;
+  return mzm_vec2_set(out, rcplen * a->x, rcplen * a->y);
+}
 //--------------------------------------------------------------------------------------------------
 // vec3 functions
 //--------------------------------------------------------------------------------------------------
 inline mzm_vec3_t mzm_vec3(f32 x, f32 y, f32 z) { return (mzm_vec3_t){x, y, z}; }
 inline mzm_vec3_t mzm_vec3_from_x(f32 x) { return mzm_vec3(x, x, x); }
+
+inline mzm_vec3_t *mzm_vec3_set(mzm_vec3_t *out, f32 x, f32 y, f32 z) {
+  out->x = x;
+  out->y = y;
+  out->z = z;
+  return out;
+}
 
 inline mzm_vec3_t *mzm_vec3_add(mzm_vec3_t *out, const mzm_vec3_t *a, const mzm_vec3_t *b) {
   out->x = a->x + b->x;
@@ -253,11 +279,35 @@ inline mzm_vec3_t *mzm_vec3_neg(mzm_vec3_t *out, const mzm_vec3_t *a) {
 inline f32 mzm_vec3_dot(const mzm_vec3_t *a, const mzm_vec3_t *b) {
   return a->x * b->x + a->y * b->y + a->z * b->z;
 }
+
+inline mzm_vec3_t *mzm_vec3_cross(mzm_vec3_t *out, const mzm_vec3_t *a, const mzm_vec3_t *b) {
+  f32 x = a->y * b->z - a->z * b->y;
+  f32 y = a->z * b->x - a->x * b->z;
+  f32 z = a->x * b->y - a->y * b->x;
+  return mzm_vec3_set(out, x, y, z);
+}
+
+inline f32 mzm_vec3_length(const mzm_vec3_t *a) { return mzm_f32_sqrt(mzm_vec3_dot(a, a)); }
+
+inline mzm_vec3_t *mzm_vec3_normalize(mzm_vec3_t *out, const mzm_vec3_t *a) {
+  f32 length = mzm_vec3_length(a);
+  MZ_ASSERT(!mzm_f32_equal_epsilon(length, 0.0f, 0.0001f));
+  f32 rcplen = 1.0f / length;
+  return mzm_vec3_set(out, rcplen * a->x, rcplen * a->y, rcplen * a->z);
+}
 //--------------------------------------------------------------------------------------------------
 // vec4 functions
 //--------------------------------------------------------------------------------------------------
 inline mzm_vec4_t mzm_vec4(f32 x, f32 y, f32 z, f32 w) { return (mzm_vec4_t){x, y, z, w}; }
 inline mzm_vec4_t mzm_vec4_from_x(f32 x) { return mzm_vec4(x, x, x, x); }
+
+inline mzm_vec4_t *mzm_vec4_set(mzm_vec4_t *out, f32 x, f32 y, f32 z, f32 w) {
+  out->x = x;
+  out->y = y;
+  out->z = z;
+  out->w = w;
+  return out;
+}
 
 inline mzm_vec4_t *mzm_vec4_add(mzm_vec4_t *out, const mzm_vec4_t *a, const mzm_vec4_t *b) {
   out->x = a->x + b->x;
@@ -287,6 +337,131 @@ inline f32 mzm_vec4_dot(const mzm_vec4_t *a, const mzm_vec4_t *b) {
   return a->x * b->x + a->y * b->y + a->z * b->z + a->w * b->w;
 }
 
+inline f32 mzm_vec4_length(const mzm_vec4_t *a) { return mzm_f32_sqrt(mzm_vec4_dot(a, a)); }
+
+inline mzm_vec4_t *mzm_vec4_normalize(mzm_vec4_t *out, const mzm_vec4_t *a) {
+  f32 length = mzm_vec4_length(a);
+  MZ_ASSERT(!mzm_f32_equal_epsilon(length, 0.0f, 0.0001f));
+  f32 rcplen = 1.0f / length;
+  return mzm_vec4_set(out, rcplen * a->x, rcplen * a->y, rcplen * a->z, rcplen * a->w);
+}
+//--------------------------------------------------------------------------------------------------
+// mat44 functions
+//--------------------------------------------------------------------------------------------------
+inline mzm_mat44_t *mzm_mat44_set_perspective(mzm_mat44_t *out, f32 fovy, f32 aspect, f32 n,
+                                              f32 f) {
+  f32 sinfov, cosfov;
+  mzm_f32_sincos(0.5f * fovy, &sinfov, &cosfov);
+  f32 h = cosfov / sinfov;
+  f32 w = h / aspect;
+  f32 r = f / (f - n);
+  out->r[0] = mzm_vec4(w, 0.0f, 0.0f, 0.0f);
+  out->r[1] = mzm_vec4(0.0f, h, 0.0f, 0.0f);
+  out->r[2] = mzm_vec4(0.0f, 0.0f, r, 1.0f);
+  out->r[3] = mzm_vec4(0.0f, 0.0f, -r * n, 0.0f);
+  return out;
+}
+
+inline mzm_mat44_t *mzm_mat44_set_identity(mzm_mat44_t *out) {
+  out->r[0] = mzm_vec4(1.0f, 0.0f, 0.0f, 0.0f);
+  out->r[1] = mzm_vec4(0.0f, 1.0f, 0.0f, 0.0f);
+  out->r[2] = mzm_vec4(0.0f, 0.0f, 1.0f, 0.0f);
+  out->r[3] = mzm_vec4(0.0f, 0.0f, 0.0f, 1.0f);
+  return out;
+}
+
+inline mzm_mat44_t *mzm_mat44_set_translation(mzm_mat44_t *out, f32 x, f32 y, f32 z) {
+  out->r[0] = mzm_vec4(1.0f, 0.0f, 0.0f, 0.0f);
+  out->r[1] = mzm_vec4(0.0f, 1.0f, 0.0f, 0.0f);
+  out->r[2] = mzm_vec4(0.0f, 0.0f, 1.0f, 0.0f);
+  out->r[3] = mzm_vec4(x, y, z, 1.0f);
+  return out;
+}
+
+inline mzm_mat44_t *mzm_mat44_set_rotation_y(mzm_mat44_t *out, f32 radians) {
+  f32 sinv, cosv;
+  mzm_f32_sincos(radians, &sinv, &cosv);
+  out->r[0] = mzm_vec4(cosv, 0.0f, -sinv, 0.0f);
+  out->r[1] = mzm_vec4(0.0f, 1.0f, 0.0f, 0.0f);
+  out->r[2] = mzm_vec4(sinv, 0.0f, cosv, 0.0f);
+  out->r[3] = mzm_vec4(0.0f, 0.0f, 0.0f, 1.0f);
+  return out;
+}
+
+inline mzm_mat44_t *mzm_mat44_set_look_at(mzm_mat44_t *out, const mzm_vec3_t *eye,
+                                          const mzm_vec3_t *at, const mzm_vec3_t *up) {
+  mzm_vec3_t ax, ay, az;
+  mzm_vec3_normalize(&az, mzm_vec3_sub(&az, at, eye));
+  mzm_vec3_normalize(&ax, mzm_vec3_cross(&ax, up, &az));
+  mzm_vec3_normalize(&ay, mzm_vec3_cross(&ay, &az, &ax));
+  out->r[0] = mzm_vec4(ax.x, ay.x, az.x, 0.0f);
+  out->r[1] = mzm_vec4(ax.y, ay.y, az.y, 0.0f);
+  out->r[2] = mzm_vec4(ax.z, ay.z, az.z, 0.0f);
+  out->r[3] =
+      mzm_vec4(-mzm_vec3_dot(&ax, eye), -mzm_vec3_dot(&ay, eye), -mzm_vec3_dot(&az, eye), 1.0f);
+  return out;
+}
+
+inline mzm_mat44_t *mzm_mat44_transpose(mzm_mat44_t *out, const mzm_mat44_t *a) {
+  mzm_mat44_t result;
+  result.r[0].x = a->r[0].x;
+  result.r[1].x = a->r[0].y;
+  result.r[2].x = a->r[0].z;
+  result.r[3].x = a->r[0].w;
+  result.r[0].y = a->r[1].x;
+  result.r[1].y = a->r[1].y;
+  result.r[2].y = a->r[1].z;
+  result.r[3].y = a->r[1].w;
+  result.r[0].z = a->r[2].x;
+  result.r[1].z = a->r[2].y;
+  result.r[2].z = a->r[2].z;
+  result.r[3].z = a->r[2].w;
+  result.r[0].w = a->r[3].x;
+  result.r[1].w = a->r[3].y;
+  result.r[2].w = a->r[3].z;
+  result.r[3].w = a->r[3].w;
+  *out = result;
+  return out;
+}
+
+inline mzm_mat44_t *mzm_mat44_mul(mzm_mat44_t *out, const mzm_mat44_t *a, const mzm_mat44_t *b) {
+  mzm_mat44_t result;
+  result.r[0].x =
+      a->r[0].x * b->r[0].x + a->r[0].y * b->r[1].x + a->r[0].z * b->r[2].x + a->r[0].w * b->r[3].x;
+  result.r[0].y =
+      a->r[0].x * b->r[0].y + a->r[0].y * b->r[1].y + a->r[0].z * b->r[2].y + a->r[0].w * b->r[3].y;
+  result.r[0].z =
+      a->r[0].x * b->r[0].z + a->r[0].y * b->r[1].z + a->r[0].z * b->r[2].z + a->r[0].w * b->r[3].z;
+  result.r[0].w =
+      a->r[0].x * b->r[0].w + a->r[0].y * b->r[1].w + a->r[0].z * b->r[2].w + a->r[0].w * b->r[3].w;
+  result.r[1].x =
+      a->r[1].x * b->r[0].x + a->r[1].y * b->r[1].x + a->r[1].z * b->r[2].x + a->r[1].w * b->r[3].x;
+  result.r[1].y =
+      a->r[1].x * b->r[0].y + a->r[1].y * b->r[1].y + a->r[1].z * b->r[2].y + a->r[1].w * b->r[3].y;
+  result.r[1].z =
+      a->r[1].x * b->r[0].z + a->r[1].y * b->r[1].z + a->r[1].z * b->r[2].z + a->r[1].w * b->r[3].z;
+  result.r[1].w =
+      a->r[1].x * b->r[0].w + a->r[1].y * b->r[1].w + a->r[1].z * b->r[2].w + a->r[1].w * b->r[3].w;
+  result.r[2].x =
+      a->r[2].x * b->r[0].x + a->r[2].y * b->r[1].x + a->r[2].z * b->r[2].x + a->r[2].w * b->r[3].x;
+  result.r[2].y =
+      a->r[2].x * b->r[0].y + a->r[2].y * b->r[1].y + a->r[2].z * b->r[2].y + a->r[2].w * b->r[3].y;
+  result.r[2].z =
+      a->r[2].x * b->r[0].z + a->r[2].y * b->r[1].z + a->r[2].z * b->r[2].z + a->r[2].w * b->r[3].z;
+  result.r[2].w =
+      a->r[2].x * b->r[0].w + a->r[2].y * b->r[1].w + a->r[2].z * b->r[2].w + a->r[2].w * b->r[3].w;
+  result.r[3].x =
+      a->r[3].x * b->r[0].x + a->r[3].y * b->r[1].x + a->r[3].z * b->r[2].x + a->r[3].w * b->r[3].x;
+  result.r[3].y =
+      a->r[3].x * b->r[0].y + a->r[3].y * b->r[1].y + a->r[3].z * b->r[2].y + a->r[3].w * b->r[3].y;
+  result.r[3].z =
+      a->r[3].x * b->r[0].z + a->r[3].y * b->r[1].z + a->r[3].z * b->r[2].z + a->r[3].w * b->r[3].z;
+  result.r[3].w =
+      a->r[3].x * b->r[0].w + a->r[3].y * b->r[1].w + a->r[3].z * b->r[2].w + a->r[3].w * b->r[3].w;
+  *out = result;
+  return out;
+}
+
 void mzm_unit_tests(void);
 
 #endif // #ifndef MZ_MATH_INCLUDED_
@@ -299,7 +474,6 @@ void mzm_unit_tests(void) {
   MZ_ASSERT(mzm_f32_abs(1.0f) == 1.0f);
   MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_sin(123.123f), -0.56537f, 0.00001f));
   MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_sin_fast(123.123f), -0.56537f, 0.00001f));
-  MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_cos(123.123f), -0.82483472f, 0.00001f));
   MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_cos_fast(123.123f), -0.82483472f, 0.0001f));
   {
     f32 s, c;
