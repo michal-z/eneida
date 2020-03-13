@@ -75,7 +75,7 @@ inline f32 mzm_f32_abs(f32 x) {
   return fu.f;
 }
 
-inline f32 __attribute__((__always_inline__, __nodebug__)) mzm_f32_sqrt(f32 x) {
+inline f32 mzm_f32_sqrt(f32 x) {
   __m128 v = _mm_load_ss(&x);
   v = _mm_sqrt_ss(v);
   _mm_store_ss(&x, v);
@@ -474,6 +474,7 @@ void mzm_unit_tests(void) {
   MZ_ASSERT(mzm_f32_abs(1.0f) == 1.0f);
   MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_sin(123.123f), -0.56537f, 0.00001f));
   MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_sin_fast(123.123f), -0.56537f, 0.00001f));
+  MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_cos(123.123f), -0.82483472f, 0.00001f));
   MZ_ASSERT(mzm_f32_equal_epsilon(mzm_f32_cos_fast(123.123f), -0.82483472f, 0.0001f));
   {
     f32 s, c;
