@@ -1,7 +1,7 @@
 @echo off
 
 if "%1" == "fmt" (
-  "build\clang-format.exe" -i *.c *.h tests\*.c ^
+  "build\clang-format.exe" -i *.c *.h shaders\*.hlsl tests\*.c ^
   -style="{ColumnLimit: 100, BasedOnStyle: LLVM}"
   goto :end
 )

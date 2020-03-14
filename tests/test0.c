@@ -7,7 +7,7 @@ static i32 test0_init(void *context, void *window) {
   test0_context_t *ctx = context;
 
   ctx->gfx = mzgr_create_context(window);
-  /*
+
   i32 *arr = NULL;
   // arrsetcap(arr, 128);
   for (i32 i = 0; i < 32; ++i) {
@@ -18,7 +18,7 @@ static i32 test0_init(void *context, void *window) {
     wsprintf(buf, "%d\n", arr[i]);
     OutputDebugString(buf);
   }
-  */
+
   return 1;
 }
 
@@ -33,8 +33,22 @@ static void test0_deinit(void *context) {
 static void test0_update(void *context, f64 time, f32 delta_time) {
   MZ_ASSERT(context);
   test0_context_t *ctx = context;
+  mzgr_context_t *gfx = ctx->gfx;
 
-  mzgr_begin_frame(ctx->gfx);
+  ID3D12GraphicsCommandList *cmdlist = mzgr_begin_frame(gfx);
+
+  mzgr_resource_handle_t back_buffer;
+  D3D12_CPU_DESCRIPTOR_HANDLE back_buffer_rtv;
+  mzgr_get_back_buffer(gfx, &back_buffer, &back_buffer_rtv);
+
+  mzgr_transition_barrier(gfx, back_buffer, D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+  f32 color[4] = {0.2f, 0.4f, 0.8f, 1.0f};
+  ID3D12GraphicsCommandList_OMSetRenderTargets(cmdlist, 1, &back_buffer_rtv, TRUE, NULL);
+  ID3D12GraphicsCommandList_ClearRenderTargetView(cmdlist, back_buffer_rtv, color, 0, NULL);
+
+  mzgr_transition_barrier(gfx, back_buffer, D3D12_RESOURCE_STATE_PRESENT);
+
   mzgr_end_frame(ctx->gfx, 0);
 }
 
