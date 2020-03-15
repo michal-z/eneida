@@ -34,6 +34,11 @@ typedef struct IDXGIFactory4 IDXGIFactory4;
 
 #define DXGI_CREATE_FACTORY_DEBUG 0x01
 #define D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES 0xffffffff
+#define D3D12_DEFAULT_DEPTH_BIAS 0
+#define D3D12_DEFAULT_DEPTH_BIAS_CLAMP 0.0f
+#define D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS 0.0f
+#define D3D12_DEFAULT_STENCIL_READ_MASK 0xff
+#define D3D12_DEFAULT_STENCIL_WRITE_MASK 0xff
 
 typedef enum DXGI_FORMAT {
   DXGI_FORMAT_UNKNOWN = 0,
@@ -3205,6 +3210,81 @@ extern D3D12CreateDevice_t D3D12CreateDevice;
 extern D3D12GetDebugInterface_t D3D12GetDebugInterface;
 
 void mzd3d12_load_api(void);
+
+inline D3D12_RASTERIZER_DESC mzd3d12_rasterizer_desc(void) {
+  return (D3D12_RASTERIZER_DESC){
+      .FillMode = D3D12_FILL_MODE_SOLID,
+      .CullMode = D3D12_CULL_MODE_BACK,
+      .FrontCounterClockwise = 0,
+      .DepthBias = D3D12_DEFAULT_DEPTH_BIAS,
+      .DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP,
+      .SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS,
+      .DepthClipEnable = 1,
+      .MultisampleEnable = 0,
+      .AntialiasedLineEnable = 0,
+      .ForcedSampleCount = 0,
+      .ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF,
+  };
+}
+
+inline D3D12_BLEND_DESC mzd3d12_blend_desc(void) {
+  D3D12_RENDER_TARGET_BLEND_DESC rt_blend_desc = {
+      .BlendEnable = 0,
+      .LogicOpEnable = 0,
+      .SrcBlend = D3D12_BLEND_ONE,
+      .DestBlend = D3D12_BLEND_ZERO,
+      .BlendOp = D3D12_BLEND_OP_ADD,
+      .SrcBlendAlpha = D3D12_BLEND_ONE,
+      .DestBlendAlpha = D3D12_BLEND_ZERO,
+      .BlendOpAlpha = D3D12_BLEND_OP_ADD,
+      .LogicOp = D3D12_LOGIC_OP_NOOP,
+      .RenderTargetWriteMask = 0x0f,
+  };
+  return (D3D12_BLEND_DESC){
+      .AlphaToCoverageEnable = FALSE,
+      .IndependentBlendEnable = FALSE,
+      .RenderTarget = {rt_blend_desc, rt_blend_desc, rt_blend_desc, rt_blend_desc, rt_blend_desc,
+                       rt_blend_desc, rt_blend_desc, rt_blend_desc},
+  };
+}
+
+inline D3D12_RESOURCE_DESC mzd3d12_resource_desc_buffer(u64 size) {
+  return (D3D12_RESOURCE_DESC){
+      .Dimension = D3D12_RESOURCE_DIMENSION_BUFFER,
+      .Alignment = 0,
+      .Width = size,
+      .Height = 1,
+      .DepthOrArraySize = 1,
+      .MipLevels = 1,
+      .Format = DXGI_FORMAT_UNKNOWN,
+      .SampleDesc =
+          (DXGI_SAMPLE_DESC){
+              .Count = 1,
+              .Quality = 0,
+          },
+      .Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR,
+      .Flags = D3D12_RESOURCE_FLAG_NONE,
+  };
+}
+
+inline D3D12_DEPTH_STENCIL_DESC mzd3d12_depth_stencil_desc(void) {
+  D3D12_DEPTH_STENCILOP_DESC ds_op_desc = {
+      .StencilFailOp = D3D12_STENCIL_OP_KEEP,
+      .StencilDepthFailOp = D3D12_STENCIL_OP_KEEP,
+      .StencilPassOp = D3D12_STENCIL_OP_KEEP,
+      .StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS,
+  };
+  return (D3D12_DEPTH_STENCIL_DESC){
+      .DepthEnable = 1,
+      .DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL,
+      .DepthFunc = D3D12_COMPARISON_FUNC_LESS,
+      .StencilEnable = 0,
+      .StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK,
+      .StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK,
+      .FrontFace = ds_op_desc,
+      .BackFace = ds_op_desc,
+  };
+}
 
 #endif // #ifndef MZ_D3D12_INCLUDED_
 

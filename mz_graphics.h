@@ -512,11 +512,20 @@ mzgr_pipeline_handle_t mzgr_create_graphics_pipeline(mzgr_context_t *gfx,
   pso_desc->PS.pShaderBytecode = ps_bytecode;
   pso_desc->PS.BytecodeLength = ps_bytecode_size;
 
-  // calc hash
-  u64 hash = _mzgr_calc_graphics_pipeline_hash(pso_desc);
+  // TODO(mziulek): calc hash
+  // u64 hash = _mzgr_calc_graphics_pipeline_hash(pso_desc);
 
+  ID3D12RootSignature *root_signature = NULL;
+  MZGR_VHR(ID3D12Device_CreateRootSignature(gfx->device, 0, vs_bytecode, vs_bytecode_size,
+                                            &IID_ID3D12RootSignature, (void **)&root_signature));
+
+  ID3D12PipelineState *pso = NULL;
+  MZGR_VHR(ID3D12Device_CreateGraphicsPipelineState(gfx->device, pso_desc, &IID_ID3D12PipelineState,
+                                                    (void **)&pso));
   MZL_FREE(vs_bytecode);
   MZL_FREE(ps_bytecode);
+
+  return _mzgr_add_pipeline(&gfx->pipeline_pool, pso, root_signature);
 }
 
 void mzgr_destroy_context(mzgr_context_t *gfx) {

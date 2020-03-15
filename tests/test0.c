@@ -1,5 +1,6 @@
 typedef struct test0_context {
   mzgr_context_t *gfx;
+  mzgr_pipeline_handle_t pso;
 } test0_context_t;
 
 static i32 test0_init(void *context, void *window) {
@@ -24,6 +25,24 @@ static i32 test0_init(void *context, void *window) {
     OutputDebugString(buf);
   }
 
+  ctx->pso = mzgr_create_graphics_pipeline(
+      ctx->gfx,
+      &(D3D12_GRAPHICS_PIPELINE_STATE_DESC){
+          .RasterizerState = mzd3d12_rasterizer_desc(),
+          .BlendState = mzd3d12_blend_desc(),
+          .RTVFormats = {DXGI_FORMAT_R8G8B8A8_UNORM},
+          .DepthStencilState = mzd3d12_depth_stencil_desc(),
+          .NumRenderTargets = 1,
+          .SampleMask = 0xffffffff,
+          .SampleDesc =
+              (DXGI_SAMPLE_DESC){
+                  .Count = 1,
+                  .Quality = 0,
+              },
+          .PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE,
+      },
+      "test.vs.cso", "test.ps.cso");
+
   return 1;
 }
 
@@ -36,6 +55,8 @@ static void test0_deinit(void *context) {
 }
 
 static void test0_update(void *context, f64 time, f32 delta_time) {
+  (void)time;
+  (void)delta_time;
   MZ_ASSERT(context);
   test0_context_t *ctx = context;
   mzgr_context_t *gfx = ctx->gfx;
