@@ -54,6 +54,10 @@ mzgr_resource_handle_t mzgr_create_committed_resource(mzgr_context_t *gfx,
                                                       D3D12_RESOURCE_STATES initial_state,
                                                       const D3D12_CLEAR_VALUE *clear_value);
 
+mzgr_pipeline_handle_t mzgr_create_graphics_pipeline(mzgr_context_t *gfx,
+                                                     D3D12_GRAPHICS_PIPELINE_STATE_DESC *pso_desc,
+                                                     const char *vs_name, const char *ps_name);
+
 void mzgr_destroy_resource(mzgr_context_t *gfx, mzgr_resource_handle_t handle);
 
 ID3D12Resource *mzgr_get_resource(mzgr_context_t *gfx, mzgr_resource_handle_t handle);
@@ -470,6 +474,36 @@ mzgr_resource_handle_t mzgr_create_committed_resource(mzgr_context_t *gfx,
       clear_value, &IID_ID3D12Resource, (void **)&raw));
 
   return _mzgr_add_resource(&gfx->resource_pool, raw, initial_state, desc->Format);
+}
+
+mzgr_pipeline_handle_t mzgr_create_graphics_pipeline(mzgr_context_t *gfx,
+                                                     D3D12_GRAPHICS_PIPELINE_STATE_DESC *pso_desc,
+                                                     const char *vs_name, const char *ps_name) {
+  u32 vs_bytecode_size;
+  void *vs_bytecode;
+  {
+    char path[256];
+    wsprintf(path, "data/shaders/%s", vs_name);
+    vs_bytecode = mzl_load_file(path, &vs_bytecode_size);
+  }
+
+  u32 ps_bytecode_size;
+  void *ps_bytecode;
+  {
+    char path[256];
+    wsprintf(path, "data/shaders/%s", ps_name);
+    ps_bytecode = mzl_load_file(path, &ps_bytecode_size);
+  }
+
+  pso_desc->VS.pShaderBytecode = vs_bytecode;
+  pso_desc->VS.BytecodeLength = vs_bytecode_size;
+  pso_desc->PS.pShaderBytecode = ps_bytecode;
+  pso_desc->PS.BytecodeLength = ps_bytecode_size;
+
+  // calc hash
+
+  MZL_FREE(vs_bytecode);
+  MZL_FREE(ps_bytecode);
 }
 
 void mzgr_destroy_context(mzgr_context_t *gfx) {

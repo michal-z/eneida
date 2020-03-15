@@ -129,7 +129,7 @@ void *mzl_load_file(const char *filename, u32 *out_file_size) {
   void *handle = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
   MZ_ASSERT(handle != (void *)-1);
   u32 size = GetFileSize(handle, NULL);
-  char *content = (char *)MZL_MALLOC(size);
+  char *content = MZL_MALLOC(size);
   u32 bytes_read;
   ReadFile(handle, content, size, &bytes_read, NULL);
   CloseHandle(handle);
