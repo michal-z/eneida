@@ -3,28 +3,11 @@
 
 #include "mz_fwd.h"
 
-#define MZL_MALLOC(size) mzl_malloc((size), __FILE__, __LINE__)
-#define MZL_REALLOC(addr, size) mzl_realloc((addr), (size), __FILE__, __LINE__)
 #define MZL_FREE(addr)                                                                             \
   if ((addr)) {                                                                                    \
-    mzl_free((addr), __FILE__, __LINE__);                                                          \
+    free((addr));                                                                                  \
     (addr) = NULL;                                                                                 \
   }
-
-// Generally we don't use libc - below are exceptions.
-typedef void *(*mzl_memset_t)(void *dest, i32 value, u64 num_bytes);
-typedef void *(*mzl_memcpy_t)(void *restrict dest, const void *restrict src, u64 num_bytes);
-typedef void *(*mzl_memmove_t)(void *dest, const void *src, u64 num_bytes);
-typedef i32 (*mzl_memcmp_t)(const void *ptr1, const void *ptr2, u64 num_bytes);
-typedef i32 (*mzl_strcmp_t)(const char *str1, const char *str2);
-typedef u64 (*mzl_strlen_t)(const char *str);
-
-extern mzl_memset_t mzl_memset;
-extern mzl_memcpy_t mzl_memcpy;
-extern mzl_memmove_t mzl_memmove;
-extern mzl_memcmp_t mzl_memcmp;
-extern mzl_strcmp_t mzl_strcmp;
-extern mzl_strlen_t mzl_strlen;
 
 void *mzl_load_file(const char *filename, u32 *out_file_size);
 
@@ -33,12 +16,6 @@ f64 mzl_get_time(void);
 void mzl_update_frame_stats(void *window, const char *name, f64 *out_time, f32 *out_delta_time);
 
 void *mzl_create_window(const char *name, u32 width, u32 height);
-
-void *mzl_malloc(u64 size, const char *filename, i32 line);
-
-void *mzl_realloc(void *addr, u64 size, const char *filename, i32 line);
-
-void mzl_free(void *addr, const char *filename, i32 line);
 
 void mzl_load_api(void);
 
@@ -129,7 +106,7 @@ void *mzl_load_file(const char *filename, u32 *out_file_size) {
   void *handle = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
   MZ_ASSERT(handle != (void *)-1);
   u32 size = GetFileSize(handle, NULL);
-  char *content = MZL_MALLOC(size);
+  char *content = malloc(size);
   u32 bytes_read;
   ReadFile(handle, content, size, &bytes_read, NULL);
   CloseHandle(handle);
@@ -138,29 +115,25 @@ void *mzl_load_file(const char *filename, u32 *out_file_size) {
   return content;
 }
 
-void *mzl_malloc(u64 size, const char *filename, i32 line) {
+void *malloc(u64 size) {
   MZ_ASSERT(size > 0);
   void *mem = HeapAlloc(GetProcessHeap(), 0, size);
   if (!mem) {
-    char info[256];
-    wsprintf(info, "mzl_malloc: Failed to allocate memory (%s:%d).\n", filename, line);
-    OutputDebugString(info);
+    OutputDebugString("malloc: Failed to allocate memory.\n");
     MZ_ASSERT(0);
     ExitProcess(1);
   }
   return mem;
 }
 
-void *mzl_realloc(void *addr, u64 size, const char *filename, i32 line) {
+void *realloc(void *addr, u64 size) {
   MZ_ASSERT(size > 0);
   if (addr == NULL) {
-    return mzl_malloc(size, filename, line);
+    return malloc(size);
   } else {
     void *mem = HeapReAlloc(GetProcessHeap(), 0, addr, size);
     if (!mem) {
-      char info[256];
-      wsprintf(info, "mzl_realloc: Failed to re-allocate memory (%s:%d).\n", filename, line);
-      OutputDebugString(info);
+      OutputDebugString("realloc: Failed to re-allocate memory.\n");
       MZ_ASSERT(0);
       ExitProcess(1);
     }
@@ -168,42 +141,59 @@ void *mzl_realloc(void *addr, u64 size, const char *filename, i32 line) {
   }
 }
 
-void mzl_free(void *addr, const char *filename, i32 line) {
+void free(void *addr) {
   MZ_ASSERT(addr);
   if (!HeapFree(GetProcessHeap(), 0, addr)) {
-    char info[256];
-    wsprintf(info, "mzl_free: Failed to free memory (%s:%d).\n", filename, line);
-    OutputDebugString(info);
+    OutputDebugString("free: Failed to free memory.\n");
     MZ_ASSERT(0);
     ExitProcess(1);
   }
 }
 
-mzl_memset_t mzl_memset;
-mzl_memcpy_t mzl_memcpy;
-mzl_memmove_t mzl_memmove;
-mzl_memcmp_t mzl_memcmp;
-mzl_strcmp_t mzl_strcmp;
-mzl_strlen_t mzl_strlen;
+typedef void *(*_mzl_memset_t)(void *dest, i32 value, u64 num_bytes);
+typedef void *(*_mzl_memcpy_t)(void *restrict dest, const void *restrict src, u64 num_bytes);
+typedef void *(*_mzl_memmove_t)(void *dest, const void *src, u64 num_bytes);
+typedef i32 (*_mzl_memcmp_t)(const void *ptr1, const void *ptr2, u64 num_bytes);
+typedef i32 (*_mzl_strcmp_t)(const char *str1, const char *str2);
+typedef u64 (*_mzl_strlen_t)(const char *str);
+
+static _mzl_memset_t _mzl_memset;
+static _mzl_memcpy_t _mzl_memcpy;
+static _mzl_memmove_t _mzl_memmove;
+static _mzl_memcmp_t _mzl_memcmp;
+static _mzl_strcmp_t _mzl_strcmp;
+static _mzl_strlen_t _mzl_strlen;
 
 void mzl_load_api(void) {
   void *__stdcall LoadLibraryA(const char *dll_name);
   void *__stdcall GetProcAddress(void *dll, const char *proc);
 
   void *ucrtbase_dll = LoadLibraryA("ucrtbase.dll");
-  mzl_memset = (mzl_memset_t)GetProcAddress(ucrtbase_dll, "memset");
-  mzl_memcpy = (mzl_memcpy_t)GetProcAddress(ucrtbase_dll, "memcpy");
-  mzl_memmove = (mzl_memmove_t)GetProcAddress(ucrtbase_dll, "memmove");
-  mzl_memcmp = (mzl_memcmp_t)GetProcAddress(ucrtbase_dll, "memcmp");
-  mzl_strcmp = (mzl_strcmp_t)GetProcAddress(ucrtbase_dll, "strcmp");
-  mzl_strlen = (mzl_strlen_t)GetProcAddress(ucrtbase_dll, "strlen");
+  _mzl_memset = (_mzl_memset_t)GetProcAddress(ucrtbase_dll, "memset");
+  _mzl_memcpy = (_mzl_memcpy_t)GetProcAddress(ucrtbase_dll, "memcpy");
+  _mzl_memmove = (_mzl_memmove_t)GetProcAddress(ucrtbase_dll, "memmove");
+  _mzl_memcmp = (_mzl_memcmp_t)GetProcAddress(ucrtbase_dll, "memcmp");
+  _mzl_strcmp = (_mzl_strcmp_t)GetProcAddress(ucrtbase_dll, "strcmp");
+  _mzl_strlen = (_mzl_strlen_t)GetProcAddress(ucrtbase_dll, "strlen");
 }
 
-void *memset(void *dest, i32 value, u64 num_bytes) { return mzl_memset(dest, value, num_bytes); }
+void *memset(void *dest, i32 value, u64 num_bytes) { return _mzl_memset(dest, value, num_bytes); }
 
 void *memcpy(void *restrict dest, const void *restrict src, u64 num_bytes) {
-  return mzl_memcpy(dest, src, num_bytes);
+  return _mzl_memcpy(dest, src, num_bytes);
 }
+
+void *memmove(void *dest, const void *src, u64 num_bytes) {
+  return _mzl_memmove(dest, src, num_bytes);
+}
+
+i32 memcmp(const void *ptr1, const void *ptr2, u64 num_bytes) {
+  return _mzl_memcmp(ptr1, ptr2, num_bytes);
+}
+
+i32 strcmp(const char *str1, const char *str2) { return _mzl_strcmp(str1, str2); }
+
+u64 strlen(const char *str) { return _mzl_strlen(str); }
 
 #undef MZ_LIBRARY_IMPLEMENTATION
 #endif // #ifdef MZ_LIBRARY_IMPLEMENTATION

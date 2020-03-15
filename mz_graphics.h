@@ -86,6 +86,7 @@ void mzgr_transition_barrier(mzgr_context_t *gfx, mzgr_resource_handle_t handle,
 #ifdef MZ_GRAPHICS_IMPLEMENTATION
 
 #include "mz_library.h"
+#include "stb_ds.h"
 
 #define _MZGR_MAX_NUM_RESOURCES 256
 #define _MZGR_MAX_NUM_PIPELINES 128
@@ -294,8 +295,8 @@ static _mzgr_resource_t *_mzgr_get_resource_state(mzgr_context_t *gfx,
 
 mzgr_context_t *mzgr_create_context(void *window) {
   MZ_ASSERT(window);
-  mzgr_context_t *gfx = MZL_MALLOC(sizeof(mzgr_context_t));
-  mzl_memset(gfx, 0, sizeof(mzgr_context_t));
+  mzgr_context_t *gfx = malloc(sizeof(mzgr_context_t));
+  memset(gfx, 0, sizeof(mzgr_context_t));
 
   IDXGIFactory4 *factory;
 #ifdef _DEBUG
@@ -384,21 +385,17 @@ mzgr_context_t *mzgr_create_context(void *window) {
         _mzgr_create_gpu_memory_heap(gfx->device, 8 * 1024 * 1024, D3D12_HEAP_TYPE_UPLOAD);
   }
 
-  gfx->resource_pool.resources =
-      MZL_MALLOC((_MZGR_MAX_NUM_RESOURCES + 1) * sizeof(_mzgr_resource_t));
-  gfx->resource_pool.generations = MZL_MALLOC((_MZGR_MAX_NUM_RESOURCES + 1) * sizeof(u16));
+  gfx->resource_pool.resources = malloc((_MZGR_MAX_NUM_RESOURCES + 1) * sizeof(_mzgr_resource_t));
+  gfx->resource_pool.generations = malloc((_MZGR_MAX_NUM_RESOURCES + 1) * sizeof(u16));
 
-  mzl_memset(gfx->resource_pool.resources, 0,
-             (_MZGR_MAX_NUM_RESOURCES + 1) * sizeof(_mzgr_resource_t));
-  mzl_memset(gfx->resource_pool.generations, 0, (_MZGR_MAX_NUM_RESOURCES + 1) * sizeof(u16));
+  memset(gfx->resource_pool.resources, 0, (_MZGR_MAX_NUM_RESOURCES + 1) * sizeof(_mzgr_resource_t));
+  memset(gfx->resource_pool.generations, 0, (_MZGR_MAX_NUM_RESOURCES + 1) * sizeof(u16));
 
-  gfx->pipeline_pool.pipelines =
-      MZL_MALLOC((_MZGR_MAX_NUM_PIPELINES + 1) * sizeof(_mzgr_pipeline_t));
-  gfx->pipeline_pool.generations = MZL_MALLOC((_MZGR_MAX_NUM_PIPELINES + 1) * sizeof(u16));
+  gfx->pipeline_pool.pipelines = malloc((_MZGR_MAX_NUM_PIPELINES + 1) * sizeof(_mzgr_pipeline_t));
+  gfx->pipeline_pool.generations = malloc((_MZGR_MAX_NUM_PIPELINES + 1) * sizeof(u16));
 
-  mzl_memset(gfx->pipeline_pool.pipelines, 0,
-             (_MZGR_MAX_NUM_PIPELINES + 1) * sizeof(_mzgr_pipeline_t));
-  mzl_memset(gfx->pipeline_pool.generations, 0, (_MZGR_MAX_NUM_PIPELINES + 1) * sizeof(u16));
+  memset(gfx->pipeline_pool.pipelines, 0, (_MZGR_MAX_NUM_PIPELINES + 1) * sizeof(_mzgr_pipeline_t));
+  memset(gfx->pipeline_pool.generations, 0, (_MZGR_MAX_NUM_PIPELINES + 1) * sizeof(u16));
 
   {
     D3D12_CPU_DESCRIPTOR_HANDLE handle =
@@ -476,6 +473,21 @@ mzgr_resource_handle_t mzgr_create_committed_resource(mzgr_context_t *gfx,
   return _mzgr_add_resource(&gfx->resource_pool, raw, initial_state, desc->Format);
 }
 
+u64 _mzgr_calc_graphics_pipeline_hash(D3D12_GRAPHICS_PIPELINE_STATE_DESC *pso_desc) {
+  u8 *bytes = NULL;
+
+  u8 *ptr = arraddn(bytes, pso_desc->VS.BytecodeLength);
+  memcpy(ptr, pso_desc->VS.pShaderBytecode, pso_desc->VS.BytecodeLength);
+
+  ptr = arraddn(bytes, pso_desc->PS.BytecodeLength);
+  memcpy(ptr, pso_desc->PS.pShaderBytecode, pso_desc->PS.BytecodeLength);
+
+  u64 hash = stbds_hash_bytes(bytes, arrlenu(bytes), 123);
+
+  arrfree(bytes);
+  return hash;
+}
+
 mzgr_pipeline_handle_t mzgr_create_graphics_pipeline(mzgr_context_t *gfx,
                                                      D3D12_GRAPHICS_PIPELINE_STATE_DESC *pso_desc,
                                                      const char *vs_name, const char *ps_name) {
@@ -501,6 +513,7 @@ mzgr_pipeline_handle_t mzgr_create_graphics_pipeline(mzgr_context_t *gfx,
   pso_desc->PS.BytecodeLength = ps_bytecode_size;
 
   // calc hash
+  u64 hash = _mzgr_calc_graphics_pipeline_hash(pso_desc);
 
   MZL_FREE(vs_bytecode);
   MZL_FREE(ps_bytecode);

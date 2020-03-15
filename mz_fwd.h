@@ -34,3 +34,15 @@ typedef float f32;
 typedef double f64;
 typedef long long ptrdiff_t;
 typedef unsigned long long size_t;
+
+void *memset(void *dest, i32 value, u64 num_bytes);
+void *memcpy(void *restrict dest, const void *restrict src, u64 num_bytes);
+void *memmove(void *dest, const void *src, u64 num_bytes);
+i32 memcmp(const void *ptr1, const void *ptr2, u64 num_bytes);
+
+i32 strcmp(const char *str1, const char *str2);
+u64 strlen(const char *str);
+
+void *malloc(u64 size);
+void *realloc(void *addr, u64 size);
+void free(void *addr);

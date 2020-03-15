@@ -9,10 +9,15 @@ static i32 test0_init(void *context, void *window) {
   ctx->gfx = mzgr_create_context(window);
 
   i32 *arr = NULL;
-  // arrsetcap(arr, 128);
-  for (i32 i = 0; i < 32; ++i) {
-    arrpush(arr, i);
-  }
+
+  i32 *ptr = arraddn(arr, 3);
+  i32 a123[3] = {1, 2, 3};
+  memcpy(ptr, a123, sizeof a123);
+
+  ptr = arraddn(arr, 4);
+  i32 a4567[4] = {4, 5, 6, 7};
+  memcpy(ptr, a4567, sizeof a4567);
+
   for (u64 i = 0; i < arrlenu(arr); ++i) {
     char buf[64];
     wsprintf(buf, "%d\n", arr[i]);

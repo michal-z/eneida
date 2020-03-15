@@ -1,3 +1,5 @@
+#include "mz_fwd.h"
+
 #define MZ_TINYWIN_IMPLEMENTATION
 #include "mz_tinywin.h"
 #define MZ_LIBRARY_IMPLEMENTATION
@@ -8,8 +10,15 @@
 #include "mz_graphics.h"
 #define MZ_MATH_IMPLEMENTATION
 #include "mz_math.h"
+
+#define STBDS_ASSERT(x) MZ_ASSERT(x)
+static inline f64 fabs(f64 x) { return x >= 0.0 ? x : -x; }
+#define STB_DS_IMPLEMENTATION
+#define STB_PERLIN_IMPLEMENTATION
 #include "stb_ds.h"
 #include "stb_perlin.h"
+#undef STB_PERLIN_IMPLEMENTATION
+#undef STB_DS_IMPLEMENTATION
 
 typedef struct test_api {
   void *context;
