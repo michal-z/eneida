@@ -9,22 +9,6 @@ static i32 test0_init(void *context, void *window) {
 
   ctx->gfx = mzgr_create_context(window);
 
-  i32 *arr = NULL;
-
-  i32 *ptr = arraddn(arr, 3);
-  i32 a123[3] = {1, 2, 3};
-  memcpy(ptr, a123, sizeof a123);
-
-  ptr = arraddn(arr, 4);
-  i32 a4567[4] = {4, 5, 6, 7};
-  memcpy(ptr, a4567, sizeof a4567);
-
-  for (u64 i = 0; i < arrlenu(arr); ++i) {
-    char buf[64];
-    wsprintf(buf, "%d\n", arr[i]);
-    OutputDebugString(buf);
-  }
-
   ctx->pso = mzgr_create_graphics_pipeline(
       ctx->gfx,
       &(D3D12_GRAPHICS_PIPELINE_STATE_DESC){
@@ -58,6 +42,7 @@ static void test0_update(void *context, f64 time, f32 delta_time) {
   (void)time;
   (void)delta_time;
   MZ_ASSERT(context);
+
   test0_context_t *ctx = context;
   mzgr_context_t *gfx = ctx->gfx;
 
@@ -67,13 +52,30 @@ static void test0_update(void *context, f64 time, f32 delta_time) {
   D3D12_CPU_DESCRIPTOR_HANDLE back_buffer_rtv;
   mzgr_get_back_buffer(gfx, &back_buffer, &back_buffer_rtv);
 
-  mzgr_transition_barrier(gfx, back_buffer, D3D12_RESOURCE_STATE_RENDER_TARGET);
+  mzgr_cmd_transition_barrier(gfx, back_buffer, D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+  ID3D12GraphicsCommandList_RSSetViewports(cmdlist, 1,
+                                           &(D3D12_VIEWPORT){.TopLeftX = 0.0f,
+                                                             .TopLeftY = 0.0f,
+                                                             .Width = gfx->resolution[0],
+                                                             .Height = gfx->resolution[1],
+                                                             .MinDepth = 0.0f,
+                                                             .MaxDepth = 1.0f});
+  ID3D12GraphicsCommandList_RSSetScissorRects(
+      cmdlist, 1,
+      &(D3D12_RECT){
+          .top = 0, .left = 0, .right = gfx->resolution[0], .bottom = gfx->resolution[1]});
 
   f32 color[4] = {0.2f, 0.4f, 0.8f, 1.0f};
   ID3D12GraphicsCommandList_OMSetRenderTargets(cmdlist, 1, &back_buffer_rtv, TRUE, NULL);
   ID3D12GraphicsCommandList_ClearRenderTargetView(cmdlist, back_buffer_rtv, color, 0, NULL);
+  ID3D12GraphicsCommandList_IASetPrimitiveTopology(cmdlist, D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-  mzgr_transition_barrier(gfx, back_buffer, D3D12_RESOURCE_STATE_PRESENT);
+  mzgr_cmd_set_graphics_pipeline(gfx, ctx->pso);
+
+  ID3D12GraphicsCommandList_DrawInstanced(cmdlist, 3, 1, 0, 0);
+
+  mzgr_cmd_transition_barrier(gfx, back_buffer, D3D12_RESOURCE_STATE_PRESENT);
 
   mzgr_end_frame(ctx->gfx, 0);
 }
