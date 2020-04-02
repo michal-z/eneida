@@ -81,6 +81,8 @@ void mzgr_wait_for_gpu(mzgr_context_t *gfx);
 void mzgr_cmd_transition_barrier(mzgr_context_t *gfx, mzgr_resource_handle_t handle,
                                  D3D12_RESOURCE_STATES state_after);
 
+void mzgr_cmd_set_graphics_pipeline(mzgr_context_t *gfx, mzgr_pipeline_handle_t handle);
+
 #endif // #ifndef MZ_GRAPHICS_INCLUDED_
 
 #ifdef MZ_GRAPHICS_IMPLEMENTATION
